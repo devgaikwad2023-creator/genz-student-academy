@@ -64,6 +64,13 @@ body{
   transform:translateY(-3px);
 }
 
+/* NAV RIGHT */
+
+.nav-right{
+  display:flex;
+  align-items:center;
+}
+
 /* HERO */
 
 .hero{
