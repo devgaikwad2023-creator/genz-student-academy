@@ -899,3 +899,41 @@ body{
   }
 
 }
+
+/* LIGHT MODE */
+
+.light-mode{
+  background:white;
+  color:black;
+}
+
+.light-mode .navbar{
+  background:white;
+}
+
+.light-mode .nav-links a{
+  color:black;
+}
+
+.light-mode .hero p,
+.light-mode .course-card p,
+.light-mode .feature-card p,
+.light-mode .about-content p,
+.light-mode .mission-card p,
+.light-mode .why-card p,
+.light-mode .contact-info p,
+.light-mode .footer-logo p,
+.light-mode .footer-bottom{
+  color:#475569;
+}
+
+.light-mode .glass-card,
+.light-mode .feature-card,
+.light-mode .mission-card,
+.light-mode .why-card,
+.light-mode .premium-course-card,
+.light-mode .contact-form form,
+.light-mode .info-box{
+  background:#f8fafc;
+  border:1px solid #e2e8f0;
+}
