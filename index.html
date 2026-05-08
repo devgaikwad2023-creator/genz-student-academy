@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Genz Student Academy</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f5f7fb;
+}
+
+/* HEADER */
+.header {
+    background: linear-gradient(135deg, #6a11cb, #2575fc);
+    color: white;
+    padding: 40px 20px;
+    text-align: center;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 40px;
+}
+
+.header p {
+    font-size: 18px;
+    margin-top: 10px;
+}
+
+/* COURSE GRID */
+.container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    padding: 40px;
+}
+
+/* COURSE CARD */
+.card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    overflow: hidden;
+    transition: 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.card img {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+}
+
+.card-content {
+    padding: 15px;
+}
+
+.card h3 {
+    margin: 0;
+    font-size: 20px;
+}
+
+.card p {
+    font-size: 14px;
+    color: #555;
+    margin: 10px 0;
+}
+
+.btn {
+    display: inline-block;
+    padding: 10px 15px;
+    background: #2575fc;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+/* FOOTER */
+.footer {
+    text-align: center;
+    padding: 20px;
+    background: #111;
+    color: white;
+    margin-top: 30px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+    <h1>Genz Student Academy 🎓</h1>
+    <p>Learn Skills. Build Future. Earn Smart.</p>
+</div>
+
+<div class="container">
+
+    <div class="card">
+        <img src="https://via.placeholder.com/400x200" alt="">
+        <div class="card-content">
+            <h3>1 Hour Resume Mastery</h3>
+            <p>Learn how to create ATS friendly resume in 1 hour.</p>
+            <a href="#" class="btn" target="_blank">Start Learning</a>
+        </div>
+    </div>
+
+    <div class="card">
+        <img src="https://via.placeholder.com/400x200" alt="">
+        <div class="card-content">
+            <h3>Interview Crack Formula</h3>
+            <p>HR + Technical interview preparation step by step.</p>
+            <a href="#" class="btn" target="_blank">Start Learning</a>
+        </div>
+    </div>
+
+    <div class="card">
+        <img src="https://via.placeholder.com/400x200" alt="">
+        <div class="card-content">
+            <h3>Excel for Beginners</h3>
+            <p>Master Excel in 90 minutes with real examples.</p>
+            <a href="#" class="btn" target="_blank">Start Learning</a>
+        </div>
+    </div>
+
+</div>
+
+<div class="footer">
+    © 2026 Genz Student Academy | Built with ❤️ by Genz Aesthetic Studio
+</div>
+
+</body>
+</html>
