@@ -1,4 +1,5 @@
 console.log("Genz Student Academy Loaded Successfully");
+
 /* MOBILE MENU */
 
 const menuToggle = document.getElementById("menu-toggle");
