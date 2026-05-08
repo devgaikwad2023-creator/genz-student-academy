@@ -979,3 +979,16 @@ body{
 .hero-buttons a:hover{
   transform:translateY(-4px);
 }
+
+body {
+  font-family: Arial;
+  margin: 0;
+  background: #f5f5f5;
+}
+
+.card {
+  background: white;
+  padding: 15px;
+  margin: 10px;
+  border-radius: 10px;
+}
