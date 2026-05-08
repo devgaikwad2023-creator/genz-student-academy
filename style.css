@@ -854,3 +854,48 @@ body{
   }
 
 }
+
+/* HAMBURGER MENU */
+
+.menu-toggle{
+  display:none;
+  font-size:32px;
+  cursor:pointer;
+}
+
+/* DARK BUTTON */
+
+.dark-btn{
+  background:transparent;
+  border:none;
+  color:white;
+  font-size:24px;
+  cursor:pointer;
+  margin-right:20px;
+}
+
+/* MOBILE NAVBAR */
+
+@media(max-width:768px){
+
+  .menu-toggle{
+    display:block;
+  }
+
+  .navbar{
+    flex-wrap:wrap;
+  }
+
+  .nav-links{
+    width:100%;
+    display:none;
+    flex-direction:column;
+    text-align:center;
+    padding-top:20px;
+  }
+
+  .nav-links.active{
+    display:flex;
+  }
+
+}
