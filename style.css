@@ -944,3 +944,13 @@ body{
   background:#f8fafc;
   border:1px solid #e2e8f0;
 }
+
+/* HERO IMAGE */
+
+.hero-image{
+  width:100%;
+  max-width:550px;
+  border-radius:30px;
+  object-fit:cover;
+  box-shadow:0 0 40px rgba(56,189,248,0.2);
+}
