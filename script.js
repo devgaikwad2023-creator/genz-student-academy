@@ -20,13 +20,3 @@ darkModeToggle.addEventListener("click", () => {
   document.body.classList.toggle("light-mode");
 
 });
-
-<div id="header"></div>
-
-<script>
-fetch("header.html")
-  .then(res => res.text())
-  .then(data => {
-    document.getElementById("header").innerHTML = data;
-  });
-</script>
