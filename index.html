@@ -9,10 +9,15 @@
 
   <title>Genz Student Academy</title>
 
-  <div class="search-bar">
-    <input type="text" placeholder="Search courses, videos...">
-  </div>
-</div>
+  <div id="header"></div>
+
+<script>
+fetch("header.html")
+  .then(res => res.text())
+  .then(data => {
+    document.getElementById("header").innerHTML = data;
+  });
+</script>
 
   <!-- CSS -->
 
