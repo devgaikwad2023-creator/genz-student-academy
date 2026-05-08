@@ -1,139 +1,194 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Genz Student Academy</title>
 
-<style>
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: #f5f7fb;
-}
+  <meta charset="UTF-8">
 
-/* HEADER */
-.header {
-    background: linear-gradient(135deg, #6a11cb, #2575fc);
-    color: white;
-    padding: 40px 20px;
-    text-align: center;
-}
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-.header h1 {
-    margin: 0;
-    font-size: 40px;
-}
+  <title>Genz Student Academy</title>
 
-.header p {
-    font-size: 18px;
-    margin-top: 10px;
-}
+  <!-- CSS -->
 
-/* COURSE GRID */
-.container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 20px;
-    padding: 40px;
-}
+  <link rel="stylesheet" href="style.css">
 
-/* COURSE CARD */
-.card {
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    overflow: hidden;
-    transition: 0.3s;
-}
+  <!-- GOOGLE FONT -->
 
-.card:hover {
-    transform: translateY(-5px);
-}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
 
-.card img {
-    width: 100%;
-    height: 160px;
-    object-fit: cover;
-}
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-.card-content {
-    padding: 15px;
-}
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
-.card h3 {
-    margin: 0;
-    font-size: 20px;
-}
-
-.card p {
-    font-size: 14px;
-    color: #555;
-    margin: 10px 0;
-}
-
-.btn {
-    display: inline-block;
-    padding: 10px 15px;
-    background: #2575fc;
-    color: white;
-    text-decoration: none;
-    border-radius: 8px;
-    font-size: 14px;
-}
-
-/* FOOTER */
-.footer {
-    text-align: center;
-    padding: 20px;
-    background: #111;
-    color: white;
-    margin-top: 30px;
-}
-</style>
 </head>
 
 <body>
 
-<div class="header">
-    <h1>Genz Student Academy 🎓</h1>
-    <p>Learn Skills. Build Future. Earn Smart.</p>
-</div>
+  <!-- NAVBAR -->
 
-<div class="container">
+  <nav class="navbar">
 
-    <div class="card">
-        <img src="https://via.placeholder.com/400x200" alt="">
-        <div class="card-content">
-            <h3>1 Hour Resume Mastery</h3>
-            <p>Learn how to create ATS friendly resume in 1 hour.</p>
-            <a href="#" class="btn" target="_blank">Start Learning</a>
-        </div>
+    <div class="logo">
+      Genz Student Academy
     </div>
 
-    <div class="card">
-        <img src="https://via.placeholder.com/400x200" alt="">
-        <div class="card-content">
-            <h3>Interview Crack Formula</h3>
-            <p>HR + Technical interview preparation step by step.</p>
-            <a href="#" class="btn" target="_blank">Start Learning</a>
+    <ul class="nav-links">
+
+      <li><a href="index.html">Home</a></li>
+
+      <li><a href="courses.html">Courses</a></li>
+
+      <li><a href="about.html">About</a></li>
+
+      <li><a href="contact.html">Contact</a></li>
+
+    </ul>
+
+    <a href="login.html" class="nav-btn">
+      Login
+    </a>
+
+  </nav>
+
+  <!-- HERO SECTION -->
+
+  <section class="hero">
+
+    <div class="hero-left">
+
+      <span class="tag">
+        🚀 India's Modern Learning Platform
+      </span>
+
+      <h1>
+        Learn Future Skills
+        From Industry Experts
+      </h1>
+
+      <p>
+        Master Web Development, AI, Trading,
+        Business Skills and more with premium
+        learning experience at Genz Student Academy.
+      </p>
+
+      <div class="hero-buttons">
+
+        <a href="courses.html" class="primary-btn">
+          Explore Courses
+        </a>
+
+        <a href="about.html" class="secondary-btn">
+          Learn More
+        </a>
+
+      </div>
+
+      <!-- STATS -->
+
+      <div class="stats">
+
+        <div class="stat-box">
+
+          <h2>10K+</h2>
+
+          <p>Students</p>
+
         </div>
+
+        <div class="stat-box">
+
+          <h2>50+</h2>
+
+          <p>Courses</p>
+
+        </div>
+
+        <div class="stat-box">
+
+          <h2>4.9★</h2>
+
+          <p>Ratings</p>
+
+        </div>
+
+      </div>
+
     </div>
 
-    <div class="card">
-        <img src="https://via.placeholder.com/400x200" alt="">
-        <div class="card-content">
-            <h3>Excel for Beginners</h3>
-            <p>Master Excel in 90 minutes with real examples.</p>
-            <a href="#" class="btn" target="_blank">Start Learning</a>
-        </div>
+    <!-- HERO RIGHT -->
+
+    <div class="hero-right">
+
+      <div class="glass-card">
+
+        <h3>🔥 Trending Course</h3>
+
+        <h2>Full Stack Web Development</h2>
+
+        <p>
+          Learn HTML, CSS, JavaScript,
+          React and backend development
+          step-by-step.
+        </p>
+
+        <button>
+          Start Learning
+        </button>
+
+      </div>
+
     </div>
 
-</div>
+  </section>
 
-<div class="footer">
-    © 2026 Genz Student Academy | Built with ❤️ by Genz Aesthetic Studio
-</div>
+  <!-- FEATURE SECTION -->
+
+  <section class="features">
+
+    <h2>Why Choose Genz Student Academy?</h2>
+
+    <div class="feature-container">
+
+      <div class="feature-card">
+
+        <h3>🎯 Industry Ready Skills</h3>
+
+        <p>
+          Learn practical skills that help
+          you grow in real world careers.
+        </p>
+
+      </div>
+
+      <div class="feature-card">
+
+        <h3>📱 Learn Anywhere</h3>
+
+        <p>
+          Fully mobile responsive learning
+          platform for every device.
+        </p>
+
+      </div>
+
+      <div class="feature-card">
+
+        <h3>⚡ Premium Experience</h3>
+
+        <p>
+          Modern UI and smooth learning
+          experience inspired by top platforms.
+        </p>
+
+      </div>
+
+    </div>
+
+  </section>
+
+  <script src="script.js"></script>
 
 </body>
+
 </html>
