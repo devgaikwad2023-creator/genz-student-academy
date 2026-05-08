@@ -7,7 +7,6 @@ fetch("header.html")
     document.getElementById("header").innerHTML = data;
   });
 </script>
-
 console.log("Genz Student Academy Loaded Successfully");
 /* MOBILE MENU */
 
