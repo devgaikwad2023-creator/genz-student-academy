@@ -1,9 +1,40 @@
-<div id="header"></div>
+<style>
+.header {
+  background: #111;
+  color: white;
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
 
-<script>
-fetch("header.html")
-  .then(res => res.text())
-  .then(data => {
-    document.getElementById("header").innerHTML = data;
-  });
-</script>
+.logo {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.search-bar {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.search-bar input {
+  width: 60%;
+  padding: 8px 12px;
+  border-radius: 20px;
+  border: none;
+  outline: none;
+}
+</style>
+
+<div class="header">
+  <div class="logo">Genz Academy</div>
+
+  <div class="search-bar">
+    <input type="text" placeholder="Search courses, videos, topics...">
+  </div>
+</div>
