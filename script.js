@@ -21,5 +21,3 @@ darkModeToggle.addEventListener("click", () => {
   document.body.classList.toggle("light-mode");
 
 });
-
-console.log("Genz Academy Loaded");
