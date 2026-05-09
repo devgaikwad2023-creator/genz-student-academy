@@ -948,7 +948,7 @@ body{
 /* HERO IMAGE */
 
 .hero-image{
-  width:420px;
+  width:720px;
   border-radius:24px;
   object-fit:cover;
   box-shadow:0 20px 60px rgba(0,0,0,0.35);
