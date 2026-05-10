@@ -75,3 +75,39 @@ if(loginForm){
   });
 
 }
+
+// SIGNUP SYSTEM
+
+const signupForm = document.getElementById("signup-form");
+
+if(signupForm){
+
+  signupForm.addEventListener("submit", (e)=>{
+
+    e.preventDefault();
+
+    const email =
+      document.getElementById("signup-email").value;
+
+    const password =
+      document.getElementById("signup-password").value;
+
+    createUserWithEmailAndPassword(auth, email, password)
+
+    .then((userCredential)=>{
+
+      alert("Account Created Successfully 🚀");
+
+      window.location.href = "login.html";
+
+    })
+
+    .catch((error)=>{
+
+      alert(error.message);
+
+    });
+
+  });
+
+}
