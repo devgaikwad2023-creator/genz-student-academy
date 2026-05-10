@@ -12,8 +12,6 @@ import {
 
 const firebaseConfig = {
 // Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -27,12 +25,9 @@ const firebaseConfig = {
   messagingSenderId: "358103651695",
   appId: "1:358103651695:web:b087ba14d01a6ba751049a",
   measurementId: "G-XJH4TKVQZW"
-};
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
-};
 
 // Initialize Firebase
 
@@ -72,7 +67,7 @@ if(loginForm){
 
     });
 
-  });
+  })
 
 }
 
