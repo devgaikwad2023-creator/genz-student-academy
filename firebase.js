@@ -141,3 +141,21 @@ if (googleBtn) {
   });
 
 }
+
+// PROTECTED DASHBOARD
+
+if (window.location.pathname.includes("dashboard.html")) {
+
+  onAuthStateChanged(auth, (user) => {
+
+    if (!user) {
+
+      alert("Please Login First 😎");
+
+      window.location.href = "login.html";
+
+    }
+
+  });
+
+}
