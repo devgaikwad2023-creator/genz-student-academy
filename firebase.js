@@ -41,3 +41,37 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
 console.log("Firebase Connected Successfully");
+
+// LOGIN SYSTEM
+
+const loginForm = document.getElementById("login-form");
+
+if(loginForm){
+
+  loginForm.addEventListener("submit", (e)=>{
+
+    e.preventDefault();
+
+    const email = document.getElementById("email").value;
+
+    const password = document.getElementById("password").value;
+
+    signInWithEmailAndPassword(auth, email, password)
+
+    .then((userCredential)=>{
+
+      alert("Login Successful 😎");
+
+      window.location.href = "dashboard.html";
+
+    })
+
+    .catch((error)=>{
+
+      alert(error.message);
+
+    });
+
+  });
+
+}
