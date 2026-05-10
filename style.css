@@ -979,3 +979,32 @@ body{
 .hero-buttons a:hover{
   transform:translateY(-4px);
 }
+
+/* MOBILE HERO */
+
+@media(max-width:768px){
+
+  .hero-left h1{
+    font-size:48px;
+    text-align:center;
+  }
+
+  .hero-left p{
+    text-align:center;
+  }
+
+  .hero-buttons{
+    justify-content:center;
+  }
+
+  .hero-right{
+    display:flex;
+    justify-content:center;
+  }
+
+  .hero-image{
+    width:90%;
+    max-width:340px;
+  }
+
+}
