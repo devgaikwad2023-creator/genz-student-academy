@@ -1161,3 +1161,45 @@ body{
   }
 
 }
+
+/* VIDEO SECTION */
+
+.video-section{
+  padding:80px 8%;
+  text-align:center;
+}
+
+.video-section h2{
+  font-size:48px;
+  margin-bottom:40px;
+}
+
+/* VIDEO */
+
+.video-container{
+  display:flex;
+  justify-content:center;
+}
+
+.video-container iframe{
+  width:100%;
+  max-width:900px;
+  height:500px;
+  border:none;
+  border-radius:24px;
+  box-shadow:0 20px 60px rgba(0,0,0,0.35);
+}
+
+/* MOBILE */
+
+@media(max-width:768px){
+
+  .video-section h2{
+    font-size:36px;
+  }
+
+  .video-container iframe{
+    height:220px;
+  }
+
+}
