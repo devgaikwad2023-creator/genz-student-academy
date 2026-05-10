@@ -5,7 +5,9 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import {
   getAuth,
   createUserWithEmailAndPassword,
-  signInWithEmailAndPassword
+  signInWithEmailAndPassword,
+  GoogleAuthProvider,
+  signInWithPopup
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 // Firebase Config
@@ -33,6 +35,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 
 const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
 
 console.log("Firebase Connected Successfully");
 
@@ -93,6 +96,35 @@ if (loginForm) {
       .then((userCredential) => {
 
         alert("Login Successful 😎");
+
+        window.location.href = "dashboard.html";
+
+      })
+
+      .catch((error) => {
+
+        alert(error.message);
+
+      });
+
+  });
+
+}
+
+// GOOGLE LOGIN SYSTEM
+
+const googleBtn =
+  document.getElementById("google-login");
+
+if (googleBtn) {
+
+  googleBtn.addEventListener("click", () => {
+
+    signInWithPopup(auth, provider)
+
+      .then((result) => {
+
+        alert("Google Login Successful 🚀");
 
         window.location.href = "dashboard.html";
 
