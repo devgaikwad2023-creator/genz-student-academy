@@ -2,227 +2,125 @@
 <html lang="en">
 
 <head>
-
   <meta charset="UTF-8">
-
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>Courses | Genz Student Academy</title>
-
   <link rel="stylesheet" href="style.css">
-
   <link rel="preconnect" href="https://fonts.googleapis.com">
-
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-
 </head>
 
 <body>
 
-  <!-- NAVBAR -->
-
   <nav class="navbar">
-
-    <!-- LOGO -->
-
-  <div class="logo">
-    Genz Student Academy
-  </div>
-
-  <!-- MOBILE MENU -->
-
-  <div class="menu-toggle" id="menu-toggle">
-    ☰
-  </div>
-
-  <!-- NAV LINKS -->
-
-  <ul class="nav-links">
-
-    <li><a href="index.html">Home</a></li>
-
-    <li><a href="courses.html">Courses</a></li>
-
-    <li><a href="about.html">About</a></li>
-
-    <li><a href="contact.html">Contact</a></li>
-
-  </ul>
-
-  <!-- RIGHT SIDE BUTTONS -->
-
-  <div class="nav-right">
-
-    <!-- DARK MODE BUTTON -->
-
-    <button id="dark-mode-toggle" class="dark-btn">
-      🌙
-    </button>
-
-    <!-- LOGIN BUTTON -->
-
-    <a href="login.html" class="nav-btn">
-      Login
-    </a>
-
-  </div>
-
-</nav>
-  <!-- COURSE HERO -->
+    <div class="logo">Genz Student Academy</div>
+    <div class="menu-toggle" id="menu-toggle">☰</div>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="courses.html">Courses</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <div class="nav-right">
+      <button id="dark-mode-toggle" class="dark-btn">🌙</button>
+      <a href="login.html" class="nav-btn">Login</a>
+    </div>
+  </nav>
 
   <section class="courses-hero">
-
-    <span class="tag">
-      🚀 Explore Our Courses
-    </span>
-
-    <h1>
-      Learn High Demand Skills
-    </h1>
-
-    <p>
-      Start your learning journey with premium quality courses
-      designed for students and future professionals.
-    </p>
-
+    <span class="tag">🚀 Explore Our Courses</span>
+    <h1>Learn High Demand Skills</h1>
+    <p>Start your learning journey with premium quality courses designed for students and future professionals.</p>
   </section>
-
-  <!-- COURSES -->
 
   <section class="all-courses">
 
     <div class="premium-course-card">
-
-      <div class="course-image">
-        💻
-      </div>
-
+      <div class="course-image">💻</div>
       <div class="course-info">
-
         <h2>Full Stack Web Development</h2>
-
-        <p>
-          Learn HTML, CSS, JavaScript, React,
-          Node.js and backend development.
-        </p>
-
+        <p>Learn HTML, CSS, JavaScript, React, Node.js and backend development.</p>
         <div class="course-meta">
-
           <span>⭐ 4.9</span>
-
           <span>👨‍🎓 5K+ Students</span>
-
         </div>
-
         <div class="price-row">
-
           <h3>₹499</h3>
-
-          <a href="course-detail.html" class="nav-btn">
-  Enroll Now
-</a>
-
+          <button onclick="openModal()" class="enroll-btn" style="padding: 10px 20px; background: #38bdf8; color: black; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Enroll Now</button>
         </div>
-
       </div>
-
     </div>
 
-    <!-- COURSE 2 -->
-
     <div class="premium-course-card">
-
-      <div class="course-image">
-        🤖
-      </div>
-
+      <div class="course-image">🤖</div>
       <div class="course-info">
-
         <h2>AI Tools Mastery</h2>
-
-        <p>
-          Learn ChatGPT, AI tools, prompt engineering
-          and productivity workflows.
-        </p>
-
+        <p>Learn ChatGPT, AI tools, prompt engineering and productivity workflows.</p>
         <div class="course-meta">
-
           <span>⭐ 4.8</span>
-
           <span>👨‍🎓 3K+ Students</span>
-
         </div>
-
         <div class="price-row">
-
           <h3>₹399</h3>
-
-          <a href="#" class="enroll-btn">
-            Enroll Now
-          </a>
-
+          <button onclick="openModal()" class="enroll-btn" style="padding: 10px 20px; background: #38bdf8; color: black; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Enroll Now</button>
         </div>
-
       </div>
-
     </div>
 
-    <!-- COURSE 3 -->
-
     <div class="premium-course-card">
-
-      <div class="course-image">
-        📈
-      </div>
-
+      <div class="course-image">📈</div>
       <div class="course-info">
-
         <h2>Trading & Stock Market Basics</h2>
-
-        <p>
-          Understand trading psychology,
-          candlesticks and market fundamentals.
-        </p>
-
+        <p>Understand trading psychology, candlesticks and market fundamentals.</p>
         <div class="course-meta">
-
           <span>⭐ 4.7</span>
-
           <span>👨‍🎓 2K+ Students</span>
-
         </div>
-
         <div class="price-row">
-
           <h3>₹299</h3>
-
-          <a href="#" class="enroll-btn">
-            Enroll Now
-          </a>
-
+          <button onclick="openModal()" class="enroll-btn" style="padding: 10px 20px; background: #38bdf8; color: black; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Enroll Now</button>
         </div>
-
       </div>
-
     </div>
 
   </section>
 
-  <div id="payment-modal" class="modal">
+  <div id="payment-modal" class="modal" style="display: none;">
     <div class="modal-content">
-        <span class="close" onclick="closeModal()">&times;</span>
-        <h2>Complete Enrollment 🚀</h2>
-        <p>Scan the QR below or use UPI to get instant access.</p>
-        <div class="qr-placeholder">
-            <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=YOUR_UPI_ID" alt="Payment QR">
-        </div>
-        <p class="price-tag">Price: ₹499</p>
-        <button class="verify-btn" onclick="verifyPayment()">I have Paid - Access Course</button>
+      <span class="close" onclick="closeModal()" style="cursor: pointer; float: right; font-size: 28px;">&times;</span>
+      <h2 style="color: #38bdf8;">Complete Enrollment 🚀</h2>
+      <p>Scan the QR below or use UPI to get instant access.</p>
+      <div class="qr-placeholder">
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=YOUR_UPI_ID" alt="Payment QR">
+      </div>
+      <p class="price-tag" id="modal-price">Selected Course Access</p>
+      <button class="verify-btn" onclick="verifyPayment()">I have Paid - Access Course</button>
     </div>
-</div>
-  
-</body>
+  </div>
 
+  <script>
+    function openModal() {
+      document.getElementById('payment-modal').style.display = "block";
+    }
+
+    function closeModal() {
+      document.getElementById('payment-modal').style.display = "none";
+    }
+
+    function verifyPayment() {
+      alert("Verification in progress! Our team will grant access within 30 mins.");
+      closeModal();
+    }
+
+    // Modal close when clicking outside
+    window.onclick = function(event) {
+      let modal = document.getElementById('payment-modal');
+      if (event.target == modal) {
+        modal.style.display = "none";
+      }
+    }
+  </script>
+
+</body>
 </html>
