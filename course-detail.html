@@ -86,7 +86,7 @@
       </div>
 
       <a href="payment.html" class="nav-btn">
-  Enroll Now
+  <button onclick="openModal()" class="enroll-btn">Enroll Now</button>
 </a>
 
     </div>
@@ -112,6 +112,40 @@
   </div>
 
 </section>
+
+<div id="payment-modal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <h2 style="color: #38bdf8;">Complete Enrollment 🚀</h2>
+        <p>Scan the QR below or use UPI to get instant access.</p>
+        <div class="qr-placeholder">
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=YOUR_UPI_ID&pn=Genz%20Academy&cu=INR" alt="Payment QR" style="border: 5px solid white; border-radius: 10px;">
+        </div>
+        <p class="price-tag">Price: ₹499</p>
+        <button class="verify-btn" onclick="verifyPayment()">I have Paid - Access Course</button>
+    </div>
+</div>
+
+<script>
+    function openModal() {
+        document.getElementById('payment-modal').style.display = "block";
+    }
+    function closeModal() {
+        document.getElementById('payment-modal').style.display = "none";
+    }
+    function verifyPayment() {
+        alert("Verification in progress! Our team will grant access within 30 mins.");
+        closeModal();
+    }
+    // Background click close logic
+    window.onclick = function(event) {
+        let modal = document.getElementById('payment-modal');
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+</script>
+
 </body>
 
 </html>
