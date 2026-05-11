@@ -11,9 +11,9 @@
 
     <div class="player-container">
         <div class="lesson-sidebar">
-            <div style="padding: 10px; background: rgba(0,0,0,0.2); border-radius: 10px; margin-bottom: 20px;">
-                <small>Course Progress: 25%</small>
-                <div class="progress-bar"><div class="progress" style="width: 25%;"></div></div>
+            <div id="progress-container" style="padding: 10px; background: rgba(0,0,0,0.2); border-radius: 10px; margin-bottom: 20px;">
+                <small id="progress-text">Course Progress: 0%</small>
+                <div class="progress-bar"><div class="progress" id="main-progress-bar" style="width: 0%;"></div></div>
             </div>
             
             <h3>Course Content</h3>
@@ -32,51 +32,83 @@
             <div class="video-details">
                 <h2 id="video-title">1. Introduction to Web Dev</h2>
                 <p>In this lesson, we will learn the basics of how websites work.</p>
-                <button class="download-btn"><i class="fa fa-download"></i> Download Notes</button>
+                
+                <div id="action-buttons" style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <button class="download-btn"><i class="fa fa-download"></i> Download Notes</button>
+                    <button class="complete-btn" onclick="updateProgress()" style="background: #22c55e; color: white; border: none; padding: 10px 20px; border-radius: 5px; font-weight: bold; cursor: pointer;"><i class="fa fa-check-circle"></i> Mark as Completed</button>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
-        function changeVideo(videoUrl, title) {
-            // 1. Video change karo
-            document.getElementById('main-video').src = videoUrl;
-            
-            // 2. Title update karo
-            document.getElementById('video-title').innerText = title;
+        // STEP 2: Progress Logic Added Here
+        let completedLessons = 0;
+        const totalLessons = 4; 
 
-            // 3. Blue highlight (active class) ko move karo
+        function updateProgress() {
+            if (completedLessons < totalLessons) {
+                completedLessons++;
+                let percentage = (completedLessons / totalLessons) * 100;
+                
+                // Progress Bar and Text Update
+                document.getElementById('main-progress-bar').style.width = percentage + "%";
+                document.getElementById('progress-text').innerText = "Course Progress: " + Math.round(percentage) + "%";
+                
+                alert("Kudos! Lesson Completed. Your progress: " + Math.round(percentage) + "%");
+
+                // Check if 100% completed
+                if (percentage >= 100) {
+                    showCertificateButton();
+                }
+            } else {
+                alert("You have already completed all lessons!");
+            }
+        }
+
+        function showCertificateButton() {
+            if (!document.getElementById('cert-btn')) {
+                let btn = document.createElement("button");
+                btn.id = "cert-btn";
+                btn.innerHTML = "🎓 Download Certificate";
+                btn.style.cssText = "background: #38bdf8; color: black; border: none; padding: 10px 20px; border-radius: 5px; font-weight: bold; cursor: pointer; margin-top: 10px;";
+                btn.onclick = () => { window.location.href = "certificate.html"; };
+                document.getElementById('action-buttons').appendChild(btn);
+            }
+        }
+
+        function changeVideo(videoUrl, title) {
+            document.getElementById('main-video').src = videoUrl;
+            document.getElementById('video-title').innerText = title;
             let listItems = document.querySelectorAll('#lesson-list li');
             listItems.forEach(item => item.classList.remove('active'));
             event.currentTarget.classList.add('active');
         }
 
-        // Notes Download Logic
         document.querySelector('.download-btn').addEventListener('click', function() {
             const currentLesson = document.getElementById('video-title').innerText;
-            alert('Downloading Notes for: ' + currentLesson + '\n(Note: Add your PDF links in the script to make this work!)');
+            alert('Downloading Notes for: ' + currentLesson);
         });
     </script>
 
-    <div id="ai-chat-container" class="chat-closed">
-    <div class="chat-header" onclick="toggleChat()">
-        <span>🤖 Genz AI Assistant</span>
-        <button id="close-chat">×</button>
+    <div id="ai-chat-container" style="display:none;">
+        <div class="chat-header" onclick="toggleChat()">
+            <span>🤖 Genz AI Assistant</span>
+            <button id="close-chat">×</button>
+        </div>
+        <div id="chat-box" class="chat-body">
+            <p class="bot-msg">Hey! I am your Study Assistant. How can I help you today?</p>
+        </div>
+        <div class="chat-footer">
+            <input type="text" id="user-input" placeholder="Ask anything...">
+            <button onclick="sendMessage()"><i class="fa fa-paper-plane"></i></button>
+        </div>
     </div>
-    <div id="chat-box" class="chat-body">
-        <p class="bot-msg">Hey! I am your Study Assistant. How can I help you today?</p>
-    </div>
-    <div class="chat-footer">
-        <input type="text" id="user-input" placeholder="Ask anything...">
-        <button onclick="sendMessage()"><i class="fa fa-paper-plane"></i></button>
-    </div>
-</div>
 
-<div id="chat-icon" onclick="toggleChat()">
-    <img src="https://cdn-icons-png.flaticon.com/512/4712/4712035.png" alt="AI Chat">
-</div>
+    <div id="chat-icon" onclick="toggleChat()">
+        <img src="https://cdn-icons-png.flaticon.com/512/4712/4712035.png" alt="AI Chat">
+    </div>
 
     <script src="script.js"></script>
-    
 </body>
 </html>
