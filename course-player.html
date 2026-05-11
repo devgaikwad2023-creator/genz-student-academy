@@ -1,33 +1,57 @@
-<script type="module">
-    import { auth, db } from "./firebase.js";
-    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-    import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Player | GenZ Academy</title>
+</head>
 
-    const body = document.getElementById('player-body');
+<body id="player-body" style="background: #0f172a; color: white; display: none;">
 
-    onAuthStateChanged(auth, async (user) => {
-        console.log("Auth State Changed. User:", user ? user.uid : "No User");
+    <div id="course-content">
+        <h1>Welcome to Your Course 🚀</h1>
+        <p>Video loading...</p>
+    </div>
 
-        if (!user) {
-            alert("Please Login First!");
-            window.location.href = "login.html";
-            return; // Yahan se code ruk jayega
-        }
+    <script type="module">
+        import { auth, db } from "./firebase.js";
+        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-        // --- TESTING MODE: FORCE ACCESS ---
-        console.log("Testing Mode: Bypassing Database Check...");
-        body.style.display = "block"; 
-        // 👆 Agar ye line chal gayi, toh video player 100% dikhega!
-        
-        /* // Abhi ke liye is niche wale code ko comment rehne do
-        try {
-            const userDoc = await getDoc(doc(db, "enrollments", user.uid));
-            if (userDoc.exists() && userDoc.data().status === "active") {
-                body.style.display = "block";
-            } else {
+        onAuthStateChanged(auth, async (user) => {
+            // Humne 'body' ko yahan andar define kiya hai taaki error na aaye
+            const body = document.getElementById('player-body');
+            
+            if (!user) {
+                console.log("No user found, redirecting to login...");
+                alert("Security Alert: Please login to access this course.");
+                window.location.href = "login.html";
+                return;
+            }
+
+            console.log("User Logged In. UID:", user.uid);
+
+            try {
+                // Database check chalu
+                const userDocRef = doc(db, "enrollments", user.uid);
+                const userDoc = await getDoc(userDocRef);
+
+                if (userDoc.exists() && userDoc.data().status === "active") {
+                    // SUCCESS: Access mil gaya!
+                    console.log("Access Granted! Status is active.");
+                    body.style.display = "block";
+                } else {
+                    // FAIL: Database mein entry nahi mili ya status active nahi hai
+                    console.log("Access Denied: Enrollment not found.");
+                    alert("Arey bro! You need to enroll in this course first.");
+                    window.location.href = "courses.html";
+                }
+            } catch (error) {
+                console.error("Firestore connectivity error:", error);
+                alert("Database connection error. Try again.");
                 window.location.href = "courses.html";
             }
-        } catch (e) { console.log(e); }
-        */
-    });
-</script>
+        });
+    </script>
+</body>
+</html>
