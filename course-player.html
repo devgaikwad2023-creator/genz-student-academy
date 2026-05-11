@@ -80,5 +80,21 @@
             }
         });
     </script>
+
+    <script>
+    function changeVideo(videoUrl, title) {
+        // Change Video Source
+        document.getElementById('main-video').src = videoUrl;
+        
+        // Change Title
+        document.getElementById('video-title').innerText = title;
+
+        // Change Active Class in Sidebar
+        let listItems = document.querySelectorAll('#lesson-list li');
+        listItems.forEach(item => item.classList.remove('active'));
+        event.currentTarget.classList.add('active');
+    };
+</script>
+    
 </body>
 </html>
