@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Certificate | Genz Academy</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body style="background: #0f172a; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh;">
+
+    <div id="certificate-area" style="width: 800px; height: 600px; background: white; border: 20px solid #1e293b; padding: 50px; text-align: center; color: #1e293b; position: relative; font-family: 'Poppins', sans-serif;">
+        <div style="border: 5px solid #38bdf8; height: 100%; padding: 40px;">
+            <h1 style="font-size: 50px; margin-bottom: 10px;">CERTIFICATE</h1>
+            <p style="font-size: 20px; font-weight: bold; color: #64748b;">OF APPRECIATION</p>
+            <br>
+            <p style="font-size: 18px;">This is to certify that</p>
+            <h2 id="cert-name" style="font-size: 40px; color: #38bdf8; margin: 20px 0;">Student Name</h2>
+            <p style="font-size: 18px;">has successfully completed the course on</p>
+            <h3 style="font-size: 25px; margin-top: 10px;">Full Stack Web Development</h3>
+            <br><br>
+            <div style="display: flex; justify-content: space-between; margin-top: 50px;">
+                <div>
+                    <p style="border-top: 2px solid #1e293b; padding-top: 5px;">Date</p>
+                </div>
+                <div>
+                    <p style="border-top: 2px solid #1e293b; padding-top: 5px;">Instructor Signature</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button onclick="downloadCert()" style="margin-top: 30px; padding: 15px 30px; background: #38bdf8; border: none; border-radius: 10px; font-weight: bold; cursor: pointer;">Download as PDF</button>
+
+    <script type="module">
+        import { auth } from "./firebase.js";
+        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                document.getElementById('cert-name').innerText = user.displayName || "Genz Student";
+            }
+        });
+
+        window.downloadCert = function() {
+            const element = document.getElementById('certificate-area');
+            html2pdf().from(element).save('Genz_Academy_Certificate.pdf');
+        }
+    </script>
+</body>
+</html>
