@@ -1226,3 +1226,13 @@ body{
 .video-box { background: #000; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
 .video-details { margin-top: 20px; }
 .download-btn { background: #22c55e; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin-top: 15px; font-weight: bold; }
+
+/* PROFILE PAGE STYLING */
+.profile-container { display: flex; justify-content: center; align-items: center; height: 100vh; padding: 20px; }
+.profile-card { background: #1e293b; padding: 30px; border-radius: 20px; text-align: center; width: 100%; max-width: 400px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+.profile-header img { width: 100px; height: 100px; border-radius: 50%; border: 3px solid #38bdf8; margin-bottom: 15px; }
+.profile-stats { display: flex; justify-content: space-around; margin: 25px 0; border-top: 1px solid #334155; padding-top: 20px; }
+.stat-box h3 { color: #38bdf8; margin-bottom: 5px; }
+.edit-btn { background: #38bdf8; color: #000; border: none; width: 100%; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-bottom: 10px; }
+.logout-btn { background: transparent; color: #ef4444; border: 1px solid #ef4444; width: 100%; padding: 12px; border-radius: 8px; cursor: pointer; }
+.logout-btn:hover { background: #ef4444; color: white; }
