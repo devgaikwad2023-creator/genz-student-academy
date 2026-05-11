@@ -11,12 +11,17 @@
 
     <div class="player-container">
         <div class="lesson-sidebar">
+            <div style="padding: 10px; background: rgba(0,0,0,0.2); border-radius: 10px; margin-bottom: 20px;">
+                <small>Course Progress: 25%</small>
+                <div class="progress-bar"><div class="progress" style="width: 25%;"></div></div>
+            </div>
+            
             <h3>Course Content</h3>
             <ul id="lesson-list">
-                <li class="active">1. Introduction to Web Dev</li>
-                <li>2. HTML Basics</li>
-                <li>3. Styling with CSS</li>
-                <li>4. JavaScript Logic</li>
+                <li class="active" onclick="changeVideo('https://www.youtube.com/embed/dQw4w9WgXcQ', '1. Introduction to Web Dev')">1. Introduction to Web Dev</li>
+                <li onclick="changeVideo('https://www.youtube.com/embed/L72fhGm1Lrc', '2. HTML Basics')">2. HTML Basics</li>
+                <li onclick="changeVideo('https://www.youtube.com/embed/1Rs2ND1RYYc', '3. Styling with CSS')">3. Styling with CSS</li>
+                <li onclick="changeVideo('https://www.youtube.com/embed/W6NZfCO5SIk', '4. JavaScript Logic')">4. JavaScript Logic</li>
             </ul>
         </div>
 
@@ -32,5 +37,26 @@
         </div>
     </div>
 
+    <script>
+        function changeVideo(videoUrl, title) {
+            // 1. Video change karo
+            document.getElementById('main-video').src = videoUrl;
+            
+            // 2. Title update karo
+            document.getElementById('video-title').innerText = title;
+
+            // 3. Blue highlight (active class) ko move karo
+            let listItems = document.querySelectorAll('#lesson-list li');
+            listItems.forEach(item => item.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+        }
+
+        // Notes Download Logic
+        document.querySelector('.download-btn').addEventListener('click', function() {
+            const currentLesson = document.getElementById('video-title').innerText;
+            alert('Downloading Notes for: ' + currentLesson + '\n(Note: Add your PDF links in the script to make this work!)');
+        });
+    </script>
+    
 </body>
 </html>
