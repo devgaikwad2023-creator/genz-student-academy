@@ -1183,8 +1183,8 @@ body{
 
 .video-container iframe{
   width:100%;
-  max-width:500px;
-  height:400px;
+  max-width:400px;
+  height:300px;
   border:none;
   border-radius:24px;
   box-shadow:0 20px 60px rgba(0,0,0,0.35);
@@ -1215,56 +1215,49 @@ body{
 .continue-btn:hover { background: #0ea5e9; transform: scale(1.02); }
 
 /* COURSE PLAYER LAYOUT */
-/* 1. Sidebar ka main dabba */
+/* Sidebar ka main container */
 .lesson-sidebar { 
-    width: 320px; 
-    background: #111827; 
-    padding-top: 30px; 
-    border-right: 1px solid #374151; 
-    height: 100vh;
+    width: 300px; 
+    background: #1e293b; 
+    padding: 20px 10px; /* Side padding kam ki taaki boxes ko jagah mile */
+    border-right: 1px solid #334155; 
     overflow-y: auto;
-    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Sab kuch horizontal center karega */
 }
 
-/* 2. Progress aur Heading ko alignment dena */
-.lesson-sidebar h3, 
-.lesson-sidebar div {
-    text-align: center;
-    color: #38bdf8;
-    margin-bottom: 20px;
-}
-
-/* 3. List ki styling */
+/* List ke liye styling */
 .lesson-sidebar ul { 
     list-style: none; 
+    width: 100%; 
     padding: 0;
     margin: 0;
-    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Boxes ko list ke andar center karega */
 }
 
-/* 🌟 4. Lecture Boxes: Jo "Ganda" dikh raha tha usko center karna */
+/* Har ek lecture box ki styling */
 .lecture-item { 
-    width: 88%;           /* Sidebar ka 88% hissa lega */
-    margin: 12px auto;    /* 'auto' hi boxes ko center mein laayega */
-    padding: 18px; 
+    width: 85%; /* Box ki width sidebar se thodi kam */
+    margin: 8px 0; /* Upar niche gap */
+    padding: 15px; 
     border-radius: 12px; 
     cursor: pointer; 
-    background: #1f2937; 
-    color: #9ca3af;
-    display: block;       /* Isse box poori line lega */
-    text-align: center;   /* Text ko box ke andar center karega */
-    transition: 0.3s all ease;
-    border: 1px solid rgba(255,255,255,0.05);
+    transition: 0.3s; 
+    background: rgba(255,255,255,0.05); 
+    text-align: center; /* Text box ke beech mein aayega */
+    font-size: 14px;
+    border: 1px solid transparent;
 }
 
-/* 5. Jab mouse upar le jayein ya lecture active ho */
-.lecture-item:hover, 
-.lecture-item.active { 
-    background: #0ea5e9; 
-    color: white;
+/* Hover aur Active state */
+.lecture-item:hover, .lecture-item.active { 
+    background: #38bdf8; 
+    color: #000; 
     font-weight: bold;
-    transform: translateY(-2px); /* Halki si lift premium look ke liye */
-    box-shadow: 0 5px 15px rgba(14, 165, 233, 0.3);
+    transform: scale(1.02); /* Thoda sa zoom effect */
 }
 
 /* PROFILE PAGE STYLING */
