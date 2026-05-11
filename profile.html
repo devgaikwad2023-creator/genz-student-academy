@@ -28,36 +28,45 @@
                 </div>
             </div>
 
-            <button class="edit-btn"><i class="fa fa-edit"></i> Edit Profile</button>
+            <button class="edit-btn" onclick="alert('Edit Profile feature coming soon!')"><i class="fa fa-edit"></i> Edit Profile</button>
             <button id="logout-btn" class="logout-btn">Logout</button>
         </div>
     </div>
 
     <script type="module">
+        // Hum directly firebase.js use karenge jo aapne pehle banayi thi
         import { auth } from "./firebase.js";
         import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-        // Check if user is logged in and show data
+        const nameTag = document.getElementById('user-display-name');
+        const emailTag = document.getElementById('user-display-email');
+        const userImg = document.getElementById('user-img');
+        const logoutBtn = document.getElementById('logout-btn');
+
+        // Check if user is logged in
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                document.getElementById('user-display-name').innerText = user.displayName || "Genz Student";
-                document.getElementById('user-display-email').innerText = user.email;
+                console.log("User data found:", user);
+                nameTag.innerText = user.displayName || "Genz Student";
+                emailTag.innerText = user.email;
                 if(user.photoURL) {
-                    document.getElementById('user-img').src = user.photoURL;
+                    userImg.src = user.photoURL;
                 }
             } else {
-                // If not logged in, send to login page
+                // Agar login nahi hai toh login page pe bhejo
                 window.location.href = "login.html";
             }
         });
 
-        // Logout Function
-        document.getElementById('logout-btn').addEventListener('click', () => {
+        // Logout logic
+        logoutBtn.onclick = () => {
             signOut(auth).then(() => {
-                alert("Logged out successfully!");
+                alert("Successfully Logged Out!");
                 window.location.href = "login.html";
+            }).catch((error) => {
+                console.error("Logout Error:", error);
             });
-        });
+        };
     </script>
 </body>
 </html>
