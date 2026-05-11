@@ -7,40 +7,42 @@
     <link rel="stylesheet" href="style.css">
 </head>
 
-<body id="player-body" style="background: #0f172a; color: white; display: none;">
+<body id="player-body" style="background: #0f172a; color: white; display: none; margin: 0; font-family: sans-serif;">
 
     <div class="player-container">
         <aside class="lesson-sidebar">
-    <h3>Course Content</h3>
-    
-    <div class="progress-container">
-        <small>Course Progress: 25%</small>
-        <div class="progress-bar"><div class="progress" style="width: 25%;"></div></div>
-    </div>
+            <h3>Course Content</h3>
+            
+            <div class="progress-container">
+                <small>Course Progress: 25%</small>
+                <div class="progress-bar">
+                    <div class="progress" style="width: 25%; background: #38bdf8; height: 8px; border-radius: 10px;"></div>
+                </div>
+            </div>
 
-    <ul class="lecture-list">
-        <li class="lecture-item active" data-video="fDbaHn46t0o" data-title="1. Introduction to Web Dev">1. Introduction to Web Dev</li>
-        <li class="lecture-item" data-video="VIDEO_ID_2" data-title="2. HTML Basics">2. HTML Basics</li>
-        <li class="lecture-item" data-video="VIDEO_ID_3" data-title="3. Styling with CSS">3. Styling with CSS</li>
-        <li class="lecture-item" data-video="VIDEO_ID_4" data-title="4. JavaScript Logic">4. JavaScript Logic</li>
-    </ul>
-</aside>
+            <ul class="lecture-list">
+                <li class="lecture-item active" data-video="fDbaHn46t0o" data-title="1. Introduction to Web Dev">1. Introduction to Web Dev</li>
+                <li class="lecture-item" data-video="VIDEO_ID_2" data-title="2. HTML Basics">2. HTML Basics</li>
+                <li class="lecture-item" data-video="VIDEO_ID_3" data-title="3. Styling with CSS">3. Styling with CSS</li>
+                <li class="lecture-item" data-video="VIDEO_ID_4" data-title="4. JavaScript Logic">4. JavaScript Logic</li>
+            </ul>
+        </aside>
 
         <main class="video-section">
             <div class="video-box">
-                <iframe id="main-video" width="70%" height="400" src="https://www.youtube.com/embed/fDbaHn46t0o" frameborder="0" allowfullscreen></iframe>
+                <iframe id="main-video" width="100%" height="500" src="https://www.youtube.com/embed/fDbaHn46t0o" frameborder="0" allowfullscreen></iframe>
             </div>
             
             <div class="video-details">
-                <h1 id="video-title">Lecture 1: Introduction to GenZ Design</h1>
+                <h1 id="video-title">Lecture 1: Introduction to Web Dev</h1>
                 <p style="color: #94a3b8; margin-top: 10px;">
                     Is lecture mein hum seekhenge ki aesthetic layouts kaise banate hain.
                 </p>
                 
-                <div style="display: flex; gap: 15px; margin-top: 20px;">
-                    <button class="download-btn">Download Notes</button>
-                    <button class="download-btn" style="background: #3b82f6;">Download Certificate</button>
-                    <button class="download-btn" style="background: #64748b;">Save as PDF</button>
+                <div style="display: flex; gap: 15px; margin-top: 20px; justify-content: center;">
+                    <button class="download-btn" style="background: #22c55e; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">Download Notes</button>
+                    <button class="download-btn" style="background: #3b82f6; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">Download Certificate</button>
+                    <button class="download-btn" style="background: #64748b; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">Save as PDF</button>
                 </div>
             </div>
         </main>
@@ -61,11 +63,8 @@
             }
 
             try {
-                // Enrollment status check directly from your Firestore
                 const userDoc = await getDoc(doc(db, "enrollments", user.uid));
-
                 if (userDoc.exists() && userDoc.data().status === "active") {
-                    // Access Granted: Style apply ho jayegi
                     body.style.display = "block";
                 } else {
                     alert("Arey bro! You need to enroll in this course first.");
@@ -77,24 +76,19 @@
             }
         });
 
-        // Lecture change karne ka logic
-document.querySelectorAll('.lecture-item').forEach(item => {
-    item.addEventListener('click', function() {
-        // 1. Video ID aur Title uthao
-        const videoId = this.getAttribute('data-video');
-        const title = this.getAttribute('data-title');
+        // Lecture Switch Logic
+        document.querySelectorAll('.lecture-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const videoId = this.getAttribute('data-video');
+                const title = this.getAttribute('data-title');
 
-        // 2. Iframe ka link change karo
-        document.getElementById('main-video').src = `https://www.youtube.com/embed/${videoId}`;
+                document.getElementById('main-video').src = `https://www.youtube.com/embed/${videoId}`;
+                document.getElementById('video-title').innerText = title;
 
-        // 3. Title change karo
-        document.getElementById('video-title').innerText = title;
-
-        // 4. Active class update karo (Design ke liye)
-        document.querySelectorAll('.lecture-item').forEach(li => li.classList.remove('active'));
-        this.classList.add('active');
-    });
-});
+                document.querySelectorAll('.lecture-item').forEach(li => li.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
     </script>
 </body>
 </html>
