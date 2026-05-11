@@ -1213,3 +1213,16 @@ body{
 .progress { background: #38bdf8; height: 100%; }
 .continue-btn { width: 100%; padding: 10px; background: #38bdf8; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; }
 .continue-btn:hover { background: #0ea5e9; transform: scale(1.02); }
+
+/* COURSE PLAYER LAYOUT */
+.player-container { display: flex; height: 100vh; }
+.lesson-sidebar { width: 300px; background: #1e293b; padding: 20px; border-right: 1px solid #334155; overflow-y: auto; }
+.lesson-sidebar h3 { margin-bottom: 20px; color: #38bdf8; }
+.lesson-sidebar ul { list-style: none; }
+.lesson-sidebar li { padding: 15px; border-radius: 8px; cursor: pointer; margin-bottom: 10px; transition: 0.3s; background: rgba(255,255,255,0.05); }
+.lesson-sidebar li.active, .lesson-sidebar li:hover { background: #38bdf8; color: #000; }
+
+.video-section { flex: 1; padding: 30px; overflow-y: auto; }
+.video-box { background: #000; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+.video-details { margin-top: 20px; }
+.download-btn { background: #22c55e; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin-top: 15px; font-weight: bold; }
