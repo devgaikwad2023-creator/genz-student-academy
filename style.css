@@ -1246,22 +1246,31 @@ body{
 .verify-btn { width: 100%; background: #22c55e; color: white; border: none; padding: 15px; border-radius: 10px; font-weight: bold; cursor: pointer; transition: 0.3s; }
 .verify-btn:hover { background: #16a34a; transform: translateY(-3px); }
 
-/* New Course Details Button Styling */
+/* NEW COURSE DETAILS BUTTON STYLING */
 .details-btn {
-    text-decoration: none;
+    text-decoration: none !important; /* Underline hatane ke liye */
     padding: 10px 15px;
     background: transparent;
-    color: #38bdf8;
-    border: 1px solid #38bdf8;
+    color: #38bdf8 !important; /* Sky Blue colour */
+    border: 2px solid #38bdf8 !important; /* Border jo button jaisa dikhayega */
     border-radius: 8px;
     font-weight: 600;
     font-size: 14px;
     transition: 0.3s;
     margin-right: 10px;
     display: inline-block;
+    cursor: pointer;
 }
 
 .details-btn:hover {
-    background: rgba(56, 189, 248, 0.1);
+    background: #38bdf8;
+    color: #000 !important; /* Hover karne par text black ho jayega */
     transform: translateY(-2px);
+}
+
+/* Price row adjustment */
+.price-row {
+    display: flex;
+    align-items: center;
+    margin-top: 15px;
 }
