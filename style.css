@@ -1164,14 +1164,20 @@ body{
 
 /* VIDEO SECTION */
 
-.video-section{
-  padding:60px 8%;
-  text-align:center;
+.video-section {
+    margin-left: 300px; /* Sidebar ki width jitni jagah chhodi */
+    padding: 40px;
+    background: #0f172a;
+    min-height: 100vh;
+    text-align: center;
 }
 
-.video-section h2{
-  font-size:48px;
-  margin-bottom:40px;
+.video-box {
+    max-width: 900px;
+    margin: 0 auto;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
 
 /* VIDEO */
@@ -1215,49 +1221,58 @@ body{
 .continue-btn:hover { background: #0ea5e9; transform: scale(1.02); }
 
 /* COURSE PLAYER LAYOUT */
-/* Sidebar ka main container */
-.lesson-sidebar { 
-    width: 300px; 
-    background: #1e293b; 
-    padding: 20px 10px; /* Side padding kam ki taaki boxes ko jagah mile */
-    border-right: 1px solid #334155; 
+/* Sidebar Setup */
+.lesson-sidebar {
+    width: 300px;
+    background: #111827;
+    height: 100vh;
+    position: fixed; /* Sidebar apni jagah ruka rahega */
+    left: 0;
+    top: 0;
+    border-right: 1px solid #374151;
     overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    align-items: center; /* Sab kuch horizontal center karega */
+    padding-top: 20px;
 }
 
-/* List ke liye styling */
-.lesson-sidebar ul { 
-    list-style: none; 
-    width: 100%; 
+/* Sidebar Titles */
+.lesson-sidebar h3 {
+    text-align: center;
+    color: #38bdf8;
+    margin-bottom: 20px;
+}
+
+.progress-container {
+    width: 85%;
+    margin: 0 auto 25px auto; /* Isse progress bar center mein rahega */
+    text-align: center;
+}
+
+/* Lecture Boxes Alignment - FIXED */
+.lecture-list {
     padding: 0;
     margin: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center; /* Boxes ko list ke andar center karega */
+    width: 100%;
 }
 
-/* Har ek lecture box ki styling */
-.lecture-item { 
-    width: 85%; /* Box ki width sidebar se thodi kam */
-    margin: 8px 0; /* Upar niche gap */
-    padding: 15px; 
-    border-radius: 12px; 
-    cursor: pointer; 
-    transition: 0.3s; 
-    background: rgba(255,255,255,0.05); 
-    text-align: center; /* Text box ke beech mein aayega */
-    font-size: 14px;
+.lecture-item {
+    width: 85%;            /* Box sidebar se thoda chota */
+    margin: 12px auto;     /* AUTO magic: left aur right barabar gap! */
+    padding: 15px;
+    background: #1f2937;
+    color: #9ca3af;
+    border-radius: 10px;
+    cursor: pointer;
+    display: block;        /* Poori width lega auto margin ke sath */
+    text-align: center;    /* Text box ke beech mein */
+    transition: 0.3s;
     border: 1px solid transparent;
 }
 
-/* Hover aur Active state */
-.lecture-item:hover, .lecture-item.active { 
-    background: #38bdf8; 
-    color: #000; 
+.lecture-item:hover, .lecture-item.active {
+    background: #0ea5e9;
+    color: white;
     font-weight: bold;
-    transform: scale(1.02); /* Thoda sa zoom effect */
+    box-shadow: 0 4px 10px rgba(14, 165, 233, 0.3);
 }
 
 /* PROFILE PAGE STYLING */
