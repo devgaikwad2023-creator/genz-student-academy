@@ -110,5 +110,38 @@
     </div>
 
     <script src="script.js"></script>
+
+    <script type="module">
+    import { auth, db } from "./firebase.js";
+    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    onAuthStateChanged(auth, async (user) => {
+        if (!user) {
+            // Case 1: User Login hi nahi hai
+            alert("Security Alert: Please login to access this course.");
+            window.location.href = "login.html";
+        } else {
+            // Case 2: Login hai, ab payment check karo
+            try {
+                const userDocRef = doc(db, "enrollments", user.uid);
+                const userDoc = await getDoc(userDocRef);
+
+                if (userDoc.exists() && userDoc.data().status === "active") {
+                    console.log("Access Granted! Happy Learning.");
+                } else {
+                    // Agar status 'active' nahi hai ya entry hi nahi hai
+                    alert("Arey bro! You need to enroll in this course to watch lectures.");
+                    window.location.href = "courses.html";
+                }
+            } catch (error) {
+                console.error("Error checking enrollment:", error);
+                // Background check fail hone par safe side ke liye courses par bhej do
+                window.location.href = "courses.html";
+            }
+        }
+    });
+</script>
+    
 </body>
 </html>
