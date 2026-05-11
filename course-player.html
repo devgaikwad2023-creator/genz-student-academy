@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/all.min.css">
 </head>
-<body style="background: #0f172a; color: white;">
+<body id="player-body" style="background: #0f172a; color: white; display: none;">
 
     <div class="player-container">
         <div class="lesson-sidebar">
@@ -142,6 +142,41 @@
         }
     });
 </script>
-    
+
+<script type="module">
+    import { auth, db } from "./firebase.js";
+    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    const body = document.getElementById('player-body');
+
+    onAuthStateChanged(auth, async (user) => {
+        if (!user) {
+            // Agar login nahi hai
+            alert("Security Alert: Please login to access this course.");
+            window.location.href = "login.html";
+        } else {
+            try {
+                // Database (Firestore) mein user ki UID check karo
+                const userDocRef = doc(db, "enrollments", user.uid);
+                const userDoc = await getDoc(userDocRef);
+
+                if (userDoc.exists() && userDoc.data().status === "active") {
+                    // SUCCESS: Agar payment status 'active' hai toh page dikhao
+                    body.style.display = "block";
+                    console.log("Welcome! Access Granted.");
+                } else {
+                    // FAIL: Agar payment nahi hui
+                    alert("Arey bro! You need to enroll in this course to watch lectures.");
+                    window.location.href = "courses.html";
+                }
+            } catch (error) {
+                console.error("Database Error:", error);
+                window.location.href = "courses.html";
+            }
+        }
+    });
+</script>
+        
 </body>
 </html>
