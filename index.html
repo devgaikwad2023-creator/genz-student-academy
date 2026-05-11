@@ -194,6 +194,24 @@
 
   <script src="script.js"></script>
 
+  <div id="ai-chat-container" class="chat-closed">
+    <div class="chat-header" onclick="toggleChat()">
+        <span>🤖 Genz AI Assistant</span>
+        <button id="close-chat">×</button>
+    </div>
+    <div id="chat-box" class="chat-body">
+        <p class="bot-msg">Hey! I am your Study Assistant. How can I help you today?</p>
+    </div>
+    <div class="chat-footer">
+        <input type="text" id="user-input" placeholder="Ask anything...">
+        <button onclick="sendMessage()"><i class="fa fa-paper-plane"></i></button>
+    </div>
+</div>
+
+<div id="chat-icon" onclick="toggleChat()">
+    <img src="https://cdn-icons-png.flaticon.com/512/4712/4712035.png" alt="AI Chat">
+</div>
+  
 </body>
 
 </html>
