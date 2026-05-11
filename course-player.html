@@ -1,148 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Course Player | GenZ Academy</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/all.min.css">
-</head>
-<body id="player-body" style="background: #0f172a; color: white; display: none;">
-
-    <div class="player-container">
-        <div class="lesson-sidebar">
-            <div id="progress-container" style="padding: 10px; background: rgba(0,0,0,0.2); border-radius: 10px; margin-bottom: 20px;">
-                <small id="progress-text">Course Progress: 0%</small>
-                <div class="progress-bar"><div class="progress" id="main-progress-bar" style="width: 0%;"></div></div>
-            </div>
-            
-            <h3>Course Content</h3>
-            <ul id="lesson-list">
-                <li class="active" onclick="changeVideo('https://www.youtube.com/embed/dQw4w9WgXcQ', '1. Introduction to Web Dev')">1. Introduction to Web Dev</li>
-                <li onclick="changeVideo('https://www.youtube.com/embed/L72fhGm1Lrc', '2. HTML Basics')">2. HTML Basics</li>
-                <li onclick="changeVideo('https://www.youtube.com/embed/1Rs2ND1RYYc', '3. Styling with CSS')">3. Styling with CSS</li>
-                <li onclick="changeVideo('https://www.youtube.com/embed/W6NZfCO5SIk', '4. JavaScript Logic')">4. JavaScript Logic</li>
-            </ul>
-        </div>
-
-        <div class="video-section">
-            <div class="video-box">
-                <iframe id="main-video" width="100%" height="450" src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allowfullscreen></iframe>
-            </div>
-            <div class="video-details">
-                <h2 id="video-title">1. Introduction to Web Dev</h2>
-                <p>In this lesson, we will learn the basics of how websites work.</p>
-                
-                <div id="action-buttons" style="display: flex; gap: 10px; flex-wrap: wrap;">
-                    <button class="download-btn"><i class="fa fa-download"></i> Download Notes</button>
-                    <button class="complete-btn" onclick="updateProgress()" style="background: #22c55e; color: white; border: none; padding: 10px 20px; border-radius: 5px; font-weight: bold; cursor: pointer;"><i class="fa fa-check-circle"></i> Mark as Completed</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        // STEP 2: Progress Logic Added Here
-        let completedLessons = 0;
-        const totalLessons = 4; 
-
-        function updateProgress() {
-            if (completedLessons < totalLessons) {
-                completedLessons++;
-                let percentage = (completedLessons / totalLessons) * 100;
-                
-                // Progress Bar and Text Update
-                document.getElementById('main-progress-bar').style.width = percentage + "%";
-                document.getElementById('progress-text').innerText = "Course Progress: " + Math.round(percentage) + "%";
-                
-                alert("Kudos! Lesson Completed. Your progress: " + Math.round(percentage) + "%");
-
-                // Check if 100% completed
-                if (percentage >= 100) {
-                    showCertificateButton();
-                }
-            } else {
-                alert("You have already completed all lessons!");
-            }
-        }
-
-        function showCertificateButton() {
-            if (!document.getElementById('cert-btn')) {
-                let btn = document.createElement("button");
-                btn.id = "cert-btn";
-                btn.innerHTML = "🎓 Download Certificate";
-                btn.style.cssText = "background: #38bdf8; color: black; border: none; padding: 10px 20px; border-radius: 5px; font-weight: bold; cursor: pointer; margin-top: 10px;";
-                btn.onclick = () => { window.location.href = "certificate.html"; };
-                document.getElementById('action-buttons').appendChild(btn);
-            }
-        }
-
-        function changeVideo(videoUrl, title) {
-            document.getElementById('main-video').src = videoUrl;
-            document.getElementById('video-title').innerText = title;
-            let listItems = document.querySelectorAll('#lesson-list li');
-            listItems.forEach(item => item.classList.remove('active'));
-            event.currentTarget.classList.add('active');
-        }
-
-        document.querySelector('.download-btn').addEventListener('click', function() {
-            const currentLesson = document.getElementById('video-title').innerText;
-            alert('Downloading Notes for: ' + currentLesson);
-        });
-    </script>
-
-    <div id="ai-chat-container" style="display:none;">
-        <div class="chat-header" onclick="toggleChat()">
-            <span>🤖 Genz AI Assistant</span>
-            <button id="close-chat">×</button>
-        </div>
-        <div id="chat-box" class="chat-body">
-            <p class="bot-msg">Hey! I am your Study Assistant. How can I help you today?</p>
-        </div>
-        <div class="chat-footer">
-            <input type="text" id="user-input" placeholder="Ask anything...">
-            <button onclick="sendMessage()"><i class="fa fa-paper-plane"></i></button>
-        </div>
-    </div>
-
-    <div id="chat-icon" onclick="toggleChat()">
-        <img src="https://cdn-icons-png.flaticon.com/512/4712/4712035.png" alt="AI Chat">
-    </div>
-
-    <script src="script.js"></script>
-
-    <script type="module">
-    import { auth, db } from "./firebase.js";
-    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-    import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-    onAuthStateChanged(auth, async (user) => {
-        if (!user) {
-            // Case 1: User Login hi nahi hai
-            alert("Security Alert: Please login to access this course.");
-            window.location.href = "login.html";
-        } else {
-            // Case 2: Login hai, ab payment check karo
-            try {
-                const userDocRef = doc(db, "enrollments", user.uid);
-                const userDoc = await getDoc(userDocRef);
-
-                if (true) {
-                    console.log("Access Granted! Happy Learning.");
-                } else {
-                    // Agar status 'active' nahi hai ya entry hi nahi hai
-                    alert("Arey bro! You need to enroll in this course to watch lectures.");
-                    window.location.href = "courses.html";
-                }
-            } catch (error) {
-                console.error("Error checking enrollment:", error);
-                // Background check fail hone par safe side ke liye courses par bhej do
-                window.location.href = "courses.html";
-            }
-        }
-    });
-</script>
-
 <script type="module">
     import { auth, db } from "./firebase.js";
     import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
@@ -151,32 +6,28 @@
     const body = document.getElementById('player-body');
 
     onAuthStateChanged(auth, async (user) => {
-        if (!user) {
-            // Agar login nahi hai
-            alert("Security Alert: Please login to access this course.");
-            window.location.href = "login.html";
-        } else {
-            try {
-                // Database (Firestore) mein user ki UID check karo
-                const userDocRef = doc(db, "enrollments", user.uid);
-                const userDoc = await getDoc(userDocRef);
+        console.log("Auth State Changed. User:", user ? user.uid : "No User");
 
-                if (userDoc.exists() && userDoc.data().status === "active") {
-                    // SUCCESS: Agar payment status 'active' hai toh page dikhao
-                    body.style.display = "block";
-                    console.log("Welcome! Access Granted.");
-                } else {
-                    // FAIL: Agar payment nahi hui
-                    alert("Arey bro! You need to enroll in this course to watch lectures.");
-                    window.location.href = "courses.html";
-                }
-            } catch (error) {
-                console.error("Database Error:", error);
+        if (!user) {
+            alert("Please Login First!");
+            window.location.href = "login.html";
+            return; // Yahan se code ruk jayega
+        }
+
+        // --- TESTING MODE: FORCE ACCESS ---
+        console.log("Testing Mode: Bypassing Database Check...");
+        body.style.display = "block"; 
+        // 👆 Agar ye line chal gayi, toh video player 100% dikhega!
+        
+        /* // Abhi ke liye is niche wale code ko comment rehne do
+        try {
+            const userDoc = await getDoc(doc(db, "enrollments", user.uid));
+            if (userDoc.exists() && userDoc.data().status === "active") {
+                body.style.display = "block";
+            } else {
                 window.location.href = "courses.html";
             }
-        }
+        } catch (e) { console.log(e); }
+        */
     });
 </script>
-        
-</body>
-</html>
