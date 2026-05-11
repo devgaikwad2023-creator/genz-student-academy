@@ -1215,61 +1215,56 @@ body{
 .continue-btn:hover { background: #0ea5e9; transform: scale(1.02); }
 
 /* COURSE PLAYER LAYOUT */
-/* Sidebar Container */
+/* 1. Sidebar ka main dabba */
 .lesson-sidebar { 
     width: 320px; 
-    background: #111827; /* Thoda dark premium color */
-    padding: 20px 0; /* Upar-niche padding */
+    background: #111827; 
+    padding-top: 30px; 
     border-right: 1px solid #374151; 
-    overflow-y: auto;
     height: 100vh;
+    overflow-y: auto;
+    box-sizing: border-box;
 }
 
-/* Sidebar Title & Progress */
+/* 2. Progress aur Heading ko alignment dena */
 .lesson-sidebar h3, 
 .lesson-sidebar div {
-    padding: 0 25px;
-    margin-bottom: 15px;
+    text-align: center;
+    color: #38bdf8;
+    margin-bottom: 20px;
 }
 
-/* List Reset */
+/* 3. List ki styling */
 .lesson-sidebar ul { 
     list-style: none; 
     padding: 0;
     margin: 0;
+    width: 100%;
 }
 
-/* 🌟 Lecture Boxes: Yahan se alignment theek hogi */
+/* 🌟 4. Lecture Boxes: Jo "Ganda" dikh raha tha usko center karna */
 .lecture-item { 
-    width: 85%; /* Sidebar ki 85% width lega */
-    margin: 10px auto; /* 'auto' boxes ko horizontal center kar dega */
-    padding: 15px; 
-    border-radius: 10px; 
+    width: 88%;           /* Sidebar ka 88% hissa lega */
+    margin: 12px auto;    /* 'auto' hi boxes ko center mein laayega */
+    padding: 18px; 
+    border-radius: 12px; 
     cursor: pointer; 
-    transition: all 0.3s ease; 
     background: #1f2937; 
     color: #9ca3af;
-    display: block; /* Ensures it acts like a proper box */
-    border: 1px solid transparent;
-    box-sizing: border-box; /* Padding ko width ke andar rakhega */
+    display: block;       /* Isse box poori line lega */
+    text-align: center;   /* Text ko box ke andar center karega */
+    transition: 0.3s all ease;
+    border: 1px solid rgba(255,255,255,0.05);
 }
 
-/* Text alignment inside box */
-.lecture-item {
-    text-align: left; /* Name left mein hi acha lagta hai professional sites pe */
-}
-
-/* Hover & Active States */
-.lecture-item:hover {
-    background: #374151;
-    color: white;
-}
-
+/* 5. Jab mouse upar le jayein ya lecture active ho */
+.lecture-item:hover, 
 .lecture-item.active { 
-    background: #0ea5e9; /* Bright Blue */
+    background: #0ea5e9; 
     color: white;
-    font-weight: 600;
-    box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
+    font-weight: bold;
+    transform: translateY(-2px); /* Halki si lift premium look ke liye */
+    box-shadow: 0 5px 15px rgba(14, 165, 233, 0.3);
 }
 
 /* PROFILE PAGE STYLING */
