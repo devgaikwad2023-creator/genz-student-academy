@@ -2,42 +2,28 @@
 <html lang="en">
 
 <head>
-
   <meta charset="UTF-8">
-
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>Dashboard | Genz Student Academy</title>
-
   <link rel="stylesheet" href="style.css">
-
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/all.min.css">
 </head>
 
 <body>
 
-  <!-- NAVBAR -->
-
   <nav class="navbar">
-
     <div class="logo">
       Genz Student Academy
     </div>
 
     <ul class="nav-links">
-
       <li><a href="index.html">Home</a></li>
-
       <li><a href="courses.html">Courses</a></li>
-
       <li><a href="dashboard.html">Dashboard</a></li>
-
+      <li><a href="profile.html" style="color: #38bdf8; font-weight: bold;"><i class="fa fa-user"></i> My Profile</a></li>
       <li><a href="contact.html">Contact</a></li>
-
     </ul>
-
   </nav>
-
-  <!-- DASHBOARD -->
 
   <section class="dashboard">
 
@@ -52,58 +38,39 @@
     <div class="dashboard-grid">
 
       <div class="dashboard-card">
-
-        <h2>
-          Enrolled Courses
-        </h2>
-
-        <span>
-          3
-        </span>
-
+        <h2>Enrolled Courses</h2>
+        <span>3</span>
       </div>
 
       <div class="dashboard-card">
-
-        <h2>
-          Completed Lessons
-        </h2>
-
-        <span>
-          18
-        </span>
-
+        <h2>Completed Lessons</h2>
+        <span>18</span>
       </div>
 
       <div class="dashboard-card">
-
-        <h2>
-          Learning Progress
-        </h2>
-
-        <span>
-          45%
-        </span>
-
+        <h2>Learning Progress</h2>
+        <span>45%</span>
       </div>
 
     </div>
 
     <div class="purchased-courses">
-    <h2>My Courses</h2>
-    <div id="course-list" class="course-grid">
+      <h2>My Courses</h2>
+      <div id="course-list" class="course-grid">
         <div class="course-card-mini">
-            <img src="https://via.placeholder.com/150" alt="Course Thumbnail">
-            <h3>Web Development Masterclass</h3>
-            <div class="progress-bar"><div class="progress" style="width: 45%;"></div></div>
-            <button class="continue-btn" onclick="window.location.href='course-player.html'">Continue Learning</button>
+          <img src="https://via.placeholder.com/150" alt="Course Thumbnail">
+          <h3>Web Development Masterclass</h3>
+          <div class="progress-bar">
+            <div class="progress" style="width: 45%;"></div>
+          </div>
+          <button class="continue-btn" onclick="window.location.href='course-player.html'">Continue Learning</button>
         </div>
+      </div>
     </div>
-</div>
-    
+
   </section>
 
-<script type="module" src="firebase.js"></script>
+  <script type="module" src="firebase.js"></script>
 
 </body>
 
