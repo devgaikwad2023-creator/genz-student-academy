@@ -12,15 +12,16 @@
     <div class="player-container">
         <aside class="lesson-sidebar">
             <h3>Course Content</h3>
-            <div style="margin-bottom: 20px; font-size: 14px; color: #94a3b8;">
-                Completion: 0%
-            </div>
-            <ul>
-                <li class="active">Lecture 1: Introduction</li>
-                <li>Lecture 2: Getting Started</li>
-                <li>Lecture 3: Advanced Concepts</li>
-                <li>Lecture 4: Database Setup</li>
-            </ul>
+            <div style="padding: 10px; background: rgba(0,0,0,0.2); border-radius: 10px; margin-bottom: 20px;">
+    <small>Course Progress: 25%</small>
+    <div class="progress-bar"><div class="progress" style="width: 25%;"></div></div>
+</div>
+            <ul id="lesson-list">
+    <li class="active" onclick="changeVideo('https://www.youtube.com/embed/dQw4w9WgXcQ', '1. Introduction to Web Dev')">1. Introduction to Web Dev</li>
+    <li onclick="changeVideo('https://www.youtube.com/embed/L72fhGm1Lrc', '2. HTML Basics')">2. HTML Basics</li>
+    <li onclick="changeVideo('https://www.youtube.com/embed/1Rs2ND1RYYc', '3. Styling with CSS')">3. Styling with CSS</li>
+    <li onclick="changeVideo('https://www.youtube.com/embed/W6NZfCO5SIk', '4. JavaScript Logic')">4. JavaScript Logic</li>
+</ul>
         </aside>
 
         <main class="video-section">
