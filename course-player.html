@@ -3,25 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Course Player | GenZ Academy</title>
+    <title>Professional Course Player | GenZ Academy</title>
+    <link rel="stylesheet" href="course-player.css"> 
 </head>
 
-<body id="player-body" style="background: #0f172a; color: white; display: none;">
+<body id="player-body" style="display: none;">
 
-    <div id="course-content" style="text-align: center; padding: 20px;">
-    <h1>Welcome to Your Course 🚀</h1>
-    
-    <div class="video-container">
-        <iframe width="80%" height="450" 
-            src="https://www.youtube.com/embed/YOUR_VIDEO_ID_HERE" 
-            title="Course Video" frameborder="0" 
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-            allowfullscreen>
-        </iframe>
+    <div class="main-container">
+        <aside class="sidebar">
+            <h3>Course Content</h3>
+            <div class="completion-bar">
+                <p>Completion: <span id="percent">0%</span></p>
+                <div class="progress-bg"><div class="progress-fill" style="width: 0%;"></div></div>
+            </div>
+            <ul class="lecture-list">
+                <li class="active">Lecture 1: Introduction</li>
+                <li>Lecture 2: Getting Started</li>
+                <li>Lecture 3: Advanced Concepts</li>
+            </ul>
+        </aside>
+
+        <main class="content">
+            <div class="video-section">
+                 <iframe src="https://www.youtube.com/embed/YOUR_VIDEO_ID" frameborder="0" allowfullscreen></iframe>
+            </div>
+            
+            <div class="actions">
+                <button>Download Notes</button>
+                <button id="cert-btn" disabled>Download Certificate</button>
+                <button>Save as PDF</button>
+            </div>
+        </main>
     </div>
-
-    <p style="margin-top: 20px;">Download Resources | Notes | Community</p>
-</div>
 
     <script type="module">
         import { auth, db } from "./firebase.js";
@@ -29,36 +42,28 @@
         import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
         onAuthStateChanged(auth, async (user) => {
-            // Humne 'body' ko yahan andar define kiya hai taaki error na aaye
             const body = document.getElementById('player-body');
-            
+
             if (!user) {
-                console.log("No user found, redirecting to login...");
-                alert("Security Alert: Please login to access this course.");
+                alert("Security Alert: Login required!");
                 window.location.href = "login.html";
                 return;
             }
 
-            console.log("User Logged In. UID:", user.uid);
-
             try {
-                // Database check chalu
-                const userDocRef = doc(db, "enrollments", user.uid);
-                const userDoc = await getDoc(userDocRef);
+                // Enrollment Check
+                const userDoc = await getDoc(doc(db, "enrollments", user.uid));
 
                 if (userDoc.exists() && userDoc.data().status === "active") {
-                    // SUCCESS: Access mil gaya!
-                    console.log("Access Granted! Status is active.");
+                    // SUCCESS: Ab professional design dikhao
                     body.style.display = "block";
+                    console.log("Professional Access Granted!");
                 } else {
-                    // FAIL: Database mein entry nahi mili ya status active nahi hai
-                    console.log("Access Denied: Enrollment not found.");
-                    alert("Arey bro! You need to enroll in this course first.");
+                    alert("Arey bro! You need to enroll to see this professional dashboard.");
                     window.location.href = "courses.html";
                 }
             } catch (error) {
-                console.error("Firestore connectivity error:", error);
-                alert("Database connection error. Try again.");
+                console.error("Error:", error);
                 window.location.href = "courses.html";
             }
         });
