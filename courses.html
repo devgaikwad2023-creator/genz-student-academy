@@ -210,6 +210,19 @@
 
   </section>
 
+  <div id="payment-modal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <h2>Complete Enrollment 🚀</h2>
+        <p>Scan the QR below or use UPI to get instant access.</p>
+        <div class="qr-placeholder">
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=YOUR_UPI_ID" alt="Payment QR">
+        </div>
+        <p class="price-tag">Price: ₹499</p>
+        <button class="verify-btn" onclick="verifyPayment()">I have Paid - Access Course</button>
+    </div>
+</div>
+  
 </body>
 
 </html>
