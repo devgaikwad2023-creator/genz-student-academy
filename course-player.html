@@ -8,10 +8,20 @@
 
 <body id="player-body" style="background: #0f172a; color: white; display: none;">
 
-    <div id="course-content">
-        <h1>Welcome to Your Course 🚀</h1>
-        <p>Video loading...</p>
+    <div id="course-content" style="text-align: center; padding: 20px;">
+    <h1>Welcome to Your Course 🚀</h1>
+    
+    <div class="video-container">
+        <iframe width="80%" height="450" 
+            src="https://www.youtube.com/embed/YOUR_VIDEO_ID_HERE" 
+            title="Course Video" frameborder="0" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+            allowfullscreen>
+        </iframe>
     </div>
+
+    <p style="margin-top: 20px;">Download Resources | Notes | Community</p>
+</div>
 
     <script type="module">
         import { auth, db } from "./firebase.js";
