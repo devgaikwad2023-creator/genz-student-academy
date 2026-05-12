@@ -6,7 +6,7 @@
     <title>Course Player | GenZ Student Academy</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body id="player-body" style="background: #0f172a; color: white; display: none; margin: 0; font-family: sans-serif;">
+<body id="player-body" style="background: #0f172a; color: white; margin: 0; font-family: sans-serif;">
 
     <div class="player-container">
         <aside class="lesson-sidebar">
@@ -32,6 +32,11 @@
             <div class="video-details">
                 <h1 id="video-title">Lecture 1: Introduction to Web Dev</h1>
                 <p style="color: #94a3b8; margin-top: 10px;">Is lecture mein hum seekhenge ki aesthetic layouts kaise banate hain.</p>
+                
+                <div style="display: flex; gap: 15px; margin-top: 20px; justify-content: center;">
+                    <button style="background: #22c55e; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">Download Notes</button>
+                    <button style="background: #3b82f6; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">Download Certificate</button>
+                </div>
             </div>
         </main>
     </div>
@@ -55,30 +60,26 @@
     <script type="module">
         import { auth, db } from "./firebase.js";
         import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-        import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+        // ✅ API Key
         const apiKey = "AIzaSyBoajGTKyhGHfvXZf_2AnesM7uHDf_znOw";
 
-        // 1. AUTH CHECK
-        onAuthStateChanged(auth, async (user) => {
-            const body = document.getElementById('player-body');
-            if (!user) { 
-                window.location.href = "login.html"; 
-            } else {
-                body.style.display = "block"; // Sirf testing ke liye display block rakha hai
-            }
+        // Firebase login check
+        onAuthStateChanged(auth, (user) => {
+            if (!user) window.location.href = "login.html";
         });
 
-        // 2. CHAT LOGIC
         const sendBtn = document.getElementById('send-btn');
         const chatInput = document.getElementById('chat-input');
         const chatMessages = document.getElementById('chat-messages');
 
+        // Toggle Function
         window.toggleChat = function() {
             const win = document.getElementById('chat-window');
             win.style.display = (win.style.display === 'none' || win.style.display === '') ? 'flex' : 'none';
         };
 
+        // Send Message Function
         async function startChat() {
             const text = chatInput.value.trim();
             if (!text) return;
@@ -88,22 +89,23 @@
             chatMessages.scrollTop = chatMessages.scrollHeight;
 
             try {
-                // MODEL NAME UPDATE: Using 'gemini-1.5-flash' with stable v1
-                const res = await fetch(`https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+                // ✅ Changed to gemini-pro for better compatibility
+                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ contents: [{ parts: [{ text: text }] }] })
                 });
 
                 const data = await res.json();
-                if (data.candidates) {
+                
+                if (data.candidates && data.candidates[0].content) {
                     const aiResponse = data.candidates[0].content.parts[0].text;
                     chatMessages.innerHTML += `<div style="background: #334155; padding: 10px; border-radius: 8px; align-self: flex-start; margin: 5px 0;"><b>AI:</b> ${aiResponse}</div>`;
                 } else {
-                    chatMessages.innerHTML += `<div style="color: yellow;">Google: ${data.error.message}</div>`;
+                    chatMessages.innerHTML += `<div style="color: #fbbf24; font-size: 11px;">Error: ${data.error ? data.error.message : 'API Busy'}</div>`;
                 }
             } catch (err) {
-                chatMessages.innerHTML += `<div style="color: red;">Error: Connection fail!</div>`;
+                chatMessages.innerHTML += `<div style="color: red; font-size: 11px;">Network Error: Connection failed.</div>`;
             }
             chatMessages.scrollTop = chatMessages.scrollHeight;
         }
