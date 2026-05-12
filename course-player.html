@@ -58,13 +58,11 @@
     </div>
 
     <script type="module">
-        import { auth, db } from "./firebase.js";
+        import { auth } from "./firebase.js";
         import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-        // ✅ API Key
         const apiKey = "AIzaSyBoajGTKyhGHfvXZf_2AnesM7uHDf_znOw";
 
-        // Firebase login check
         onAuthStateChanged(auth, (user) => {
             if (!user) window.location.href = "login.html";
         });
@@ -73,13 +71,11 @@
         const chatInput = document.getElementById('chat-input');
         const chatMessages = document.getElementById('chat-messages');
 
-        // Toggle Function
         window.toggleChat = function() {
             const win = document.getElementById('chat-window');
             win.style.display = (win.style.display === 'none' || win.style.display === '') ? 'flex' : 'none';
         };
 
-        // Send Message Function
         async function startChat() {
             const text = chatInput.value.trim();
             if (!text) return;
@@ -89,11 +85,15 @@
             chatMessages.scrollTop = chatMessages.scrollHeight;
 
             try {
-                // ✅ Changed to gemini-pro for better compatibility
-                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`, {
+                // ✅ Using v1 (Stable) with the latest Flash model name
+                const res = await fetch(`https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ contents: [{ parts: [{ text: text }] }] })
+                    body: JSON.stringify({ 
+                        contents: [{ 
+                            parts: [{ text: text }] 
+                        }] 
+                    })
                 });
 
                 const data = await res.json();
@@ -102,10 +102,11 @@
                     const aiResponse = data.candidates[0].content.parts[0].text;
                     chatMessages.innerHTML += `<div style="background: #334155; padding: 10px; border-radius: 8px; align-self: flex-start; margin: 5px 0;"><b>AI:</b> ${aiResponse}</div>`;
                 } else {
-                    chatMessages.innerHTML += `<div style="color: #fbbf24; font-size: 11px;">Error: ${data.error ? data.error.message : 'API Busy'}</div>`;
+                    const errMsg = data.error ? data.error.message : "Model is sleeping, try again!";
+                    chatMessages.innerHTML += `<div style="color: #fbbf24; font-size: 11px;">Google says: ${errMsg}</div>`;
                 }
             } catch (err) {
-                chatMessages.innerHTML += `<div style="color: red; font-size: 11px;">Network Error: Connection failed.</div>`;
+                chatMessages.innerHTML += `<div style="color: red; font-size: 11px;">Connection Error! Check Internet.</div>`;
             }
             chatMessages.scrollTop = chatMessages.scrollHeight;
         }
