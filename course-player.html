@@ -64,41 +64,77 @@
     </div>
     <script type="module">
         import { auth, db } from "./firebase.js";
-        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-        import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"; // setDoc add kiya
 
-        // Firebase Auth & Enrollment Check
-        onAuthStateChanged(auth, async (user) => {
-            const body = document.getElementById('player-body');
-            if (!user) {
-                window.location.href = "login.html";
-                return;
+let currentUser = null;
+
+onAuthStateChanged(auth, async (user) => {
+    const body = document.getElementById('player-body');
+    if (!user) {
+        window.location.href = "login.html";
+        return;
+    }
+    currentUser = user; // User ko save kar liya aage use karne ke liye
+
+    try {
+        const userDoc = await getDoc(doc(db, "enrollments", user.uid));
+        if (userDoc.exists() && userDoc.data().status === "active") {
+            body.style.display = "block";
+            
+            // --- LOAD LAST PROGRESS ---
+            const progressDoc = await getDoc(doc(db, "userProgress", user.uid));
+            if (progressDoc.exists()) {
+                const lastData = progressDoc.data();
+                loadLecture(lastData.lastVideoId, lastData.lastTitle);
             }
+        } else {
+            alert("Please enroll first!");
+            window.location.href = "courses.html";
+        }
+    } catch (error) {
+        console.error(error);
+    }
+});
+
+// Lecture Load karne ka common function
+function loadLecture(videoId, title) {
+    document.getElementById('main-video').src = `https://www.youtube.com/embed/${videoId}`;
+    document.getElementById('video-title').innerText = title;
+
+    // Active class update karna
+    document.querySelectorAll('.lecture-item').forEach(li => {
+        li.classList.remove('active');
+        if (li.getAttribute('data-video') === videoId) {
+            li.classList.add('active');
+        }
+    });
+}
+
+// Lecture Switch & Save Logic
+document.querySelectorAll('.lecture-item').forEach(item => {
+    item.addEventListener('click', async function() {
+        const videoId = this.getAttribute('data-video');
+        const title = this.getAttribute('data-title');
+
+        // 1. UI Update karo
+        loadLecture(videoId, title);
+
+        // 2. Firebase mein progress SAVE karo
+        if (currentUser) {
             try {
-                const userDoc = await getDoc(doc(db, "enrollments", user.uid));
-                if (userDoc.exists() && userDoc.data().status === "active") {
-                    body.style.display = "block";
-                } else {
-                    alert("Please enroll first!");
-                    window.location.href = "courses.html";
-                }
-            } catch (error) {
-                console.error(error);
-                window.location.href = "courses.html";
+                await setDoc(doc(db, "userProgress", currentUser.uid), {
+                    lastVideoId: videoId,
+                    lastTitle: title,
+                    timestamp: new Date()
+                }, { merge: true });
+                console.log("Progress Saved!");
+            } catch (err) {
+                console.error("Progress save nahi ho paya:", err);
             }
-        });
-
-        // Lecture Switch Logic
-        document.querySelectorAll('.lecture-item').forEach(item => {
-            item.addEventListener('click', function() {
-                const videoId = this.getAttribute('data-video');
-                const title = this.getAttribute('data-title');
-                document.getElementById('main-video').src = `https://www.youtube.com/embed/${videoId}`;
-                document.getElementById('video-title').innerText = title;
-                document.querySelectorAll('.lecture-item').forEach(li => li.classList.remove('active'));
-                this.classList.add('active');
-            });
-        });
+        }
+    });
+});
 
         // --- CHATBOT LOGIC START ---
         window.toggleChat = function() {
