@@ -85,14 +85,16 @@
             chatMessages.scrollTop = chatMessages.scrollHeight;
 
             try {
-                // ✅ Using v1 (Stable) with the latest Flash model name
-                const res = await fetch(`https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+                // ✅ CORRECTED ENDPOINT: Using v1beta with explicit model path
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`;
+                
+                const res = await fetch(url, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        contents: [{ 
-                            parts: [{ text: text }] 
-                        }] 
+                    body: JSON.stringify({
+                        contents: [{
+                            parts: [{ text: text }]
+                        }]
                     })
                 });
 
@@ -101,12 +103,12 @@
                 if (data.candidates && data.candidates[0].content) {
                     const aiResponse = data.candidates[0].content.parts[0].text;
                     chatMessages.innerHTML += `<div style="background: #334155; padding: 10px; border-radius: 8px; align-self: flex-start; margin: 5px 0;"><b>AI:</b> ${aiResponse}</div>`;
-                } else {
-                    const errMsg = data.error ? data.error.message : "Model is sleeping, try again!";
-                    chatMessages.innerHTML += `<div style="color: #fbbf24; font-size: 11px;">Google says: ${errMsg}</div>`;
+                } else if (data.error) {
+                    // Yahan hum exact error message dikhayenge agar ab bhi kuch gadbad ho
+                    chatMessages.innerHTML += `<div style="color: #fbbf24; font-size: 11px;">Google Error: ${data.error.message}</div>`;
                 }
             } catch (err) {
-                chatMessages.innerHTML += `<div style="color: red; font-size: 11px;">Connection Error! Check Internet.</div>`;
+                chatMessages.innerHTML += `<div style="color: red; font-size: 11px;">Network Fail! Try again.</div>`;
             }
             chatMessages.scrollTop = chatMessages.scrollHeight;
         }
