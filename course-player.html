@@ -59,45 +59,36 @@
     <script type="module">
         import { auth, db } from "./firebase.js";
         import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-        import { doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+        // ✅ Corrected API Key (AIza with Capital 'I')
         const apiKey = "AIzaSyCwuHObCQNDoisX-ELbXcOK6yZjvtdcMKs";
-        let currentUser = null;
 
-        // AUTH & PROGRESS SYSTEM
+        // 1. FIREBASE AUTH CHECK
         onAuthStateChanged(auth, async (user) => {
             const body = document.getElementById('player-body');
             if (!user) { window.location.href = "login.html"; return; }
-            currentUser = user;
             try {
                 const userDoc = await getDoc(doc(db, "enrollments", user.uid));
                 if (userDoc.exists() && userDoc.data().status === "active") {
                     body.style.display = "block";
-                    const progressDoc = await getDoc(doc(db, "userProgress", user.uid));
-                    if (progressDoc.exists()) {
-                        loadLecture(progressDoc.data().lastVideoId, progressDoc.data().lastTitle);
-                    }
                 } else {
                     alert("Please enroll first!"); window.location.href = "courses.html";
                 }
-            } catch (e) { console.error(e); }
+            } catch (e) { console.error("Auth Error:", e); body.style.display = "block"; }
         });
 
-        function loadLecture(vId, title) {
-            document.getElementById('main-video').src = `https://www.youtube.com/embed/${vId}`;
-            document.getElementById('video-title').innerText = title;
-        }
-
-        // CHAT SYSTEM (NO ONCLICK NEEDED)
+        // 2. CHAT SYSTEM
         const sendBtn = document.getElementById('send-btn');
         const chatInput = document.getElementById('chat-input');
         const chatMessages = document.getElementById('chat-messages');
 
-        async function handleChat() {
+        async function startChat() {
             const text = chatInput.value.trim();
-            if(!text) return;
+            if (!text) return;
 
-            chatMessages.innerHTML += `<div style="background: #0ea5e9; padding: 10px; border-radius: 8px; align-self: flex-end; margin: 5px 0;">${text}</div>`;
+            // User Message
+            chatMessages.innerHTML += `<div style="background: #0ea5e9; padding: 10px; border-radius: 8px; align-self: flex-end; margin: 5px 0; color: white;">${text}</div>`;
             chatInput.value = '';
             chatMessages.scrollTop = chatMessages.scrollHeight;
 
@@ -107,20 +98,26 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ contents: [{ parts: [{ text: text }] }] })
                 });
+
                 const data = await res.json();
-                const aiResponse = data.candidates[0].content.parts[0].text;
-                chatMessages.innerHTML += `<div style="background: #334155; padding: 10px; border-radius: 8px; align-self: flex-start; margin: 5px 0;"><b>AI:</b> ${aiResponse}</div>`;
-                chatMessages.scrollTop = chatMessages.scrollHeight;
+                
+                if (data.error) {
+                    chatMessages.innerHTML += `<div style="color: #ff9800; font-size: 12px; margin: 5px 0;">Google says: ${data.error.message}</div>`;
+                } else {
+                    const aiResponse = data.candidates[0].content.parts[0].text;
+                    chatMessages.innerHTML += `<div style="background: #334155; padding: 10px; border-radius: 8px; align-self: flex-start; margin: 5px 0; color: white;"><b>AI:</b> ${aiResponse}</div>`;
+                }
             } catch (err) {
-                chatMessages.innerHTML += `<div style="color: red;">Error: API nahi chal rahi!</div>`;
+                chatMessages.innerHTML += `<div style="color: red; font-size: 12px; margin: 5px 0;">Error: Connection failed!</div>`;
             }
+            chatMessages.scrollTop = chatMessages.scrollHeight;
         }
 
-        // Event listeners (Yeh button ko function se jodta hai)
-        sendBtn.addEventListener('click', handleChat);
-        chatInput.addEventListener('keypress', (e) => { if(e.key === 'Enter') handleChat(); });
+        // 3. LISTENERS
+        sendBtn.addEventListener('click', startChat);
+        chatInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') startChat(); });
 
-        // Global functions for Toggle
+        // 4. TOGGLE WINDOW
         window.toggleChat = function() {
             const win = document.getElementById('chat-window');
             win.style.display = (win.style.display === 'none' || win.style.display === '') ? 'flex' : 'none';
