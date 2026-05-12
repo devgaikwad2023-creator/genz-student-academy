@@ -18,10 +18,10 @@
                 </div>
             </div>
             <ul class="lecture-list">
-                <li class="lecture-item active" data-video="fDbaHn46t0o" data-title="1. Introduction to Web Dev">1. Introduction to Web Dev</li>
-                <li class="lecture-item" data-video="VIDEO_ID_2" data-title="2. HTML Basics">2. HTML Basics</li>
-                <li class="lecture-item" data-video="VIDEO_ID_3" data-title="3. Styling with CSS">3. Styling with CSS</li>
-                <li class="lecture-item" data-video="VIDEO_ID_4" data-title="4. JavaScript Logic">4. JavaScript Logic</li>
+                <li class="lecture-item active">1. Introduction to Web Dev</li>
+                <li class="lecture-item">2. HTML Basics</li>
+                <li class="lecture-item">3. Styling with CSS</li>
+                <li class="lecture-item">4. JavaScript Logic</li>
             </ul>
         </aside>
 
@@ -32,10 +32,6 @@
             <div class="video-details">
                 <h1 id="video-title">Lecture 1: Introduction to Web Dev</h1>
                 <p style="color: #94a3b8; margin-top: 10px;">Is lecture mein hum seekhenge ki aesthetic layouts kaise banate hain.</p>
-                <div style="display: flex; gap: 15px; margin-top: 20px; justify-content: center;">
-                    <button class="download-btn" style="background: #22c55e; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">Download Notes</button>
-                    <button id="cert-btn" class="download-btn" style="background: #3b82f6; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">Download Certificate</button>
-                </div>
             </div>
         </main>
     </div>
@@ -61,103 +57,59 @@
         import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
         import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-        // ✅ Step 1: Corrected API Key (AIza with Capital 'I')
         const apiKey = "AIzaSyBoajGTKyhGHfvXZf_2AnesM7uHDf_znOw";
 
-        // 1. FIREBASE AUTH CHECK
+        // 1. AUTH CHECK
         onAuthStateChanged(auth, async (user) => {
             const body = document.getElementById('player-body');
-            if (!user) { window.location.href = "login.html"; return; }
-            try {
-                const userDoc = await getDoc(doc(db, "enrollments", user.uid));
-                if (userDoc.exists() && userDoc.data().status === "active") {
-                    body.style.display = "block";
-                } else {
-                    alert("Please enroll first!"); window.location.href = "courses.html";
-                }
-            } catch (e) { console.error("Auth Error:", e); body.style.display = "block"; }
+            if (!user) { 
+                window.location.href = "login.html"; 
+            } else {
+                body.style.display = "block"; // Sirf testing ke liye display block rakha hai
+            }
         });
 
-        // 2. CHAT SYSTEM
+        // 2. CHAT LOGIC
         const sendBtn = document.getElementById('send-btn');
         const chatInput = document.getElementById('chat-input');
         const chatMessages = document.getElementById('chat-messages');
+
+        window.toggleChat = function() {
+            const win = document.getElementById('chat-window');
+            win.style.display = (win.style.display === 'none' || win.style.display === '') ? 'flex' : 'none';
+        };
 
         async function startChat() {
             const text = chatInput.value.trim();
             if (!text) return;
 
-            // Display User Message
-            chatMessages.innerHTML += `<div style="background: #0ea5e9; padding: 10px; border-radius: 8px; align-self: flex-end; margin: 5px 0; color: white;">${text}</div>`;
+            chatMessages.innerHTML += `<div style="background: #0ea5e9; padding: 10px; border-radius: 8px; align-self: flex-end; margin: 5px 0;">${text}</div>`;
             chatInput.value = '';
             chatMessages.scrollTop = chatMessages.scrollHeight;
 
             try {
-                // ✅ UPDATE: Using Stable v1 and specific model path
+                // MODEL NAME UPDATE: Using 'gemini-1.5-flash' with stable v1
                 const res = await fetch(`https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        contents: [{ 
-                            parts: [{ text: text }] 
-                        }] 
-                    })
+                    body: JSON.stringify({ contents: [{ parts: [{ text: text }] }] })
                 });
 
                 const data = await res.json();
-                console.log("Response Data:", data);
-
-                if (data.error) {
-                    // Agar ab bhi 'Not Found' bole, toh niche wala fallback try karenge
-                    chatMessages.innerHTML += `<div style="color: #ff9800; font-size: 12px; margin: 5px 0;">Google says: ${data.error.message}</div>`;
-                } else if (data.candidates && data.candidates[0].content) {
+                if (data.candidates) {
                     const aiResponse = data.candidates[0].content.parts[0].text;
-                    chatMessages.innerHTML += `<div style="background: #334155; padding: 10px; border-radius: 8px; align-self: flex-start; margin: 5px 0; color: white;"><b>AI:</b> ${aiResponse}</div>`;
+                    chatMessages.innerHTML += `<div style="background: #334155; padding: 10px; border-radius: 8px; align-self: flex-start; margin: 5px 0;"><b>AI:</b> ${aiResponse}</div>`;
+                } else {
+                    chatMessages.innerHTML += `<div style="color: yellow;">Google: ${data.error.message}</div>`;
                 }
             } catch (err) {
-                console.error("Fetch Error:", err);
-                chatMessages.innerHTML += `<div style="color: red; font-size: 12px; margin: 5px 0;">Error: Connection failed!</div>`;
+                chatMessages.innerHTML += `<div style="color: red;">Error: Connection fail!</div>`;
             }
             chatMessages.scrollTop = chatMessages.scrollHeight;
         }
 
-            try {
-                // ✅ Step 2: Correct API Endpoint (v1beta works best for Flash)
-                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        contents: [{ 
-                            parts: [{ text: text }] 
-                        }] 
-                    })
-                });
-
-                const data = await res.json();
-                console.log("Response Data:", data);
-
-                if (data.error) {
-                    chatMessages.innerHTML += `<div style="color: #ff9800; font-size: 12px; margin: 5px 0;">Google says: ${data.error.message}</div>`;
-                } else if (data.candidates && data.candidates[0].content) {
-                    const aiResponse = data.candidates[0].content.parts[0].text;
-                    chatMessages.innerHTML += `<div style="background: #334155; padding: 10px; border-radius: 8px; align-self: flex-start; margin: 5px 0; color: white;"><b>AI:</b> ${aiResponse}</div>`;
-                }
-            } catch (err) {
-                console.error("Fetch Error:", err);
-                chatMessages.innerHTML += `<div style="color: red; font-size: 12px; margin: 5px 0;">Error: Connection failed!</div>`;
-            }
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-
-        // 3. LISTENERS
         sendBtn.addEventListener('click', startChat);
-        chatInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') startChat(); });
-
-        // 4. TOGGLE WINDOW
-        window.toggleChat = function() {
-            const win = document.getElementById('chat-window');
-            win.style.display = (win.style.display === 'none' || win.style.display === '') ? 'flex' : 'none';
-        };
+        chatInput.addEventListener('keypress', (e) => { if(e.key === 'Enter') startChat(); });
     </script>
 </body>
 </html>
