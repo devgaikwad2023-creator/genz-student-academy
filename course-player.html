@@ -155,7 +155,10 @@ auth.onAuthStateChanged(async (user) => {
         window.toggleChat = function() {
     const win = document.getElementById('chat-window');
     
-    if (win.style.display === 'none' || win.style.display === '') {
+    // Sabse pehle current style check karo
+    const currentStyle = window.getComputedStyle(win).display;
+
+    if (currentStyle === 'none') {
         win.style.display = 'flex';
         console.log("Chatbox Khul Gaya! ✅");
     } else {
