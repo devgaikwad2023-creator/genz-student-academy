@@ -1,3 +1,4 @@
+import { auth } from "./firebase.js";
 console.log("Genz Student Academy Loaded Successfully");
 
 /* MOBILE MENU */
