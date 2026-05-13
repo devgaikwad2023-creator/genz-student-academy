@@ -152,33 +152,32 @@ auth.onAuthStateChanged(async (user) => {
             "default": "Main samajh nahi paya, kya aap course ke baare mein pooch rahe hain?"
         };
 
-        // --- COMPLETE RESET FOR TOGGLE LOGIC ---
-function toggleChat() {
+       // --- GLOBAL TOGGLE (Sabhi buttons ke liye) ---
+window.toggleChat = function() {
     const win = document.getElementById('chat-window');
     
     if (!win) {
-        console.error("Chat window element (id='chat-window') nahi mila!");
+        console.error("Chat window nahi mili!");
         return;
     }
 
-    // Forcefully check current display
+    // Forcefully check style
     if (win.style.display === 'none' || win.style.display === '') {
         win.style.display = 'flex';
-        console.log("Chatbox: OPENED ✅");
+        console.log("Chatbox: OPEN ✅");
     } else {
         win.style.display = 'none';
         console.log("Chatbox: CLOSED ❌");
     }
-}
+};
 
-// Button click ko pakadne ke liye extra suraksha
+// Icon click ke liye extra layer (Optional but safe)
 document.addEventListener('DOMContentLoaded', () => {
     const chatIcon = document.getElementById('chat-icon');
     if (chatIcon) {
-        chatIcon.onclick = toggleChat;
+        chatIcon.onclick = window.toggleChat;
     }
 });
-
         window.startChat = function() {
             const input = document.getElementById('chat-input');
             const box = document.getElementById('chat-messages');
