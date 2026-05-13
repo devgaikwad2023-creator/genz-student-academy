@@ -26,24 +26,5 @@ const db = getFirestore(app);
 
 export { auth, db, provider };
 
-// --- SMART REDIRECT LOGIC ---
-onAuthStateChanged(auth, (user) => {
-  const currentPage = window.location.pathname;
-
-  if (user) {
-    console.log("User session active:", user.email);
-    // Sirf tab redirect karo jab user login/signup page par ho
-    if (currentPage.includes("login.html") || currentPage.includes("signup.html")) {
-        window.location.href = "dashboard.html";
-    }
-  } else {
-    console.log("User logged out.");
-    // Sirf dashboard page se hi login par bhejo, baaki pages par rehne do
-    if (currentPage.includes("dashboard.html")) {
-        window.location.href = "login.html";
-    }
-  }
-});
-
 // --- SIGNUP / LOGIN / GOOGLE LOGIC (Same as before) ---
 // (Baaki ka signup/login/google code jo tumhare paas tha waisa hi niche rehne dena)
