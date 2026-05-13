@@ -161,23 +161,19 @@ function toggleChat() {
         return;
     }
 
-    // Forcefully check current display
+    // --- THE MASTER TOGGLE (Line 155 se 168 replace karein) ---
+window.toggleChat = function() {
+    const win = document.getElementById('chat-window');
+    
+    // Agar display chupa hai toh flex karo, varna none karo
     if (win.style.display === 'none' || win.style.display === '') {
         win.style.display = 'flex';
-        console.log("Chatbox: OPENED ✅");
+        console.log("Status: Chatbox Open ✅");
     } else {
         win.style.display = 'none';
-        console.log("Chatbox: CLOSED ❌");
+        console.log("Status: Chatbox Closed ❌");
     }
-}
-
-// Button click ko pakadne ke liye extra suraksha
-document.addEventListener('DOMContentLoaded', () => {
-    const chatIcon = document.getElementById('chat-icon');
-    if (chatIcon) {
-        chatIcon.onclick = toggleChat;
-    }
-});
+};
 
         window.startChat = function() {
             const input = document.getElementById('chat-input');
