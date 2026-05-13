@@ -98,10 +98,12 @@
             const user = auth.currentUser;
             if (user) {
                 try {
-                    await setDoc(doc(db, "enrollments", user.uid), {
-                        currentLectureId: id,
-                        completedPercent: Math.round(progress),
-                        lastUpdated: new Date()
+                    await setDoc(doc(db, "userProgress", user.uid), {
+                       lastLectureId: id,
+                       lastTitle: lecture.title,
+                       lastVideoId: lecture.url.split('/').pop(),
+                       completedPercent: Math.round(progress),
+                       timestamp: new Date()
                     }, { merge: true });
                     console.log("Progress saved!");
                 } catch (e) {
