@@ -70,27 +70,40 @@
 
   </section>
 
-  <script type="module" src="firebase.js"></script>
+  <script type="module">
+    import { auth, db } from "./firebase.js";
+    import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-  <div id="ai-chat-container" class="chat-closed">
-    <div class="chat-header" onclick="toggleChat()">
-        <span>🤖 Genz AI Assistant</span>
-        <button id="close-chat">×</button>
-    </div>
-    <div id="chat-box" class="chat-body">
-        <p class="bot-msg">Hey! I am your Study Assistant. How can I help you today?</p>
-    </div>
-    <div class="chat-footer">
-        <input type="text" id="user-input" placeholder="Ask anything...">
-        <button onclick="sendMessage()"><i class="fa fa-paper-plane"></i></button>
-    </div>
-</div>
+    auth.onAuthStateChanged(async (user) => {
+        if (user) {
+            // 1. User ka naam update karo (Agar profile mein save hai)
+            const userName = user.displayName || "Student";
+            document.querySelector('.dashboard h1').innerText = `Welcome Back, ${userName} 👋`;
 
-<div id="chat-icon" onclick="toggleChat()">
-    <img src="https://cdn-icons-png.flaticon.com/512/4712/4712035.png" alt="AI Chat">
-</div>
+            // 2. Firebase se Progress mangwao
+            const docRef = doc(db, "enrollments", user.uid);
+            const docSnap = await getDoc(docRef);
 
-  <script src="script.js"></script>
+            if (docSnap.exists()) {
+                const data = docSnap.data();
+                const progress = data.completedPercent || 0;
+
+                // 3. UI update karo (Card aur Progress Bar)
+                // Dashboard ke stats update karna
+                document.querySelectorAll('.dashboard-card span')[2].innerText = `${progress}%`;
+                
+                // Course list ki progress bar update karna
+                const progressBar = document.querySelector('.course-card-mini .progress');
+                if(progressBar) {
+                    progressBar.style.width = `${progress}%`;
+                }
+            }
+        } else {
+            // Agar login nahi hai toh login page par bhejo
+            window.location.href = "login.html";
+        }
+    });
+</script>
   
 </body>
 
