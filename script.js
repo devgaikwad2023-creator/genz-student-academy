@@ -1,4 +1,18 @@
 import { auth } from "./firebase.js";
+// 1. Firebase Auth check karne ke liye observer
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+// Ye function har page load par check karega login status
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    // User login hai!
+    console.log("User is still logged in:", user.email);
+    // Yahan tum chaho toh 'Login' button ko 'Logout' mein badal sakte ho UI par
+  } else {
+    // User logged out hai
+    console.log("No user logged in.");
+  }
+});
 console.log("Genz Student Academy Loaded Successfully");
 
 /* MOBILE MENU */
