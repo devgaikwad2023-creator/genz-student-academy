@@ -1,68 +1,51 @@
-console.log("TESTING NEW CODE - v2");
-import { auth } from "./firebase.js";
-// 1. TOP PAR IMPORT
 import { auth } from "./firebase.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-// 2. LOGOUT PREVENTER & STATE CHECK
-// Ye code pakka karega ki user page badalne par logout na ho
+console.log("TESTING NEW CODE - v2");
+console.log("Genz Student Academy Loaded Successfully");
+
+/* --- AUTH STATE OBSERVER (Only for UI) --- */
 onAuthStateChanged(auth, (user) => {
     if (user) {
-        console.log("Bhai, user login hai, don't logout:", user.email);
-        // Yahan tum UI update kar sakte ho (e.g., Hide Login button)
+        console.log("User is still logged in:", user.email);
+        // Yahan tum chaho toh Login button ko 'Dashboard' ya 'Logout' mein badal sakte ho
     } else {
-        console.log("Koi logged in nahi hai");
+        console.log("No user logged in.");
     }
 });
 
-// 1. Firebase Auth check karne ke liye observer
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
-// Ye function har page load par check karega login status
-onAuthStateChanged(auth, (user) => {
-  if (user) {
-    // User login hai!
-    console.log("User is still logged in:", user.email);
-    // Yahan tum chaho toh 'Login' button ko 'Logout' mein badal sakte ho UI par
-  } else {
-    // User logged out hai
-    console.log("No user logged in.");
-  }
-});
-console.log("Genz Student Academy Loaded Successfully");
-
-/* MOBILE MENU */
-
+/* --- MOBILE MENU --- */
 const menuToggle = document.getElementById("menu-toggle");
-
 const navLinks = document.querySelector(".nav-links");
 
-menuToggle.addEventListener("click", () => {
+if (menuToggle && navLinks) {
+    menuToggle.addEventListener("click", () => {
+        navLinks.classList.toggle("active");
+    });
+}
 
-  navLinks.classList.toggle("active");
-
-});
-
-/* DARK MODE */
-
+/* --- DARK MODE --- */
 const darkModeToggle = document.getElementById("dark-mode-toggle");
+if (darkModeToggle) {
+    darkModeToggle.addEventListener("click", () => {
+        document.body.classList.toggle("light-mode");
+    });
+}
 
-darkModeToggle.addEventListener("click", () => {
-
-  document.body.classList.toggle("light-mode");
-
-});
-
-function toggleChat() {
+/* --- CHATBOT LOGIC --- */
+window.toggleChat = function() {
     let chat = document.getElementById('ai-chat-container');
-    chat.style.display = (chat.style.display === 'none' || chat.style.display === '') ? 'flex' : 'none';
+    if (chat) {
+        chat.style.display = (chat.style.display === 'none' || chat.style.display === '') ? 'flex' : 'none';
+    }
 }
 
 window.sendMessage = function() {
     const input = document.getElementById('user-input');
     const box = document.getElementById('chat-box');
-    const msg = input.value.trim().toLowerCase();
+    if (!input || !box) return;
 
+    const msg = input.value.trim().toLowerCase();
     if (!msg) return;
 
     // User Message
@@ -88,7 +71,8 @@ window.sendMessage = function() {
     input.value = "";
     box.scrollTop = box.scrollHeight;
 }
-/* --- ENROLLMENT GUARD (UPDATED) --- */
+
+/* --- ENROLLMENT GUARD (LOCKED) --- */
 window.handleEnrollment = function(courseId) {
     const user = auth.currentUser; 
 
@@ -97,7 +81,6 @@ window.handleEnrollment = function(courseId) {
         window.location.href = "login.html"; 
     } else {
         console.log("User logged in! Opening Modal for:", courseId);
-        // Agar user login hai, tabhi tumhara modal khulega
         if (typeof openModal === "function") {
             openModal(); 
         }
