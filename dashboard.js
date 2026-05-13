@@ -1,4 +1,5 @@
 import { auth } from "./firebase.js";
+
 window.logoutUser = () => {
     signOut(auth).then(() => {
         alert("Logged Out!");
