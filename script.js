@@ -9,6 +9,7 @@ onAuthStateChanged(auth, (user) => {
     const navLogin = document.getElementById("nav-login");
     const navDashboard = document.getElementById("nav-dashboard");
     const authBtn = document.getElementById("auth-btn");
+
     if (authBtn) {
         if (user) {
             // Agar login hai: Button ka text aur link badlo
