@@ -49,7 +49,7 @@
         </main>
     </div>
 
-    <div id="chat-icon" onclick="toggleChat()" style="position: fixed; bottom: 20px; right: 20px; background: #0ea5e9; color: white; padding: 15px; border-radius: 50%; cursor: pointer; z-index: 1000; font-size: 24px; box-shadow: 0 5px 15px rgba(0,0,0,0.3);pointer-events: auto !important; z-index: 9999;">💬</div>
+    <div id="chat-icon" onclick="toggleChat()" style="position: fixed; bottom: 20px; right: 20px; background: #0ea5e9; color: white; padding: 15px; border-radius: 50%; cursor: pointer; z-index: 1000; font-size: 24px; box-shadow: 0 5px 15px rgba(0,0,0,0.3);">💬</div>
 
     <div id="chat-window" style="display: none; position: fixed; bottom: 85px; right: 20px; width: 350px; height: 450px; background: #1e293b; border-radius: 15px; flex-direction: column; box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 1000; overflow: hidden; border: 1px solid #334155;">
         <div style="background: #0ea5e9; padding: 15px; font-weight: bold; display: flex; justify-content: space-between; align-items: center;">
@@ -152,7 +152,7 @@ auth.onAuthStateChanged(async (user) => {
             "default": "Main samajh nahi paya, kya aap course ke baare mein pooch rahe hain?"
         };
 
-       // --- COMPLETE RESET FOR TOGGLE LOGIC ---
+    // --- COMPLETE RESET FOR TOGGLE LOGIC ---
 function toggleChat() {
     const win = document.getElementById('chat-window');
     
@@ -161,19 +161,23 @@ function toggleChat() {
         return;
     }
 
-    // --- THE MASTER TOGGLE (Line 155 se 168 replace karein) ---
-window.toggleChat = function() {
-    const win = document.getElementById('chat-window');
-    
-    // Agar display chupa hai toh flex karo, varna none karo
+    // Forcefully check current display
     if (win.style.display === 'none' || win.style.display === '') {
         win.style.display = 'flex';
-        console.log("Status: Chatbox Open ✅");
+        console.log("Chatbox: OPENED ✅");
     } else {
         win.style.display = 'none';
-        console.log("Status: Chatbox Closed ❌");
+        console.log("Chatbox: CLOSED ❌");
     }
-};
+}
+
+// Button click ko pakadne ke liye extra suraksha
+document.addEventListener('DOMContentLoaded', () => {
+    const chatIcon = document.getElementById('chat-icon');
+    if (chatIcon) {
+        chatIcon.onclick = toggleChat;
+    }
+});
 
         window.startChat = function() {
             const input = document.getElementById('chat-input');
