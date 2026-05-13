@@ -58,21 +58,18 @@ window.sendMessage = function() {
     input.value = "";
     box.scrollTop = box.scrollHeight;
 }
-/* --- ENROLLMENT GUARD (LOCKED FEATURE) --- */
-
-// Ye function check karega ki user logged in hai ya nahi
-function handleEnrollment(courseId) {
-    // Note: 'auth' variable tabhi chalega jab Firebase initialize ho.
-    // Agar error aaye toh hum check karenge ki firebase kaha initialize hai.
+/* --- ENROLLMENT GUARD (UPDATED) --- */
+window.handleEnrollment = function(courseId) {
     const user = auth.currentUser; 
 
     if (!user) {
-        // Agar user login nahi hai:
         alert("Pehle Login/Signup kijiye enroll karne ke liye!");
-        window.location.href = "login.html"; // Aapke login page ka path
+        window.location.href = "login.html"; 
     } else {
-        // Agar login hai, toh enrollment/payment logic trigger hoga
-        console.log("Access Granted for:", courseId);
-        // startPaymentProcess(courseId); // Iska function baad mein banayenge
+        console.log("User logged in! Opening Modal for:", courseId);
+        // Agar user login hai, tabhi tumhara modal khulega
+        if (typeof openModal === "function") {
+            openModal(); 
+        }
     }
 }
