@@ -10,26 +10,6 @@ onAuthStateChanged(auth, (user) => {
     const navDashboard = document.getElementById("nav-dashboard");
 });
 
-    if (user) {
-        console.log("Bhai Login hai! Showing Dashboard.");
-        
-        // 1. Dashboard dikhao
-        if (navDashboard) navDashboard.style.display = "block";
-        
-        // 2. Login button chhupao
-        if (navLogin) navLogin.style.display = "none";
-
-    } else {
-        console.log("Bhai Logout hai! Showing Login Button.");
-        
-        // 1. Dashboard chhupao
-        if (navDashboard) navDashboard.style.display = "none";
-        
-        // 2. Login button dikhao
-        if (navLogin) navLogin.style.display = "block";
-    }
-});
-
 /* --- MOBILE MENU --- */
 const menuToggle = document.getElementById("menu-toggle");
 const navLinks = document.querySelector(".nav-links");
