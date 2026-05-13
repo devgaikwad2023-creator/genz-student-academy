@@ -8,20 +8,6 @@ console.log("Genz Student Academy Loaded Successfully");
 onAuthStateChanged(auth, (user) => {
     const navLogin = document.getElementById("nav-login");
     const navDashboard = document.getElementById("nav-dashboard");
-
-    if (authBtn) {
-        if (user) {
-            // Agar login hai: Button ka text aur link badlo
-            authBtn.innerText = "Dashboard";
-            authBtn.href = "dashboard.html";
-            console.log("Button updated to Dashboard");
-        } else {
-            // Agar logout hai: Button wapas Login ban jaye
-            authBtn.innerText = "Login";
-            authBtn.href = "login.html";
-            console.log("Button updated to Login");
-        }
-    }
 });
 
     if (user) {
