@@ -8,7 +8,6 @@ console.log("Genz Student Academy Loaded Successfully");
 onAuthStateChanged(auth, (user) => {
     const navLogin = document.getElementById("nav-login");
     const navDashboard = document.getElementById("nav-dashboard");
-    const authBtn = document.getElementById("auth-btn");
 
     if (authBtn) {
         if (user) {
