@@ -155,15 +155,20 @@ auth.onAuthStateChanged(async (user) => {
         window.toggleChat = function() {
     const win = document.getElementById('chat-window');
     
-    // Sabse pehle current style check karo
-    const currentStyle = window.getComputedStyle(win).display;
+    if (!win) {
+        console.log("Error: chat-window element nahi mila!");
+        return;
+    }
 
-    if (currentStyle === 'none') {
+    // Browser se asli status pucho
+    const currentDisplay = window.getComputedStyle(win).display;
+
+    if (currentDisplay === 'none') {
         win.style.display = 'flex';
-        console.log("Chatbox Khul Gaya! ✅");
+        console.log("Chatbox: OPEN ✅");
     } else {
         win.style.display = 'none';
-        console.log("Chatbox Band Ho Gaya! ❌");
+        console.log("Chatbox: CLOSED ❌");
     }
 };
 
