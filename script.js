@@ -4,12 +4,6 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/f
 console.log("TESTING NEW CODE - v2");
 console.log("Genz Student Academy Loaded Successfully");
 
-/* --- SMART NAVBAR & SESSION CHECK --- */
-onAuthStateChanged(auth, (user) => {
-    const navLogin = document.getElementById("nav-login");
-    const navDashboard = document.getElementById("nav-dashboard");
-});
-
 /* --- MOBILE MENU --- */
 const menuToggle = document.getElementById("menu-toggle");
 const navLinks = document.querySelector(".nav-links");
