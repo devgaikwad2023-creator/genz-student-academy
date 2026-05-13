@@ -56,82 +56,51 @@
             <button id="send-btn" style="background: #0ea5e9; border: none; padding: 10px 15px; border-radius: 5px; color: white; cursor: pointer; font-weight: bold;">Send</button>
         </div>
     </div>
+    <script>
+    // Simple logic jo student ke sawalon ka jawab dega
+    const responses = {
+        "hello": "Hello! Main aapka Academy Assistant hoon. Aaj hum Web Development seekhenge.",
+        "hi": "Hi there! Kaise madad kar sakta hoon?",
+        "course": "Ye course Web Development ke baare mein hai. Hum HTML, CSS aur JS seekhenge.",
+        "notes": "Notes download karne ke liye upar 'Download Notes' button par click karein.",
+        "certificate": "Course poora hone par aap Certificate download kar payenge.",
+        "help": "Aap mujhse course, notes ya technical doubts ke baare mein pooch sakte hain.",
+        "default": "Great question! Iske baare mein lecture mein detail mein bataya gaya hai. Kya main kisi aur cheez mein madad karoon?"
+    };
 
-    <script type="module">
-        import { auth } from "./firebase.js";
-        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    window.toggleChat = function() {
+        const win = document.getElementById('chat-window');
+        win.style.display = (win.style.display === 'none' || win.style.display === '') ? 'flex' : 'none';
+    };
 
-        // ✅ Step 1: Same API Key
-        const apiKey = "AIzaSyBoajGTKyhGHfvXZf_2AnesM7uHDf_znOw";
-
-        onAuthStateChanged(auth, (user) => {
-            if (!user) window.location.href = "login.html";
-        });
-
-        const sendBtn = document.getElementById('send-btn');
+    function startChat() {
         const chatInput = document.getElementById('chat-input');
         const chatMessages = document.getElementById('chat-messages');
+        const text = chatInput.value.trim().toLowerCase();
 
-        window.toggleChat = function() {
-            const win = document.getElementById('chat-window');
-            win.style.display = (win.style.display === 'none' || win.style.display === '') ? 'flex' : 'none';
-        };
+        if (!text) return;
 
-        async function startChat() {
-            const text = chatInput.value.trim();
-            if (!text) return;
-
-            chatMessages.innerHTML += `<div style="background: #0ea5e9; padding: 10px; border-radius: 8px; align-self: flex-end; margin: 5px 0;">${text}</div>`;
-            chatInput.value = '';
+        // User message display
+        chatMessages.innerHTML += `<div style="background: #0ea5e9; padding: 10px; border-radius: 8px; align-self: flex-end; margin: 5px 0; color: white;">${chatInput.value}</div>`;
+        
+        // Assistant logic
+        setTimeout(() => {
+            let reply = responses[text] || responses["default"];
+            chatMessages.innerHTML += `<div style="background: #334155; padding: 10px; border-radius: 8px; align-self: flex-start; margin: 5px 0; color: white;"><b>Assistant:</b> ${reply}</div>`;
             chatMessages.scrollTop = chatMessages.scrollHeight;
+        }, 500);
 
-            try {
-                // ✅ Step 2: NEW STABLE URL (v1/gemini-1.5-flash)
-                // Kuch accounts par 'gemini-1.5-flash' bina '-latest' ke v1 par chalta hai
-                const res = await fetch(`https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        contents: [{
-                            parts: [{ text: text }]
-                        }]
-                    })
-                });
+        chatInput.value = '';
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
 
-                const data = await res.json();
-                
-                if (data.candidates && data.candidates[0].content) {
-                    const aiResponse = data.candidates[0].content.parts[0].text;
-                    chatMessages.innerHTML += `<div style="background: #334155; padding: 10px; border-radius: 8px; align-self: flex-start; margin: 5px 0;"><b>AI:</b> ${aiResponse}</div>`;
-                } else if (data.error) {
-                    // ✅ Step 3: FALLBACK (Agar Flash nahi mil raha toh Pro try karega)
-                    console.log("Flash failed, trying Pro...");
-                    tryPro(text);
-                }
-            } catch (err) {
-                chatMessages.innerHTML += `<div style="color: red; font-size: 11px;">Error: Connection failed.</div>`;
-            }
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-
-        async function tryPro(text) {
-            // Is URL ko try karna agar naya key banane ke baad bhi error aaye
-const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`;{
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ contents: [{ parts: [{ text: text }] }] })
-            });
-            const data = await res.json();
-            if (data.candidates) {
-                const aiResponse = data.candidates[0].content.parts[0].text;
-                chatMessages.innerHTML += `<div style="background: #334155; padding: 10px; border-radius: 8px; align-self: flex-start; margin: 5px 0;"><b>AI:</b> ${aiResponse}</div>`;
-            } else {
-                chatMessages.innerHTML += `<div style="color: #fbbf24; font-size: 11px;">Google Error: Model not ready yet. Check AI Studio.</div>`;
-            }
-        }
-
-        sendBtn.addEventListener('click', startChat);
-        chatInput.addEventListener('keypress', (e) => { if(e.key === 'Enter') startChat(); });
-    </script>
+    // Attach event listeners after DOM loads
+    document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('send-btn').addEventListener('click', startChat);
+        document.getElementById('chat-input').addEventListener('keypress', (e) => {
+            if(e.key === 'Enter') startChat();
+        });
+    });
+</script>
 </body>
 </html>
