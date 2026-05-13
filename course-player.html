@@ -66,11 +66,9 @@
     </div>
 
     <script type="module">
-        // Firebase ke tools ko bulana (Import karna)
-import { auth, db } from "./firebase.js"; 
-import { doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-        
-        // 1. Lectures Data
+        import { auth, db } from "./firebase.js"; 
+        import { doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
         const lectures = [
             { id: 1, title: "1. Introduction to Web Dev", url: "https://www.youtube.com/embed/fDbaHn46t0o", desc: "Is lecture mein hum seekhenge ki aesthetic layouts kaise banate hain." },
             { id: 2, title: "2. HTML Basics", url: "https://www.youtube.com/embed/mJgZqzH2K60", desc: "HTML tags aur structure ko detail mein samjhein." },
@@ -78,38 +76,66 @@ import { doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/
             { id: 4, title: "4. JavaScript Logic", url: "https://www.youtube.com/embed/W6NZfCO5SIk", desc: "JavaScript ke basic functions aur logic ko samjhein." }
         ];
 
-        // 2. Change Lecture & Progress Logic
-        window.changeLecture = function(id) {
+        // 🔥 CHANGE LECTURE & SAVE TO FIREBASE
+        window.changeLecture = async function(id) {
             const lecture = lectures.find(l => l.id === id);
             if (!lecture) return;
 
-            // Update Video & Text
+            // UI Update
             document.getElementById('main-video').src = lecture.url;
             document.getElementById('video-title').innerText = lecture.title;
             document.getElementById('video-desc').innerText = lecture.desc;
 
-            // Update Sidebar Active State
             const items = document.querySelectorAll('.lecture-item');
             items.forEach(item => item.classList.remove('active'));
             items[id - 1].classList.add('active');
 
-            // Update Progress Bar
             const progress = (id / lectures.length) * 100;
             document.getElementById('progress-fill').style.width = progress + "%";
             document.getElementById('progress-text').innerText = "Course Progress: " + Math.round(progress) + "%";
+
+            // Save to Firebase
+            const user = auth.currentUser;
+            if (user) {
+                try {
+                    await setDoc(doc(db, "enrollments", user.uid), {
+                        currentLectureId: id,
+                        completedPercent: Math.round(progress),
+                        lastUpdated: new Date()
+                    }, { merge: true });
+                    console.log("Progress saved!");
+                } catch (e) {
+                    console.error("Error saving:", e);
+                }
+            }
         };
 
-        // 3. Smart Chat Logic
+        // LOAD PROGRESS ON REFRESH
+        auth.onAuthStateChanged(async (user) => {
+            if (user) {
+                console.log("Checking progress for:", user.email);
+                const docRef = doc(db, "enrollments", user.uid);
+                const docSnap = await getDoc(docRef);
+
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    if (data.currentLectureId) {
+                        console.log("Loading lecture:", data.currentLectureId);
+                        changeLecture(data.currentLectureId);
+                    }
+                } else {
+                    changeLecture(1);
+                }
+            }
+        });
+
+        // Chat Logic
         const responses = {
             "hello": "Hello! Aaj hum kya seekhenge?",
             "hi": "Hi there! Main aapki kaise help kar sakta hoon?",
-            "hlo": "Hello! Padhai kaisi chal rahi hai?",
-            "good morning": "Very Good Morning! Chalo kuch naya seekhte hain.",
-            "yes": "Great! Bataiye kya help chahiye?",
-            "course": "Ye Web Development course hai. Isme HTML, CSS aur JS cover hoga.",
-            "notes": "Notes ke liye 'Download Notes' button par click karein.",
-            "certificate": "4th lecture khatam karne ke baad aapko certificate mil jayega!",
-            "default": "Main samajh nahi paya. Kya aap course ya notes ke baare mein pooch rahe hain?"
+            "good morning": "Very Good Morning! Padhai shuru karein?",
+            "notes": "Niche 'Download Notes' button check karein.",
+            "default": "Main samajh nahi paya, kya aap course ke baare mein pooch rahe hain?"
         };
 
         window.toggleChat = function() {
@@ -117,17 +143,14 @@ import { doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/
             win.style.display = (win.style.display === 'none' || win.style.display === '') ? 'flex' : 'none';
         };
 
-        function startChat() {
+        window.startChat = function() {
             const input = document.getElementById('chat-input');
             const box = document.getElementById('chat-messages');
             const text = input.value.trim().toLowerCase();
-
             if (!text) return;
 
-            // User msg
             box.innerHTML += `<div style="background: #0ea5e9; padding: 10px; border-radius: 8px; align-self: flex-end; margin: 5px 0;">${input.value}</div>`;
             
-            // Bot msg
             setTimeout(() => {
                 const reply = responses[text] || responses["default"];
                 box.innerHTML += `<div style="background: #334155; padding: 10px; border-radius: 8px; align-self: flex-start; margin: 5px 0;"><b>Bot:</b> ${reply}</div>`;
@@ -138,36 +161,8 @@ import { doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/
             box.scrollTop = box.scrollHeight;
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('send-btn').onclick = startChat;
-            document.getElementById('chat-input').onkeypress = (e) => { if(e.key === 'Enter') startChat(); };
-        });
-        
-        // 3. 🔥 DATABASE SE PROGRESS WAPAS DHONDHNA (Last Step)
-auth.onAuthStateChanged(async (user) => {
-    if (user) {
-        console.log("User login hai, progress dhund raha hoon...");
-        
-        // Database se student ki file mangwao
-        const docRef = doc(db, "enrollments", user.uid);
-        const docSnap = await getDoc(docRef);
-
-        if (docSnap.exists()) {
-            const data = docSnap.data();
-            console.log("Purani progress mili:", data);
-
-            // 1. Wahi video set karo jahan chhoda tha
-            if (data.currentLectureId) {
-                changeLecture(data.currentLectureId);
-            }
-        } else {
-            // Agar pehli baar aaya hai toh Lecture 1 dikhao
-            changeLecture(1);
-        }
-    } else {
-        console.log("User login nahi hai.");
-    }
-});
+        document.getElementById('send-btn').onclick = startChat;
+        document.getElementById('chat-input').onkeypress = (e) => { if(e.key === 'Enter') startChat(); };
     </script>
 </body>
 </html>
