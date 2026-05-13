@@ -4,23 +4,22 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/f
 console.log("TESTING NEW CODE - v2");
 console.log("Genz Student Academy Loaded Successfully");
 
-import { auth } from "./firebase.js";
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
+
+
+// --- NEW AUTH LOGIC (Line 10 se start karo) ---
 onAuthStateChanged(auth, (user) => {
-    // Hum button ko uski ID se pakad rahe hain
-    const authBtn = document.getElementById("auth-btn");
+    const loginBtn = document.getElementById("login-btn");
+    const dashboardBtn = document.getElementById("dashboard-btn");
 
-    if (authBtn) {
-        if (user) {
-            // Agar login hai: Button waisa hi rahega, bas "Dashboard" likha aayega
-            authBtn.innerText = "Dashboard";
-            authBtn.href = "dashboard.html";
-        } else {
-            // Agar logout hai: Button wapas "Login" dikhayega
-            authBtn.innerText = "Login";
-            authBtn.href = "login.html";
-        }
+    if (user) {
+        // User login hai -> Dashboard dikhao, Login chhupao
+        if (loginBtn) loginBtn.style.display = "none";
+        if (dashboardBtn) dashboardBtn.style.display = "inline-block";
+    } else {
+        // User login nahi hai -> Login dikhao, Dashboard chhupao
+        if (loginBtn) loginBtn.style.display = "inline-block";
+        if (dashboardBtn) dashboardBtn.style.display = "none";
     }
 });
 
