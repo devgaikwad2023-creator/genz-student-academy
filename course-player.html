@@ -5,19 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Course Player | GenZ Student Academy</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* Sidebar and Layout Fixes */
+        .progress-bar { width: 100%; background: #334155; height: 10px; border-radius: 10px; margin-top: 5px; overflow: hidden; }
+        #progress-fill { height: 100%; background: #38bdf8; border-radius: 10px; transition: width 0.5s ease; width: 0%; }
+        .lecture-item { cursor: pointer; transition: 0.3s; padding: 12px; border-radius: 8px; margin-bottom: 5px; }
+        .lecture-item:hover { background: #1e293b; }
+        .lecture-item.active { background: #0ea5e9; font-weight: bold; }
+    </style>
 </head>
 <body id="player-body" style="background: #0f172a; color: white; margin: 0; font-family: sans-serif;">
 
-    <div class="player-container">
-        <aside class="lesson-sidebar">
+    <div class="player-container" style="display: flex; height: 100vh;">
+        <aside class="lesson-sidebar" style="width: 300px; background: #1e293b; padding: 20px; border-right: 1px solid #334155;">
             <h3>Course Content</h3>
-            <div class="progress-container">
-                <small>Course Progress: 25%</small>
+            <div class="progress-container" style="margin-bottom: 25px;">
+                <small id="progress-text">Course Progress: 0%</small>
                 <div class="progress-bar">
-                    <div class="progress" style="width: 25%; background: #38bdf8; height: 8px; border-radius: 10px;"></div>
+                    <div id="progress-fill"></div>
                 </div>
             </div>
-            <ul class="lecture-list">
+            <ul class="lecture-list" style="list-style: none; padding: 0;">
                 <li class="lecture-item active" onclick="changeLecture(1)">1. Introduction to Web Dev</li>
                 <li class="lecture-item" onclick="changeLecture(2)">2. HTML Basics</li>
                 <li class="lecture-item" onclick="changeLecture(3)">3. Styling with CSS</li>
@@ -25,128 +33,111 @@
             </ul>
         </aside>
 
-        <main class="video-section">
-            <div class="video-box">
+        <main class="video-section" style="flex: 1; padding: 30px; overflow-y: auto;">
+            <div class="video-box" style="border-radius: 15px; overflow: hidden; background: #000; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
                 <iframe id="main-video" width="100%" height="500" src="https://www.youtube.com/embed/fDbaHn46t0o" frameborder="0" allowfullscreen></iframe>
             </div>
-            <div class="video-details">
-                <h1 id="video-title">Lecture 1: Introduction to Web Dev</h1>
-                <p style="color: #94a3b8; margin-top: 10px;">Is lecture mein hum seekhenge ki aesthetic layouts kaise banate hain.</p>
+            <div class="video-details" style="margin-top: 25px;">
+                <h1 id="video-title" style="font-size: 24px;">Lecture 1: Introduction to Web Dev</h1>
+                <p id="video-desc" style="color: #94a3b8; margin-top: 10px; line-height: 1.6;">Is lecture mein hum seekhenge ki aesthetic layouts kaise banate hain.</p>
                 
-                <div style="display: flex; gap: 15px; margin-top: 20px; justify-content: center;">
-                    <button style="background: #22c55e; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">Download Notes</button>
-                    <button style="background: #3b82f6; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">Download Certificate</button>
+                <div style="display: flex; gap: 15px; margin-top: 30px; justify-content: center;">
+                    <button style="background: #22c55e; color: white; padding: 12px 25px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">Download Notes</button>
+                    <button style="background: #3b82f6; color: white; padding: 12px 25px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">Download Certificate</button>
                 </div>
             </div>
         </main>
     </div>
 
-    <div id="chat-icon" onclick="toggleChat()" style="position: fixed; bottom: 20px; right: 20px; background: #0ea5e9; color: white; padding: 15px; border-radius: 50%; cursor: pointer; z-index: 1000; font-size: 24px;">💬</div>
+    <div id="chat-icon" onclick="toggleChat()" style="position: fixed; bottom: 20px; right: 20px; background: #0ea5e9; color: white; padding: 15px; border-radius: 50%; cursor: pointer; z-index: 1000; font-size: 24px; box-shadow: 0 5px 15px rgba(0,0,0,0.3);">💬</div>
 
     <div id="chat-window" style="display: none; position: fixed; bottom: 85px; right: 20px; width: 350px; height: 450px; background: #1e293b; border-radius: 15px; flex-direction: column; box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 1000; overflow: hidden; border: 1px solid #334155;">
         <div style="background: #0ea5e9; padding: 15px; font-weight: bold; display: flex; justify-content: space-between; align-items: center;">
-            <span>🤖 Academy AI Tutor</span>
+            <span>🤖 Academy AI Assistant</span>
             <span onclick="toggleChat()" style="cursor: pointer; font-size: 20px;">×</span>
         </div>
         <div id="chat-messages" style="flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; font-size: 14px; color: white;">
-            <div style="background: #334155; padding: 10px; border-radius: 8px; align-self: flex-start;">Hello! Main aapka AI Tutor hoon. Aaj aap kya seekhna chahte hain?</div>
+            <div style="background: #334155; padding: 10px; border-radius: 8px; align-self: flex-start;">Hello! Main aapka assistant hoon. Course ke baare mein kuch bhi poochein!</div>
         </div>
         <div style="padding: 10px; border-top: 1px solid #334155; display: flex; gap: 5px; background: #1e293b;">
-            <input type="text" id="chat-input" placeholder="Type a message..." style="flex: 1; padding: 10px; border-radius: 5px; border: none; background: #0f172a; color: white; outline: none;">
+            <input type="text" id="chat-input" placeholder="Type hi, notes, or course..." style="flex: 1; padding: 10px; border-radius: 5px; border: none; background: #0f172a; color: white; outline: none;">
             <button id="send-btn" style="background: #0ea5e9; border: none; padding: 10px 15px; border-radius: 5px; color: white; cursor: pointer; font-weight: bold;">Send</button>
         </div>
     </div>
+
     <script>
-        // Lectures ka data
-const lectures = [
-    {
-        id: 1,
-        title: "1. Introduction to Web Dev",
-        videoUrl: "https://www.youtube.com/embed/fDbaHn46t0o",
-        description: "Is lecture mein hum seekhenge ki aesthetic layouts kaise banate hain."
-    },
-    {
-        id: 2,
-        title: "2. HTML Basics",
-        videoUrl: "https://www.youtube.com/embed/mJgZqzH2K60",
-        description: "HTML tags aur structure ko detail mein samjhein."
-    },
-    {
-        id: 3,
-        title: "3. Styling with CSS",
-        videoUrl: "https://www.youtube.com/embed/1Rs2ND1RYYI",
-        description: "CSS se apni website ko GenZ aesthetic look kaise dein."
-    },
-    {
-        id: 4, // Yeh raha tumhara 4th lecture
-        title: "4. JavaScript Logic",
-        videoUrl: "https://www.youtube.com/embed/W6NZfCO5SIk", // Example JS video
-        description: "JavaScript ke basic functions aur logic ko samjhein."
-    }
-];
-        window.changeLecture = function(lectureId) {
-    // 1. Array se sahi lecture dhundo
-    const lecture = lectures.find(l => l.id === lectureId);
+        // 1. Lectures Data
+        const lectures = [
+            { id: 1, title: "1. Introduction to Web Dev", url: "https://www.youtube.com/embed/fDbaHn46t0o", desc: "Is lecture mein hum seekhenge ki aesthetic layouts kaise banate hain." },
+            { id: 2, title: "2. HTML Basics", url: "https://www.youtube.com/embed/mJgZqzH2K60", desc: "HTML tags aur structure ko detail mein samjhein." },
+            { id: 3, title: "3. Styling with CSS", url: "https://www.youtube.com/embed/1Rs2ND1RYYI", desc: "CSS se apni website ko GenZ aesthetic look kaise dein." },
+            { id: 4, title: "4. JavaScript Logic", url: "https://www.youtube.com/embed/W6NZfCO5SIk", desc: "JavaScript ke basic functions aur logic ko samjhein." }
+        ];
 
-    if (lecture) {
-        // 2. Video aur Title update karo
-        document.querySelector('.video-box iframe').src = lecture.videoUrl;
-        document.querySelector('.video-details h1').innerText = lecture.title;
-        document.querySelector('.video-details p').innerText = lecture.description;
+        // 2. Change Lecture & Progress Logic
+        window.changeLecture = function(id) {
+            const lecture = lectures.find(l => l.id === id);
+            if (!lecture) return;
 
-        // 3. Sidebar mein "active" class change karo
-        const items = document.querySelectorAll('.lecture-item');
-        items.forEach(item => item.classList.remove('active'));
-        
-        // Jo click hua usse blue color do (index 0 se start hota hai isliye -1)
-        items[lectureId - 1].classList.add('active');
-    }
-};
-        
-    // Simple logic jo student ke sawalon ka jawab dega
-    const responses = {
-        "hello": "Hello! Main aapka Academy Assistant hoon. Aaj hum Web Development seekhenge.",
-        "hi": "Hi there! Kaise madad kar sakta hoon?",
-        "course": "Ye course Web Development ke baare mein hai. Hum HTML, CSS aur JS seekhenge.",
-        "notes": "Notes download karne ke liye upar 'Download Notes' button par click karein.",
-        "certificate": "Course poora hone par aap Certificate download kar payenge.",
-        "help": "Aap mujhse course, notes ya technical doubts ke baare mein pooch sakte hain.",
-        "default": "Great question! Iske baare mein lecture mein detail mein bataya gaya hai. Kya main kisi aur cheez mein madad karoon?"
-    };
+            // Update Video & Text
+            document.getElementById('main-video').src = lecture.url;
+            document.getElementById('video-title').innerText = lecture.title;
+            document.getElementById('video-desc').innerText = lecture.desc;
 
-    window.toggleChat = function() {
-        const win = document.getElementById('chat-window');
-        win.style.display = (win.style.display === 'none' || win.style.display === '') ? 'flex' : 'none';
-    };
+            // Update Sidebar Active State
+            const items = document.querySelectorAll('.lecture-item');
+            items.forEach(item => item.classList.remove('active'));
+            items[id - 1].classList.add('active');
 
-    function startChat() {
-        const chatInput = document.getElementById('chat-input');
-        const chatMessages = document.getElementById('chat-messages');
-        const text = chatInput.value.trim().toLowerCase();
+            // Update Progress Bar
+            const progress = (id / lectures.length) * 100;
+            document.getElementById('progress-fill').style.width = progress + "%";
+            document.getElementById('progress-text').innerText = "Course Progress: " + Math.round(progress) + "%";
+        };
 
-        if (!text) return;
+        // 3. Smart Chat Logic
+        const responses = {
+            "hello": "Hello! Aaj hum kya seekhenge?",
+            "hi": "Hi there! Main aapki kaise help kar sakta hoon?",
+            "hlo": "Hello! Padhai kaisi chal rahi hai?",
+            "good morning": "Very Good Morning! Chalo kuch naya seekhte hain.",
+            "yes": "Great! Bataiye kya help chahiye?",
+            "course": "Ye Web Development course hai. Isme HTML, CSS aur JS cover hoga.",
+            "notes": "Notes ke liye 'Download Notes' button par click karein.",
+            "certificate": "4th lecture khatam karne ke baad aapko certificate mil jayega!",
+            "default": "Main samajh nahi paya. Kya aap course ya notes ke baare mein pooch rahe hain?"
+        };
 
-        // User message display
-        chatMessages.innerHTML += `<div style="background: #0ea5e9; padding: 10px; border-radius: 8px; align-self: flex-end; margin: 5px 0; color: white;">${chatInput.value}</div>`;
-        
-        // Assistant logic
-        setTimeout(() => {
-            let reply = responses[text] || responses["default"];
-            chatMessages.innerHTML += `<div style="background: #334155; padding: 10px; border-radius: 8px; align-self: flex-start; margin: 5px 0; color: white;"><b>Assistant:</b> ${reply}</div>`;
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }, 500);
+        window.toggleChat = function() {
+            const win = document.getElementById('chat-window');
+            win.style.display = (win.style.display === 'none' || win.style.display === '') ? 'flex' : 'none';
+        };
 
-        chatInput.value = '';
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-    }
+        function startChat() {
+            const input = document.getElementById('chat-input');
+            const box = document.getElementById('chat-messages');
+            const text = input.value.trim().toLowerCase();
 
-    // Attach event listeners after DOM loads
-    document.addEventListener('DOMContentLoaded', () => {
-        document.getElementById('send-btn').addEventListener('click', startChat);
-        document.getElementById('chat-input').addEventListener('keypress', (e) => {
-            if(e.key === 'Enter') startChat();
+            if (!text) return;
+
+            // User msg
+            box.innerHTML += `<div style="background: #0ea5e9; padding: 10px; border-radius: 8px; align-self: flex-end; margin: 5px 0;">${input.value}</div>`;
+            
+            // Bot msg
+            setTimeout(() => {
+                const reply = responses[text] || responses["default"];
+                box.innerHTML += `<div style="background: #334155; padding: 10px; border-radius: 8px; align-self: flex-start; margin: 5px 0;"><b>Bot:</b> ${reply}</div>`;
+                box.scrollTop = box.scrollHeight;
+            }, 400);
+
+            input.value = '';
+            box.scrollTop = box.scrollHeight;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('send-btn').onclick = startChat;
+            document.getElementById('chat-input').onkeypress = (e) => { if(e.key === 'Enter') startChat(); };
         });
-    });
-</script>
+    </script>
 </body>
 </html>
