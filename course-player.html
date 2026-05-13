@@ -112,24 +112,36 @@
             }
         };
 
-        // LOAD PROGRESS ON REFRESH
-        auth.onAuthStateChanged(async (user) => {
-            if (user) {
-                console.log("Checking progress for:", user.email);
-                const docRef = doc(db, "enrollments", user.uid);
-                const docSnap = await getDoc(docRef);
+        // --- SMART LOAD ON REFRESH (Line 116 se 132 tak replace karein) ---
+auth.onAuthStateChanged(async (user) => {
+    if (user) {
+        console.log("Fetching progress for:", user.email);
+        
+        // "enrollments" ko badal kar "userProgress" kar diya hai
+        const docRef = doc(db, "userProgress", user.uid); 
+        const docSnap = await getDoc(docRef);
 
-                if (docSnap.exists()) {
-                    const data = docSnap.data();
-                    if (data.currentLectureId) {
-                        console.log("Loading lecture:", data.currentLectureId);
-                        changeLecture(data.currentLectureId);
-                    }
-                } else {
-                    changeLecture(1);
-                }
+        if (docSnap.exists()) {
+            const data = docSnap.data();
+            console.log("Saved Data Found:", data);
+
+            // Purana lecture resume karo
+            if (data.lastLectureId) {
+                changeLecture(data.lastLectureId);
             }
-        });
+            
+            // Progress bar ko update karo
+            if (data.completedPercent !== undefined) {
+                const perc = data.completedPercent;
+                document.getElementById('progress-fill').style.width = perc + "%";
+                document.getElementById('progress-text').innerText = "Course Progress: " + perc + "%";
+            }
+        } else {
+            // Naya user hai toh 1st lecture se start
+            changeLecture(1);
+        }
+    }
+});
 
         // Chat Logic
         const responses = {
