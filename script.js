@@ -1,3 +1,4 @@
+console.log("TESTING NEW CODE - v2");
 import { auth } from "./firebase.js";
 // 1. Firebase Auth check karne ke liye observer
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
