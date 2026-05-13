@@ -26,5 +26,33 @@ const db = getFirestore(app);
 
 export { auth, db, provider };
 
+// --- SIGNUP SYSTEM ---
+window.handleSignup = (e) => {
+  e.preventDefault();
+  const email = document.getElementById("signup-email").value;
+  const password = document.getElementById("signup-password").value;
+
+  createUserWithEmailAndPassword(auth, email, password)
+    .then(() => {
+      alert("Account Created Successfully 🚀");
+      window.location.href = "login.html";
+    })
+    .catch((error) => alert(error.message));
+};
+
+// --- LOGIN SYSTEM ---
+window.handleLogin = (e) => {
+  e.preventDefault();
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  signInWithEmailAndPassword(auth, email, password)
+    .then(() => {
+      alert("Login Successful 😎");
+      window.location.href = "dashboard.html";
+    })
+    .catch((error) => alert(error.message));
+};
+
 // --- SIGNUP / LOGIN / GOOGLE LOGIC (Same as before) ---
 // (Baaki ka signup/login/google code jo tumhare paas tha waisa hi niche rehne dena)
