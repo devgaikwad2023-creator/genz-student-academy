@@ -74,13 +74,11 @@
     import { auth, db } from "./firebase.js";
     import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+    // 1. Progress aur User Data Load karna
     auth.onAuthStateChanged(async (user) => {
         if (user) {
-            // 1. User ka naam update karo (Agar profile mein save hai)
-            const userName = user.displayName || "Student";
-            document.querySelector('.dashboard h1').innerText = `Welcome Back, ${userName} 👋`;
+            document.querySelector('.dashboard h1').innerText = `Welcome Back, ${user.displayName || "Student"} 👋`;
 
-            // 2. Firebase se Progress mangwao
             const docRef = doc(db, "enrollments", user.uid);
             const docSnap = await getDoc(docRef);
 
@@ -88,23 +86,53 @@
                 const data = docSnap.data();
                 const progress = data.completedPercent || 0;
 
-                // 3. UI update karo (Card aur Progress Bar)
-                // Dashboard ke stats update karna
+                // UI Cards update karna
                 document.querySelectorAll('.dashboard-card span')[2].innerText = `${progress}%`;
-                
-                // Course list ki progress bar update karna
-                const progressBar = document.querySelector('.course-card-mini .progress');
-                if(progressBar) {
-                    progressBar.style.width = `${progress}%`;
-                }
+                const bar = document.querySelector('.course-card-mini .progress');
+                if(bar) bar.style.width = `${progress}%`;
             }
         } else {
-            // Agar login nahi hai toh login page par bhejo
             window.location.href = "login.html";
         }
     });
-</script>
-  
-</body>
 
+    // 2. Chat Logic (Jo gayab ho gaya tha)
+    const responses = {
+        "hello": "Hello! Aaj hum kya seekhenge?",
+        "hi": "Hi there! Main aapki kaise help kar sakta hoon?",
+        "hlo": "Hello! Padhai kaisi chal rahi hai?",
+        "good morning": "Very Good Morning! Chalo kuch naya seekhte hain.",
+        "yes": "Great! Bataiye kya help chahiye?",
+        "notes": "Notes ke liye 'Course Player' mein 'Download Notes' button check karein.",
+        "default": "Great question! Iske baare mein aap mujhse kuch bhi pooch sakte hain."
+    };
+
+    window.toggleChat = function() {
+        const chat = document.getElementById('ai-chat-container');
+        chat.classList.toggle('chat-closed');
+        chat.classList.toggle('chat-open'); // CSS mein display toggle check kar lena
+    };
+
+    window.sendMessage = function() {
+        const input = document.getElementById('user-input');
+        const box = document.getElementById('chat-box');
+        const text = input.value.trim().toLowerCase();
+
+        if (!text) return;
+
+        // User Message
+        box.innerHTML += `<p class="user-msg" style="background: #0ea5e9; padding: 8px; border-radius: 5px; margin: 5px 0; text-align: right;">${input.value}</p>`;
+        
+        // Bot Reply
+        setTimeout(() => {
+            const reply = responses[text] || responses["default"];
+            box.innerHTML += `<p class="bot-msg" style="background: #334155; padding: 8px; border-radius: 5px; margin: 5px 0;"><b>Bot:</b> ${reply}</p>`;
+            box.scrollTop = box.scrollHeight;
+        }, 400);
+
+        input.value = '';
+        box.scrollTop = box.scrollHeight;
+    };
+</script>
+</body>
 </html>
