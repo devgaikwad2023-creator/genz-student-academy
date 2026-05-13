@@ -153,9 +153,16 @@ auth.onAuthStateChanged(async (user) => {
         };
 
         window.toggleChat = function() {
-            const win = document.getElementById('chat-window');
-            win.style.display = (win.style.display === 'none' || win.style.display === '') ? 'flex' : 'none';
-        };
+    const win = document.getElementById('chat-window');
+    
+    if (win.style.display === 'none' || win.style.display === '') {
+        win.style.display = 'flex';
+        console.log("Chatbox Khul Gaya! ✅");
+    } else {
+        win.style.display = 'none';
+        console.log("Chatbox Band Ho Gaya! ❌");
+    }
+};
 
         window.startChat = function() {
             const input = document.getElementById('chat-input');
