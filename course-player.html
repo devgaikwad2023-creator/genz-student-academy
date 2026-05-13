@@ -78,6 +78,25 @@ const lectures = [
         description: "CSS se apni website ko GenZ aesthetic look kaise dein."
     }
 ];
+        window.changeLecture = function(lectureId) {
+    // 1. Array se sahi lecture dhundo
+    const lecture = lectures.find(l => l.id === lectureId);
+
+    if (lecture) {
+        // 2. Video aur Title update karo
+        document.querySelector('.video-box iframe').src = lecture.videoUrl;
+        document.querySelector('.video-details h1').innerText = lecture.title;
+        document.querySelector('.video-details p').innerText = lecture.description;
+
+        // 3. Sidebar mein "active" class change karo
+        const items = document.querySelectorAll('.lecture-item');
+        items.forEach(item => item.classList.remove('active'));
+        
+        // Jo click hua usse blue color do (index 0 se start hota hai isliye -1)
+        items[lectureId - 1].classList.add('active');
+    }
+};
+        
     // Simple logic jo student ke sawalon ka jawab dega
     const responses = {
         "hello": "Hello! Main aapka Academy Assistant hoon. Aaj hum Web Development seekhenge.",
