@@ -8,8 +8,6 @@ import {
   signInWithPopup,
   onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
-// 🌟 STEP 1: Firestore Library Import ki (Ye missing tha)
 import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 // Firebase Config
@@ -27,14 +25,31 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
-
-// 🌟 STEP 2: Database Initialize kiya (Ye missing tha)
 const db = getFirestore(app);
 
 console.log("Firebase & Firestore Connected Successfully 🚀");
 
-// 🌟 STEP 3: Sab kuch Export kiya (Taaki lock kaam kare)
+// Export settings
 export { auth, db, provider };
+
+// GLOBAL AUTH OBSERVER (Ye logout hone se rokega)
+onAuthStateChanged(auth, (user) => {
+  const currentPage = window.location.pathname;
+  
+  if (user) {
+    console.log("User Logged In:", user.email);
+    // Agar login hai aur galti se login/signup page par hai, toh dashboard bhejo
+    if (currentPage.includes("login.html") || currentPage.includes("signup.html")) {
+      window.location.href = "dashboard.html";
+    }
+  } else {
+    console.log("User Logged Out");
+    // Sirf dashboard page par hi login check karo
+    if (currentPage.includes("dashboard.html")) {
+      window.location.href = "login.html";
+    }
+  }
+});
 
 // SIGNUP SYSTEM
 const signupForm = document.getElementById("signup-form");
@@ -45,13 +60,11 @@ if (signupForm) {
     const password = document.getElementById("signup-password").value;
 
     createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
+      .then(() => {
         alert("Account Created Successfully 🚀");
         window.location.href = "login.html";
       })
-      .catch((error) => {
-        alert(error.message);
-      });
+      .catch((error) => alert(error.message));
   });
 }
 
@@ -64,13 +77,11 @@ if (loginForm) {
     const password = document.getElementById("password").value;
 
     signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
+      .then(() => {
         alert("Login Successful 😎");
         window.location.href = "dashboard.html";
       })
-      .catch((error) => {
-        alert(error.message);
-      });
+      .catch((error) => alert(error.message));
   });
 }
 
@@ -79,22 +90,9 @@ const googleBtn = document.getElementById("google-login");
 if (googleBtn) {
   googleBtn.addEventListener("click", () => {
     signInWithPopup(auth, provider)
-      .then((result) => {
-        alert("Google Login Successful 🚀");
+      .then(() => {
         window.location.href = "dashboard.html";
       })
-      .catch((error) => {
-        alert(error.message);
-      });
-  });
-}
-
-// PROTECTED DASHBOARD
-if (window.location.pathname.includes("dashboard.html")) {
-  onAuthStateChanged(auth, (user) => {
-    if (!user) {
-      alert("Please Login First 😎");
-      window.location.href = "login.html";
-    }
+      .catch((error) => alert(error.message));
   });
 }
