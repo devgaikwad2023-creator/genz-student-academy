@@ -1,5 +1,20 @@
 console.log("TESTING NEW CODE - v2");
 import { auth } from "./firebase.js";
+// 1. TOP PAR IMPORT
+import { auth } from "./firebase.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+// 2. LOGOUT PREVENTER & STATE CHECK
+// Ye code pakka karega ki user page badalne par logout na ho
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        console.log("Bhai, user login hai, don't logout:", user.email);
+        // Yahan tum UI update kar sakte ho (e.g., Hide Login button)
+    } else {
+        console.log("Koi logged in nahi hai");
+    }
+});
+
 // 1. Firebase Auth check karne ke liye observer
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
