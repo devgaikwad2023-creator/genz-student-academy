@@ -1162,27 +1162,27 @@ body{
 
 }
 
-/* --- COURSE VIDEO SECTION FIX --- */
+/* --- RE-FIXED COURSE VIDEO SECTION --- */
 
+/* Removed the width: 50% that was causing the right-side gap */
 .video-section {
-    width: 50%;
-    clear: both; /* Isse video right mein nahi chipkega */
+    width: 100%;
     display: block;
-    padding: 20px 8%;
+    padding: 80px 8%;
     text-align: center;
-    background: #0f172a; /* Page ka background color */
+    background: transparent;
 }
 
 .video-section h2 {
     font-size: 36px;
     color: white;
-    margin-bottom: 30px;
+    margin-bottom: 40px;
 }
 
-/* Card look container */
+/* Centered container with proper width */
 .video-card-container {
-    max-width: 450px;
-    margin: 0 auto; /* Center karne ke liye */
+    max-width: 900px; 
+    margin: 0 auto; 
     background: rgba(255, 255, 255, 0.04);
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 24px;
@@ -1204,6 +1204,7 @@ body{
     left: 0;
     width: 100%;
     height: 100%;
+    border: none;
 }
 
 /* DASHBOARD COURSE CARDS */
@@ -1277,29 +1278,29 @@ body{
 }
 
 /* 3. MAIN VIDEO SECTION - FIXED ALIGNMENT */
-.video-section {
-    margin-left: 300px; /* Sidebar ki width ke barabar gap */
+.video-section-player {
+    margin-left: 300px; 
     padding: 40px;
     background: #0f172a;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    align-items: center; /* Sab kuch horizontal center karega */
+    align-items: center; 
 }
 
 .video-box {
     width: 100%;
-    max-width: 1000px; /* Video thoda bada dikhega premium feel ke liye */
+    max-width: 1000px; 
     background: #000;
     border-radius: 20px;
     overflow: hidden;
     box-shadow: 0 20px 50px rgba(0,0,0,0.6);
-    line-height: 0; /* Extra bottom gap hatane ke liye */
+    line-height: 0; 
 }
 
 .video-box iframe {
     width: 100%;
-    aspect-ratio: 16 / 9; /* Perfect YouTube ratio */
+    aspect-ratio: 16 / 9; 
     border: none;
 }
 
@@ -1329,7 +1330,7 @@ body{
         height: auto;
         position: relative;
     }
-    .video-section {
+    .video-section-player {
         margin-left: 0;
         padding: 20px;
     }
@@ -1356,11 +1357,11 @@ body{
 
 /* NEW COURSE DETAILS BUTTON STYLING */
 .details-btn {
-    text-decoration: none !important; /* Underline hatane ke liye */
+    text-decoration: none !important; 
     padding: 10px 15px;
     background: transparent;
-    color: #38bdf8 !important; /* Sky Blue colour */
-    border: 2px solid #38bdf8 !important; /* Border jo button jaisa dikhayega */
+    color: #38bdf8 !important; 
+    border: 2px solid #38bdf8 !important; 
     border-radius: 8px;
     font-weight: 600;
     font-size: 14px;
@@ -1372,15 +1373,8 @@ body{
 
 .details-btn:hover {
     background: #38bdf8;
-    color: #000 !important; /* Hover karne par text black ho jayega */
+    color: #000 !important; 
     transform: translateY(-2px);
-}
-
-/* Price row adjustment */
-.price-row {
-    display: flex;
-    align-items: center;
-    margin-top: 15px;
 }
 
 /* AI CHATBOT STYLING */
@@ -1396,56 +1390,3 @@ body{
 .chat-footer { padding: 10px; display: flex; gap: 5px; background: #0f172a; }
 .chat-footer input { flex: 1; padding: 10px; border-radius: 5px; border: none; outline: none; background: #1e293b; color: white; }
 .chat-footer button { background: #38bdf8; border: none; padding: 10px; border-radius: 5px; cursor: pointer; }
-
-/* --- COURSE VIDEO SECTION (Isse fix ho jayega) --- */
-
-.video-section {
-  width: 100%;
-  padding: 80px 8%;
-  text-align: center;
-  background: transparent;
-}
-
-.video-section h2 {
-  font-size: 36px;
-  margin-bottom: 40px;
-  color: white;
-}
-
-/* Isse video ek card ke andar aa jayegi aur center ho jayegi */
-.video-card-container {
-  max-width: 900px; /* Video ki width control karne ke liye */
-  margin: 0 auto;   /* Isse video center mein aati hai */
-  background: rgba(255, 255, 255, 0.04); /* Same as your info box */
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 24px;
-  padding: 20px;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.3);
-}
-
-.video-container {
-  position: relative;
-  padding-bottom: 56.25%; /* 16:9 Aspect Ratio maintain karne ke liye */
-  height: 0;
-  overflow: hidden;
-  border-radius: 15px;
-}
-
-.video-container iframe {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  border: none;
-}
-
-/* Mobile fix */
-@media(max-width:768px){
-  .video-section {
-    padding: 40px 5%;
-  }
-  .video-section h2 {
-    font-size: 28px;
-  }
-}
