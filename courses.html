@@ -24,12 +24,8 @@
     </ul>
     <div class="nav-right">
       <button id="dark-mode-toggle" class="dark-btn">🌙</button>
-      <!-- Blue Login Button (ID ke saath) -->
-    <a href="login.html" id="login-btn" class="nav-btn">Login</a>
-
-    <!-- Dashboard Button (Same class 'nav-btn' use ki hai taaki blue colour aur style na badle) -->
-    <a href="dashboard.html" id="dashboard-btn" class="nav-btn" style="display: none;">Dashboard</a>
-    ```
+      <a href="login.html" id="login-btn" class="nav-btn">Login</a>
+      <a href="dashboard.html" id="dashboard-btn" class="nav-btn" style="display: none;">Dashboard</a>
     </div>
   </nav>
 
@@ -39,58 +35,12 @@
     <p>Start your learning journey with premium quality courses designed for students and future professionals.</p>
   </section>
 
-  <section class="all-courses">
-
-    <div class="premium-course-card">
-      <div class="course-image">💻</div>
-      <div class="course-info">
-        <h2>Full Stack Web Development</h2>
-        <p>Learn HTML, CSS, JavaScript, React, Node.js and backend development.</p>
-        <div class="course-meta">
-          <span>⭐ 4.9</span>
-          <span>👨‍🎓 5K+ Students</span>
-        </div>
-        <div class="price-row">
-          <h3>₹499</h3>
-          <a href="course-detail.html" class="details-btn">Course Details</a>
-          <button onclick="handleEnrollment('full-stack-web-dev')" class="enroll-btn" style="padding: 10px 20px; background: #38bdf8; color: black; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Enroll Now</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="premium-course-card">
-      <div class="course-image">🤖</div>
-      <div class="course-info">
-        <h2>AI Tools Mastery</h2>
-        <p>Learn ChatGPT, AI tools, prompt engineering and productivity workflows.</p>
-        <div class="course-meta">
-          <span>⭐ 4.8</span>
-          <span>👨‍🎓 3K+ Students</span>
-        </div>
-        <div class="price-row">
-          <h3>₹399</h3>
-          <button onclick="handleEnrollment('ai-tools-mastery')" class="enroll-btn" style="padding: 10px 20px; background: #38bdf8; color: black; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Enroll Now</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="premium-course-card">
-      <div class="course-image">📈</div>
-      <div class="course-info">
-        <h2>Trading & Stock Market Basics</h2>
-        <p>Understand trading psychology, candlesticks and market fundamentals.</p>
-        <div class="course-meta">
-          <span>⭐ 4.7</span>
-          <span>👨‍🎓 2K+ Students</span>
-        </div>
-        <div class="price-row">
-          <h3>₹299</h3>
-          <button onclick="handleEnrollment('trading-&-stock-market-basics')" class="enroll-btn" style="padding: 10px 20px; background: #38bdf8; color: black; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Enroll Now</button>
-        </div>
-      </div>
-    </div>
-
+  <!-- YAHAN SE CHANGES SHURU HAIN -->
+  <section class="all-courses" id="course-container">
+    <p id="loading-text" style="color: #38bdf8; text-align: center; width: 100%; font-size: 1.2rem;">Courses load ho rahe hain... ⏳</p>
+    <!-- Google Sheet wale courses yahan apne aap aayenge -->
   </section>
+  <!-- CHANGES KHATAM -->
 
   <div id="payment-modal" class="modal" style="display: none;">
     <div class="modal-content">
@@ -105,30 +55,8 @@
     </div>
   </div>
 
-  <script>
-    function openModal() {
-      document.getElementById('payment-modal').style.display = "block";
-    }
-
-    function closeModal() {
-      document.getElementById('payment-modal').style.display = "none";
-    }
-
-    function verifyPayment() {
-      alert("Verification in progress! Our team will grant access within 30 mins.");
-      closeModal();
-    }
-
-    // Modal close when clicking outside
-    window.onclick = function(event) {
-      let modal = document.getElementById('payment-modal');
-      if (event.target == modal) {
-        modal.style.display = "none";
-      }
-    }
-  </script>
-
- <div id="ai-chat-container" class="chat-closed">
+  <!-- AI CHAT START -->
+  <div id="ai-chat-container" class="chat-closed">
     <div class="chat-header" onclick="toggleChat()">
         <span>🤖 Genz AI Assistant</span>
         <button id="close-chat">×</button>
@@ -140,20 +68,75 @@
         <input type="text" id="user-input" placeholder="Ask anything...">
         <button onclick="sendMessage()"><i class="fa fa-paper-plane"></i></button>
     </div>
-</div>
+  </div>
 
-<div id="chat-icon" onclick="toggleChat()">
-    <img src="https://cdn-icons-png.flaticon.com/512/4712/4712035.png" alt="AI Chat">
-</div>
+  <div id="chat-icon" onclick="toggleChat()">
+      <img src="https://cdn-icons-png.flaticon.com/512/4712/4712035.png" alt="AI Chat">
+  </div>
+  <!-- AI CHAT END -->
 
-<div id="ai-chat-container" class="chat-closed" style="display:none;">
-    <!-- (Chat box ka pura HTML jo index.html mein hai) -->
-</div>
-<div id="chat-icon" onclick="toggleChat()">
-    <img src="https://cdn-icons-png.flaticon.com/512/4712/4712035.png" alt="AI Chat">
-</div>
-  
-<script type="module" src="script.js"></script>
-<script src="chat.js"></script>  
+  <script>
+    // --- GOOGLE SHEET CONNECTION CODE ---
+    const sheetURL = 'https://script.google.com/macros/s/AKfycby1ig86VufzknKK7xlI9MZWOHEkatrrrEEqHs0APvmYsdgz9gE_XttKHdpIo7e_PcOXRQ/exec'; 
+
+    async function loadCourses() {
+      try {
+        const response = await fetch(sheetURL);
+        const data = await response.json();
+        const container = document.getElementById('course-container');
+        const loadingText = document.getElementById('loading-text');
+
+        if(data.length > 0) {
+            loadingText.style.display = 'none';
+            // Puraane manual cards ko clear karke naye cards daalna
+            data.forEach(course => {
+                const cardHTML = `
+                <div class="premium-course-card">
+                    <div class="course-image">🎓</div>
+                    <div class="course-info">
+                        <h2>${course.title}</h2>
+                        <p>${course.description}</p>
+                        <div class="course-meta">
+                            <span>⭐ 5.0</span>
+                            <span>👨‍🎓 New Release</span>
+                        </div>
+                        <div class="price-row">
+                            <h3>${course.price}</h3>
+                            <a href="${course.video}" class="details-btn" target="_blank">Watch Now</a>
+                            <button onclick="openModal()" class="enroll-btn" style="padding: 10px 20px; background: #38bdf8; color: black; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Enroll Now</button>
+                        </div>
+                    </div>
+                </div>`;
+                container.innerHTML += cardHTML;
+            });
+        }
+      } catch (error) {
+        console.error("Error loading courses:", error);
+        document.getElementById('loading-text').innerHTML = "Courses load nahi ho paye. Please check internet connection.";
+      }
+    }
+
+    // Modal Functions
+    function openModal() {
+      document.getElementById('payment-modal').style.display = "block";
+    }
+    function closeModal() {
+      document.getElementById('payment-modal').style.display = "none";
+    }
+    function verifyPayment() {
+      alert("Verification in progress! Our team will grant access within 30 mins.");
+      closeModal();
+    }
+    window.onclick = function(event) {
+      let modal = document.getElementById('payment-modal');
+      if (event.target == modal) { modal.style.display = "none"; }
+    }
+
+    // Load courses on start
+    window.onload = loadCourses;
+  </script>
+
+  <script type="module" src="script.js"></script>
+  <script src="chat.js"></script>  
 </body>
 </html>
