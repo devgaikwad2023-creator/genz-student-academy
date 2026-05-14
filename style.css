@@ -1165,10 +1165,10 @@ body{
 /* --- COURSE VIDEO SECTION FIX --- */
 
 .video-section {
-    width: 100%;
+    width: 50%;
     clear: both; /* Isse video right mein nahi chipkega */
     display: block;
-    padding: 60px 8%;
+    padding: 20px 8%;
     text-align: center;
     background: #0f172a; /* Page ka background color */
 }
@@ -1181,7 +1181,7 @@ body{
 
 /* Card look container */
 .video-card-container {
-    max-width: 850px;
+    max-width: 450px;
     margin: 0 auto; /* Center karne ke liye */
     background: rgba(255, 255, 255, 0.04);
     border: 1px solid rgba(255, 255, 255, 0.08);
