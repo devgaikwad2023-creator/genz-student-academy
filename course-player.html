@@ -6,7 +6,6 @@
     <title>Course Player | GenZ Student Academy</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        /* Sidebar and Layout Fixes */
         .progress-bar { width: 100%; background: #334155; height: 10px; border-radius: 10px; margin-top: 5px; overflow: hidden; }
         #progress-fill { height: 100%; background: #38bdf8; border-radius: 10px; transition: width 0.5s ease; width: 0%; }
         .lecture-item { cursor: pointer; transition: 0.3s; padding: 12px; border-radius: 8px; margin-bottom: 5px; }
@@ -40,7 +39,6 @@
             <div class="video-details" style="margin-top: 25px;">
                 <h1 id="video-title" style="font-size: 24px;">Lecture 1: Introduction to Web Dev</h1>
                 <p id="video-desc" style="color: #94a3b8; margin-top: 10px; line-height: 1.6;">Is lecture mein hum seekhenge ki aesthetic layouts kaise banate hain.</p>
-                
                 <div style="display: flex; gap: 15px; margin-top: 30px; justify-content: center;">
                     <button style="background: #22c55e; color: white; padding: 12px 25px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">Download Notes</button>
                     <button style="background: #3b82f6; color: white; padding: 12px 25px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">Download Certificate</button>
@@ -49,23 +47,21 @@
         </main>
     </div>
 
-    <!-- Fix 1: window.toggleChat ko direct call diya hai -->
-    <div id="chat-icon" onclick="window.toggleChat()" style="position: fixed; bottom: 20px; right: 20px; background: #0ea5e9; color: white; padding: 15px; border-radius: 50%; cursor: pointer; z-index: 1000; font-size: 24px; box-shadow: 0 5px 15px rgba(0,0,0,0.3);">💬</div>
+    <!-- CHATBOT ICON -->
+    <div id="chat-icon" onclick="window.toggleChat()" style="position: fixed; bottom: 20px; right: 20px; background: #0ea5e9; color: white; padding: 15px; border-radius: 50%; cursor: pointer; z-index: 2000; font-size: 24px; box-shadow: 0 5px 15px rgba(0,0,0,0.3);">💬</div>
 
-    <div id="chat-window" style="display: none; position: fixed; bottom: 85px; right: 20px; width: 350px; height: 450px; background: #1e293b; border-radius: 15px; flex-direction: column; box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 1000; overflow: hidden; border: 1px solid #334155;">
-        
-        <!-- Fix 2: Pura header ab toggle function ko trigger karega -->
+    <!-- CHATBOT WINDOW -->
+    <div id="chat-window" style="display: none; position: fixed; bottom: 85px; right: 20px; width: 350px; height: 450px; background: #1e293b; border-radius: 15px; flex-direction: column; box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 2000; overflow: hidden; border: 1px solid #334155;">
         <div onclick="window.toggleChat()" style="background: #0ea5e9; padding: 12px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none;">
             <span style="font-weight: bold; color: white;">🤖 Academy AI Assistant</span>
             <span style="font-size: 24px; font-weight: bold; color: white;">×</span>
         </div>
-
         <div id="chat-messages" style="flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; font-size: 14px; color: white;">
             <div style="background: #334155; padding: 10px; border-radius: 8px; align-self: flex-start;">Hello! Main aapka assistant hoon. Course ke baare mein kuch bhi poochein!</div>
         </div>
         <div style="padding: 10px; border-top: 1px solid #334155; display: flex; gap: 5px; background: #1e293b;">
             <input type="text" id="chat-input" placeholder="Type hi, notes, or course..." style="flex: 1; padding: 10px; border-radius: 5px; border: none; background: #0f172a; color: white; outline: none;">
-            <button id="send-btn" style="background: #0ea5e9; border: none; padding: 10px 15px; border-radius: 5px; color: white; cursor: pointer; font-weight: bold;">Send</button>
+            <button onclick="window.startChat()" style="background: #0ea5e9; border: none; padding: 10px 15px; border-radius: 5px; color: white; cursor: pointer; font-weight: bold;">Send</button>
         </div>
     </div>
 
@@ -83,15 +79,12 @@
         window.changeLecture = async function(id) {
             const lecture = lectures.find(l => l.id === id);
             if (!lecture) return;
-
             document.getElementById('main-video').src = lecture.url;
             document.getElementById('video-title').innerText = lecture.title;
             document.getElementById('video-desc').innerText = lecture.desc;
-
             const items = document.querySelectorAll('.lecture-item');
             items.forEach(item => item.classList.remove('active'));
             items[id - 1].classList.add('active');
-
             const progress = (id / lectures.length) * 100;
             document.getElementById('progress-fill').style.width = progress + "%";
             document.getElementById('progress-text').innerText = "Course Progress: " + Math.round(progress) + "%";
@@ -106,10 +99,7 @@
                        completedPercent: Math.round(progress),
                        timestamp: new Date()
                     }, { merge: true });
-                    console.log("Progress saved!");
-                } catch (e) {
-                    console.error("Error saving:", e);
-                }
+                } catch (e) { console.error("Error saving:", e); }
             }
         };
 
@@ -120,50 +110,30 @@
                 if (docSnap.exists()) {
                     const data = docSnap.data();
                     if (data.lastLectureId) changeLecture(data.lastLectureId);
-                    if (data.completedPercent !== undefined) {
-                        const perc = data.completedPercent;
-                        document.getElementById('progress-fill').style.width = perc + "%";
-                        document.getElementById('progress-text').innerText = "Course Progress: " + perc + "%";
-                    }
-                } else {
-                    changeLecture(1);
-                }
+                } else { changeLecture(1); }
             }
         });
 
-        // Chat Logic
-        const responses = {
-            "hello": "Hello! Aaj hum kya seekhenge?",
-            "hi": "Hi there! Main aapki kaise help kar sakta hoon?",
-            "good morning": "Very Good Morning! Padhai shuru karein?",
-            "notes": "Niche 'Download Notes' button check karein.",
-            "default": "Main samajh nahi paya, kya aap course ke baare mein pooch rahe hain?"
-        };
-
-        // Fix 3: Simplified Clean Toggle Logic
+        // --- CHATBOT LOGIC (Clean & Global) ---
         window.toggleChat = function() {
             const win = document.getElementById('chat-window');
             if (!win) return;
-            
-            if (win.style.display === 'none' || win.style.display === '') {
-                win.style.display = 'flex';
-                console.log("Chatbox: OPENED ✅");
-            } else {
-                win.style.display = 'none';
-                console.log("Chatbox: CLOSED ❌");
-            }
+            win.style.display = (win.style.display === 'none' || win.style.display === '') ? 'flex' : 'none';
         };
 
         window.startChat = function() {
             const input = document.getElementById('chat-input');
             const box = document.getElementById('chat-messages');
-            const text = input.value.trim().toLowerCase();
-            if (!text) return;
+            const msg = input.value.trim().toLowerCase();
+            if (!msg) return;
 
             box.innerHTML += `<div style="background: #0ea5e9; padding: 10px; border-radius: 8px; align-self: flex-end; margin: 5px 0;">${input.value}</div>`;
             
             setTimeout(() => {
-                const reply = responses[text] || responses["default"];
+                let reply = "Sahi sawal hai! Kya main iske baare mein aapko detail mein bataon?";
+                if(msg.includes("hello") || msg.includes("hi")) reply = "Hey! Taiyar ho aaj ki learning ke liye?";
+                else if(msg.includes("notes")) reply = "Niche 'Download Notes' button check karein.";
+                
                 box.innerHTML += `<div style="background: #334155; padding: 10px; border-radius: 8px; align-self: flex-start; margin: 5px 0;"><b>Bot:</b> ${reply}</div>`;
                 box.scrollTop = box.scrollHeight;
             }, 400);
@@ -172,10 +142,10 @@
             box.scrollTop = box.scrollHeight;
         };
 
-        document.getElementById('send-btn').onclick = startChat;
-        document.getElementById('chat-input').onkeypress = (e) => { if(e.key === 'Enter') startChat(); };
+        // Enter key support for chat
+        document.getElementById('chat-input').addEventListener('keypress', (e) => {
+            if(e.key === 'Enter') window.startChat();
+        });
     </script>
-
-    <script type="module" src="script.js"></script>
 </body>
 </html>
