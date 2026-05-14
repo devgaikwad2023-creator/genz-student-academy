@@ -4,20 +4,15 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/f
 console.log("TESTING NEW CODE - v2");
 console.log("Genz Student Academy Loaded Successfully");
 
-
-
-
-// --- NEW AUTH LOGIC (Line 10 se start karo) ---
+// --- NEW AUTH LOGIC ---
 onAuthStateChanged(auth, (user) => {
     const loginBtn = document.getElementById("login-btn");
     const dashboardBtn = document.getElementById("dashboard-btn");
 
     if (user) {
-        // User login hai -> Dashboard dikhao, Login chhupao
         if (loginBtn) loginBtn.style.display = "none";
         if (dashboardBtn) dashboardBtn.style.display = "inline-block";
     } else {
-        // User login nahi hai -> Login dikhao, Dashboard chhupao
         if (loginBtn) loginBtn.style.display = "inline-block";
         if (dashboardBtn) dashboardBtn.style.display = "none";
     }
@@ -39,46 +34,6 @@ if (darkModeToggle) {
     darkModeToggle.addEventListener("click", () => {
         document.body.classList.toggle("light-mode");
     });
-}
-
-/* --- CHATBOT LOGIC --- */
-window.toggleChat = function() {
-    let chat = document.getElementById('ai-chat-container');
-    if (chat) {
-        chat.style.display = (chat.style.display === 'none' || chat.style.display === '') ? 'flex' : 'none';
-    }
-}
-
-window.sendMessage = function() {
-    const input = document.getElementById('user-input');
-    const box = document.getElementById('chat-box');
-    if (!input || !box) return;
-
-    const msg = input.value.trim().toLowerCase();
-    if (!msg) return;
-
-    // User Message
-    box.innerHTML += `<p class="user-msg" style="background: #38bdf8; color: white; padding: 10px; border-radius: 8px; margin: 5px 0; align-self: flex-end;">${input.value}</p>`;
-
-    // Bot Response Logic
-    setTimeout(() => {
-        let reply = "";
-        if(msg.includes("hello") || msg.includes("hi")) {
-            reply = "Hey! Taiyar ho aaj ki learning ke liye?";
-        } else if(msg.includes("progress")) {
-            reply = "Aapka progress dashboard par live dikh raha hai!";
-        } else if(msg.includes("notes")) {
-            reply = "Notes aapko course player ke niche mil jayenge.";
-        } else {
-            reply = "Sahi sawal hai! Kya main iske baare mein aapko detail mein bataon?";
-        }
-
-        box.innerHTML += `<p class="bot-msg" style="background: #334155; color: white; padding: 10px; border-radius: 8px; margin: 5px 0;"><b>Bot:</b> ${reply}</p>`;
-        box.scrollTop = box.scrollHeight;
-    }, 500);
-
-    input.value = "";
-    box.scrollTop = box.scrollHeight;
 }
 
 /* --- ENROLLMENT GUARD (LOCKED) --- */
