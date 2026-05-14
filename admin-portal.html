@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Genz Admin - Upload Portal</title>
+    <link rel="stylesheet" href="style.css"> <!-- Aapki purani CSS link ho gayi -->
+    <style>
+        .admin-body { background: #0f172a; color: white; font-family: sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .admin-card { background: #1e293b; padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); width: 100%; max-width: 450px; border: 1px solid #38bdf8; }
+        h2 { color: #38bdf8; text-align: center; margin-bottom: 20px; }
+        input, textarea { width: 100%; padding: 12px; margin: 10px 0; background: #334155; border: 1px solid #475569; color: white; border-radius: 8px; box-sizing: border-box; }
+        .upload-btn { width: 100%; padding: 15px; background: #38bdf8; color: #0f172a; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px; margin-top: 10px; }
+        .upload-btn:hover { background: #0ea5e9; }
+        #status-msg { text-align: center; margin-top: 15px; font-weight: bold; }
+    </style>
+</head>
+<body class="admin-body">
+
+    <div class="admin-card">
+        <h2>Add New Course 🚀</h2>
+        <form id="uploadForm">
+            <input type="text" name="title" placeholder="Course Title (e.g. Master AI)" required>
+            <textarea name="description" rows="4" placeholder="Course Description..." required></textarea>
+            <input type="text" name="video" placeholder="Video Link (YouTube URL)" required>
+            <input type="text" name="price" placeholder="Price (e.g. ₹499)" required>
+            <button type="submit" class="upload-btn" id="submitBtn">Post to Website</button>
+        </form>
+        <p id="status-msg"></p>
+    </div>
+
+    <script>
+        // YAHAN APNA URL PASTE KARNA HAI
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbwR5OSkOh7ErxFcjUS_J9m7U8t68AsNYDGHYHofKIQPiwHcjdND22G9MwQL1MsP4rqkgg/exec'; 
+        
+        const form = document.getElementById('uploadForm');
+        const msg = document.getElementById('status-msg');
+        const btn = document.getElementById('submitBtn');
+
+        form.addEventListener('submit', e => {
+            e.preventDefault();
+            btn.disabled = true;
+            msg.innerHTML = "Processing... Please wait ⏳";
+            msg.style.color = "#38bdf8";
+
+            fetch(scriptURL, { method: 'POST', body: new FormData(form)})
+                .then(response => {
+                    msg.innerHTML = "Success! Data Sheet mein chala gaya ✅";
+                    msg.style.color = "#22c55e";
+                    btn.disabled = false;
+                    form.reset();
+                })
+                .catch(error => {
+                    msg.innerHTML = "Error! Try again ❌";
+                    msg.style.color = "#ef4444";
+                    btn.disabled = false;
+                    console.error('Error!', error.message);
+                });
+        });
+    </script>
+</body>
+</html>
