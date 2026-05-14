@@ -6,7 +6,7 @@
     <title>Course Player | GenZ Student Academy</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        /* NEW NAVBAR CSS */
+        /* --- NAVIGATION BAR CSS --- */
         header {
             background: #1e293b;
             padding: 15px 30px;
@@ -14,26 +14,28 @@
             justify-content: space-between;
             align-items: center;
             border-bottom: 1px solid #334155;
+            height: 60px;
+            box-sizing: border-box;
         }
         .logo { font-size: 20px; font-weight: bold; color: #38bdf8; text-decoration: none; }
         nav ul { list-style: none; display: flex; gap: 20px; margin: 0; padding: 0; }
         nav ul li a { color: white; text-decoration: none; font-size: 14px; transition: 0.3s; }
         nav ul li a:hover { color: #38bdf8; }
 
-        /* EXISTING STYLES */
+        /* --- EXISTING PLAYER STYLES --- */
         .progress-bar { width: 100%; background: #334155; height: 10px; border-radius: 10px; margin-top: 5px; overflow: hidden; }
         #progress-fill { height: 100%; background: #38bdf8; border-radius: 10px; transition: width 0.5s ease; width: 0%; }
         .lecture-item { cursor: pointer; transition: 0.3s; padding: 12px; border-radius: 8px; margin-bottom: 5px; }
         .lecture-item:hover { background: #1e293b; }
         .lecture-item.active { background: #0ea5e9; font-weight: bold; }
         
-        /* ADJUST PLAYER HEIGHT */
-        .player-container { display: flex; height: calc(100vh - 65px); }
+        /* Layout Fix */
+        .player-container { display: flex; height: calc(100vh - 60px); }
     </style>
 </head>
 <body id="player-body" style="background: #0f172a; color: white; margin: 0; font-family: sans-serif;">
 
-    <!-- NEW NAVIGATION BAR -->
+    <!-- NAVIGATION BAR -->
     <header>
         <a href="index.html" class="logo">GenZ Academy</a>
         <nav>
@@ -79,4 +81,129 @@
         </main>
     </div>
 
-    <!-- Baki ka script aur chatbot wala code same rahega niche -->
+    <!-- CHATBOT ICON -->
+    <div id="chat-icon" onclick="window.toggleChat()" style="position: fixed; bottom: 20px; right: 20px; background: #0ea5e9; color: white; padding: 15px; border-radius: 50%; cursor: pointer; z-index: 2000; font-size: 24px; box-shadow: 0 5px 15px rgba(0,0,0,0.3);">💬</div>
+
+    <!-- CHATBOT WINDOW -->
+    <div id="chat-window" style="display: none; position: fixed; bottom: 85px; right: 20px; width: 350px; height: 450px; background: #1e293b; border-radius: 15px; flex-direction: column; box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 2000; overflow: hidden; border: 1px solid #334155;">
+        <div onclick="window.toggleChat()" style="background: #0ea5e9; padding: 12px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none;">
+            <span style="font-weight: bold; color: white;">🤖 Academy AI Assistant</span>
+            <span style="font-size: 24px; font-weight: bold; color: white;">×</span>
+        </div>
+        <div id="chat-messages" style="flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; font-size: 14px; color: white;">
+            <div style="background: #334155; padding: 10px; border-radius: 8px; align-self: flex-start;">Hello! Main aapka AI assistant hoon. Kisi bhi topic par doubt ho toh puchiye!</div>
+        </div>
+        <div style="padding: 10px; border-top: 1px solid #334155; display: flex; gap: 5px; background: #1e293b;">
+            <input type="text" id="chat-input" placeholder="Ask anything about the course..." style="flex: 1; padding: 10px; border-radius: 5px; border: none; background: #0f172a; color: white; outline: none;">
+            <button onclick="window.startChat()" style="background: #0ea5e9; border: none; padding: 10px 15px; border-radius: 5px; color: white; cursor: pointer; font-weight: bold;">Send</button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { auth, db } from "./firebase.js"; 
+        import { doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+        const lectures = [
+            { id: 1, title: "1. Introduction to Web Dev", url: "https://www.youtube.com/embed/fDbaHn46t0o", desc: "Is lecture mein hum seekhenge ki aesthetic layouts kaise banate hain." },
+            { id: 2, title: "2. HTML Basics", url: "https://www.youtube.com/embed/mJgZqzH2K60", desc: "HTML tags aur structure ko detail mein samjhein." },
+            { id: 3, title: "3. Styling with CSS", url: "https://www.youtube.com/embed/1Rs2ND1RYYI", desc: "CSS se apni website ko GenZ aesthetic look kaise dein." },
+            { id: 4, title: "4. JavaScript Logic", url: "https://www.youtube.com/embed/W6NZfCO5SIk", desc: "JavaScript ke basic functions aur logic ko samjhein." }
+        ];
+
+        window.changeLecture = async function(id) {
+            const lecture = lectures.find(l => l.id === id);
+            if (!lecture) return;
+            document.getElementById('main-video').src = lecture.url;
+            document.getElementById('video-title').innerText = lecture.title;
+            document.getElementById('video-desc').innerText = lecture.desc;
+            const items = document.querySelectorAll('.lecture-item');
+            items.forEach(item => item.classList.remove('active'));
+            if(items[id-1]) items[id - 1].classList.add('active');
+            const progress = (id / lectures.length) * 100;
+            document.getElementById('progress-fill').style.width = progress + "%";
+            document.getElementById('progress-text').innerText = "Course Progress: " + Math.round(progress) + "%";
+
+            const user = auth.currentUser;
+            if (user) {
+                try {
+                    await setDoc(doc(db, "userProgress", user.uid), {
+                       lastLectureId: id,
+                       lastTitle: lecture.title,
+                       lastVideoId: lecture.url.split('/').pop(),
+                       completedPercent: Math.round(progress),
+                       timestamp: new Date()
+                    }, { merge: true });
+                } catch (e) { console.error("Error saving:", e); }
+            }
+        };
+
+        auth.onAuthStateChanged(async (user) => {
+            if (user) {
+                const docRef = doc(db, "userProgress", user.uid); 
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    if (data.lastLectureId) changeLecture(data.lastLectureId);
+                } else { changeLecture(1); }
+            }
+        });
+
+        // --- GLOBAL TOGGLE ---
+        window.toggleChat = function() {
+            const win = document.getElementById('chat-window');
+            if (!win) return;
+            win.style.display = (win.style.display === 'none' || win.style.display === '') ? 'flex' : 'none';
+        };
+
+        // --- GROQ AI INTEGRATION (FIXED MODEL) ---
+        const GROQ_API_KEY = "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";
+
+        window.startChat = async function() {
+            const input = document.getElementById('chat-input');
+            const box = document.getElementById('chat-messages');
+            const userMsg = input.value.trim();
+            
+            if (!userMsg) return;
+
+            box.innerHTML += `<div style="background: #0ea5e9; padding: 10px; border-radius: 8px; align-self: flex-end; margin: 5px 0; max-width: 80%; word-wrap: break-word;">${userMsg}</div>`;
+            
+            const typingId = "typing-" + Date.now();
+            box.innerHTML += `<div id="${typingId}" style="background: #334155; padding: 10px; border-radius: 8px; align-self: flex-start; margin: 5px 0;"><b>Bot:</b> Thinking... ⚡</div>`;
+            
+            input.value = '';
+            box.scrollTop = box.scrollHeight;
+
+            try {
+                const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+                    method: "POST",
+                    headers: {
+                        "Authorization": `Bearer ${GROQ_API_KEY}`,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        model: "llama-3.1-8b-instant",
+                        messages: [
+                            { role: "system", content: "You are a helpful and witty study assistant for 'Genz Student Academy'. Answer clearly and keep it engaging." },
+                            { role: "user", content: userMsg }
+                        ]
+                    })
+                });
+
+                const data = await response.json();
+                const aiText = data.choices[0].message.content;
+
+                document.getElementById(typingId).remove();
+                box.innerHTML += `<div style="background: #334155; padding: 10px; border-radius: 8px; align-self: flex-start; margin: 5px 0; max-width: 80%; word-wrap: break-word;"><b>Bot:</b> ${aiText}</div>`;
+            } catch (error) {
+                if(document.getElementById(typingId)) document.getElementById(typingId).remove();
+                box.innerHTML += `<div style="background: #ef4444; padding: 10px; border-radius: 8px; align-self: flex-start; margin: 5px 0;"><b>Bot:</b> Error connecting to AI!</div>`;
+            }
+            box.scrollTop = box.scrollHeight;
+        };
+
+        document.getElementById('chat-input').addEventListener('keypress', (e) => {
+            if(e.key === 'Enter') window.startChat();
+        });
+    </script>
+</body>
+</html>
