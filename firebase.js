@@ -54,5 +54,18 @@ window.handleLogin = (e) => {
     .catch((error) => alert(error.message));
 };
 
+// --- GOOGLE LOGIN SYSTEM ---
+window.handleGoogleLogin = () => {
+  signInWithPopup(auth, provider)
+    .then((result) => {
+      console.log("User Logged In:", result.user);
+      alert("Google Login Successful! 🚀");
+      window.location.href = "dashboard.html";
+    })
+    .catch((error) => {
+      console.error("Error:", error.message);
+      alert("Login Failed: " + error.message);
+    });
+};
 // --- SIGNUP / LOGIN / GOOGLE LOGIC (Same as before) ---
 // (Baaki ka signup/login/google code jo tumhare paas tha waisa hi niche rehne dena)
