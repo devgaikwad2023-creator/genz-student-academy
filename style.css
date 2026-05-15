@@ -1417,3 +1417,63 @@ body{
         height: 50px;
     }
 }
+
+
+/* --- MOBILE RESPONSIVE FIXES --- */
+@media (max-width: 768px) {
+    /* Navbar fix */
+    .navbar {
+        padding: 15px 5%;
+    }
+
+    .nav-links {
+        display: none; /* Mobile par menu chupa do jab tak click na ho */
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background: #0b1120;
+        flex-direction: column;
+        padding: 20px;
+        gap: 15px;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .nav-links.active {
+        display: flex; /* Click karne par dikhega */
+    }
+
+    /* Hero Section fix (Text bada dikhega) */
+    .hero-left h1 {
+        font-size: 32px !important;
+        text-align: center;
+    }
+
+    .hero-buttons {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .hero-buttons a {
+        width: 100%;
+        text-align: center;
+    }
+
+    /* Course Player Fix (Most Important) */
+    .lesson-sidebar {
+        width: 100% !important;
+        height: auto !important;
+        position: relative !important;
+        border-right: none;
+        border-bottom: 1px solid #374151;
+    }
+
+    .video-section-player {
+        margin-left: 0 !important;
+        padding: 15px !important;
+    }
+
+    .video-box iframe {
+        height: 200px; /* Choti screen par height kam */
+    }
+}
