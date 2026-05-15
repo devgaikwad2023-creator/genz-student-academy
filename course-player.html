@@ -31,11 +31,17 @@
         
         /* Layout Fix */
         .player-container { display: flex; height: calc(100vh - 60px); }
+
+        /* FIX: Video section alignment */
+        .video-details {
+            max-width: 900px; /* Video ki width ke barabar rakha hai */
+            margin: 25px auto 0 auto; /* Yeh pure content ko center mein layega */
+            text-align: center; /* Text ko center karne ke liye */
+        }
     </style>
 </head>
 <body id="player-body" style="background: #0f172a; color: white; margin: 0; font-family: sans-serif;">
 
-    <!-- NAVIGATION BAR -->
     <header>
         <a href="index.html" class="logo">GenZ Academy</a>
         <nav>
@@ -50,7 +56,7 @@
     </header>
 
     <div class="player-container">
-        <aside class="lesson-sidebar" style="width: 300px; background: #1e293b; padding: 20px; border-right: 1px solid #334155;">
+        <aside class="lesson-sidebar" style="width: 300px; background: #1e293b; padding: 20px; border-right: 1px solid #334155; flex-shrink: 0;">
             <h3>Course Content</h3>
             <div class="progress-container" style="margin-bottom: 25px;">
                 <small id="progress-text">Course Progress: 0%</small>
@@ -66,32 +72,32 @@
             </ul>
         </aside>
 
-        <main class="video-section" style="flex: 1; padding: 30px; overflow-y: auto;">
-            <div class="video-box" style="border-radius: 15px; overflow: hidden; background: #000; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
+        <main class="video-section" style="flex: 1; padding: 30px; overflow-y: auto; display: flex; flex-direction: column; align-items: center;">
+            <div class="video-box" style="width: 100%; max-width: 900px; border-radius: 15px; overflow: hidden; background: #000; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
                 <iframe id="main-video" width="100%" height="500" src="https://www.youtube.com/embed/fDbaHn46t0o" frameborder="0" allowfullscreen></iframe>
             </div>
-            <div class="video-details" style="margin-top: 25px;">
-                <h1 id="video-title" style="font-size: 24px;">Lecture 1: Introduction to Web Dev</h1>
-                <p id="video-desc" style="color: #94a3b8; margin-top: 10px; line-height: 1.6;">Is lecture mein hum seekhenge ki aesthetic layouts kaise banate hain.</p>
-                <div style="display: flex; gap: 15px; margin-top: 30px; justify-content: center;">
-                    <button style="background: #22c55e; color: white; padding: 12px 25px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">Download Notes</button>
-                    <button style="background: #3b82f6; color: white; padding: 12px 25px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">Download Certificate</button>
+
+            <div class="video-details">
+                <h1 id="video-title" style="font-size: 28px; margin-bottom: 10px;">Lecture 1: Introduction to Web Dev</h1>
+                <p id="video-desc" style="color: #94a3b8; line-height: 1.6;">Is lecture mein hum seekhenge ki aesthetic layouts kaise banate hain.</p>
+                
+                <div style="display: flex; gap: 15px; margin-top: 30px; justify-content: center; flex-wrap: wrap;">
+                    <button style="background: #22c55e; color: white; padding: 12px 25px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; min-width: 180px;">Download Notes</button>
+                    <button style="background: #3b82f6; color: white; padding: 12px 25px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; min-width: 180px;">Download Certificate</button>
                 </div>
             </div>
         </main>
     </div>
 
-    <!-- CHATBOT ICON -->
     <div id="chat-icon" onclick="window.toggleChat()" style="position: fixed; bottom: 20px; right: 20px; background: #0ea5e9; color: white; padding: 15px; border-radius: 50%; cursor: pointer; z-index: 2000; font-size: 24px; box-shadow: 0 5px 15px rgba(0,0,0,0.3);">💬</div>
 
-    <!-- CHATBOT WINDOW -->
     <div id="chat-window" style="display: none; position: fixed; bottom: 85px; right: 20px; width: 350px; height: 450px; background: #1e293b; border-radius: 15px; flex-direction: column; box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 2000; overflow: hidden; border: 1px solid #334155;">
         <div onclick="window.toggleChat()" style="background: #0ea5e9; padding: 12px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none;">
             <span style="font-weight: bold; color: white;">🤖 Academy AI Assistant</span>
             <span style="font-size: 24px; font-weight: bold; color: white;">×</span>
         </div>
         <div id="chat-messages" style="flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; font-size: 14px; color: white;">
-            <div style="background: #334155; padding: 10px; border-radius: 8px; align-self: flex-start;">Hello! Main aapka AI assistant hoon. Kisi bhi topic par doubt ho toh puchiye!</div>
+            <div style="background: #334155; padding: 10px; border-radius: 8px; align-self: flex-start;">Hello! Main aapka AI assistant hoon. Kisi bhi topic par doubt हो toh puchiye!</div>
         </div>
         <div style="padding: 10px; border-top: 1px solid #334155; display: flex; gap: 5px; background: #1e293b;">
             <input type="text" id="chat-input" placeholder="Ask anything about the course..." style="flex: 1; padding: 10px; border-radius: 5px; border: none; background: #0f172a; color: white; outline: none;">
@@ -148,14 +154,12 @@
             }
         });
 
-        // --- GLOBAL TOGGLE ---
         window.toggleChat = function() {
             const win = document.getElementById('chat-window');
             if (!win) return;
             win.style.display = (win.style.display === 'none' || win.style.display === '') ? 'flex' : 'none';
         };
 
-        // --- GROQ AI INTEGRATION (FIXED MODEL) ---
         const GROQ_API_KEY = "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";
 
         window.startChat = async function() {
