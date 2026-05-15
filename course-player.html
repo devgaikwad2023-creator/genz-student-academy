@@ -195,6 +195,18 @@
             } catch (error) { console.error(error); }
             box.scrollTop = box.scrollHeight;
         };
+    
     </script>
+
+    <script>
+    const menuToggle = document.getElementById('mobile-menu');
+    const navList = document.getElementById('nav-list');
+
+    if(menuToggle) {
+        menuToggle.addEventListener('click', () => {
+            navList.classList.toggle('active');
+        });
+    }
+</script>
 </body>
 </html>
