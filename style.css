@@ -1421,6 +1421,18 @@ body{
 
 /* --- MOBILE RESPONSIVE FIXES --- */
 @media (max-width: 768px) {
+    .menu-toggle {
+        display: block !important; /* Mobile par icon dikhna chahiye */
+        font-size: 30px;
+        color: white;
+    }
+    
+    .nav-links.active {
+        display: flex !important; /* Click hone par list dikhni chahiye */
+    }
+}
+
+@media (max-width: 768px) {
     /* Navbar fix */
     .navbar {
         padding: 15px 5%;
