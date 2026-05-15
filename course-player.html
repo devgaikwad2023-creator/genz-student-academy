@@ -17,6 +17,24 @@
             z-index: 1001; /* Sidebar se upar */
         }
 
+        /* Progress bar ko blue rang dene ke liye */
+.progress-bar {
+    width: 100%;
+    background: #334155; /* Khali bar ka rang */
+    height: 8px;
+    border-radius: 5px;
+    margin-top: 10px;
+    overflow: hidden;
+}
+
+#progress-fill {
+    height: 100%;
+    background: #38bdf8; /* Yeh wahi blue rang hai jo aapko chahiye */
+    width: 0%; /* Isse JavaScript update karega */
+    transition: width 0.5s ease;
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+}
+        
         /* Sidebar ko navbar ke niche se shuru karne ke liye */
         .lesson-sidebar {
             top: 60px !important; 
@@ -55,6 +73,7 @@
                     <div id="progress-fill"></div>
                 </div>
             </div>
+            
             <ul class="lecture-list">
                 <li class="lecture-item active" onclick="changeLecture(1)">1. Introduction to Web Dev</li>
                 <li class="lecture-item" onclick="changeLecture(2)">2. HTML Basics</li>
