@@ -89,11 +89,12 @@
 
         <main class="video-section-player">
             <div class="video-box">
-                <iframe id="main-video" src="<iframe https://www.youtube.com/embed/KTv8njbtl10?si=ovKtW8Fr7Kud_K6G" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>"
+                <!-- YAHA PAR AAPKA NEW VIDEO CODE EMBED KIYA HAI -->
+                <iframe id="main-video" src="https://www.youtube.com/embed/KTv8njbtl10?modestbranding=1&rel=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
             </div>
 
             <div class="video-details">
-                <h1 id="video-title" style="font-size: 32px; margin-bottom: 10px; color: #38bdf8;">Lecture 1: Introduction to Web Dev</h1>
+                <h1 id="video-title" style="font-size: 32px; margin-bottom: 10px; color: #38bdf8;">Lecture 1: Introduction of Resume Mastery</h1>
                 <p id="video-desc" style="color: #94a3b8; line-height: 1.6; max-width: 800px; margin: 10px auto;">Is lecture mein hum seekhenge ki aesthetic layouts kaise banate hain.</p>
                 
                 <div style="display: flex; gap: 15px; margin-top: 30px; justify-content: center; flex-wrap: wrap;">
@@ -123,8 +124,9 @@
         import { auth, db } from "./firebase.js"; 
         import { doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+        // YAHA PAR BHI LECTURE 1 KA URL UPDATE KAR DIYA HAI
         const lectures = [
-            { id: 1, title: "1. Introduction of Resume Mastery", url: "<iframe width="560" height="315" src="https://www.youtube.com/embed/KTv8njbtl10?si=ovKtW8Fr7Kud_K6G" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>", desc: "In this lecture we learn about the ATS and its Filteraion of Resume & Course Blueprint." },
+            { id: 1, title: "1. Introduction to Web Dev", url: "https://www.youtube.com/embed/KTv8njbtl10?modestbranding=1&rel=0", desc: "In this Module we learn about the filteration of Resume, ATS, and Course Blueprint." },
             { id: 2, title: "2. HTML Basics", url: "https://www.youtube.com/embed/mJgZqzH2K60", desc: "HTML tags aur structure ko detail mein samjhein." },
             { id: 3, title: "3. Styling with CSS", url: "https://www.youtube.com/embed/1Rs2ND1RYYI", desc: "CSS se apni website ko GenZ aesthetic look kaise dein." },
             { id: 4, title: "4. JavaScript Logic", url: "https://www.youtube.com/embed/W6NZfCO5SIk", desc: "JavaScript ke basic functions aur logic ko samjhein." }
