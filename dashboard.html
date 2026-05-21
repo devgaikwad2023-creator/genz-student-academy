@@ -118,16 +118,25 @@
         }
     });
 
-    // 2. Chat Logic (Safe keeping without core structure breaks)
-    const responses = {
-        "hello": "Hello! Aaj hum kya seekhenge?",
-        "hi": "Hi there! Main aapki kaise help kar sakta hoon?",
-        "hlo": "Hello! Padhai kaisi chal rahi hai?",
-        "good morning": "Very Good Morning! Chalo kuch naya seekhte hain.",
-        "yes": "Great! Bataiye kya help chahiye?",
-        "notes": "Notes ke liye 'Course Player' mein 'Download Notes' button check karein.",
-        "default": "Great question! Iske baare mein aap mujhse kuch bhi pooch sakte hain."
-    };
+<!-- AI CHAT START -->
+  <div id="ai-chat-container" class="chat-closed">
+    <div class="chat-header" onclick="toggleChat()">
+        <span>🤖 Genz AI Assistant</span>
+        <button id="close-chat">×</button>
+    </div>
+    <div id="chat-box" class="chat-body">
+        <p class="bot-msg">Hey! I am your Study Assistant. How can I help you today?</p>
+    </div>
+    <div class="chat-footer">
+        <input type="text" id="user-input" placeholder="Ask anything...">
+        <button onclick="sendMessage()"><i class="fa fa-paper-plane"></i></button>
+    </div>
+  </div>
+
+  <div id="chat-icon" onclick="toggleChat()">
+      <img src="https://cdn-icons-png.flaticon.com/512/4712/4712035.png" alt="AI Chat">
+  </div>
+  <!-- AI CHAT END -->
 
     window.toggleChat = function() {
         const chat = document.getElementById('ai-chat-container');
@@ -159,13 +168,6 @@
         box.scrollTop = box.scrollHeight;
     };
   </script>
-
-  <div id="ai-chat-container" class="chat-closed" style="display:none;">
-    </div>
-
-  <div id="chat-icon" onclick="toggleChat()">
-    <img src="https://cdn-icons-png.flaticon.com/512/4712/4712035.png" alt="AI Chat">
-  </div>
       
   <script type="module" src="script.js"></script>
   <script src="chat.js"></script>
