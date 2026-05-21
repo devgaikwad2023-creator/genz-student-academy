@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Course Player | GenZ Student Academy</title>
-    <link class="lazyload" data-src="Genz Student Academy logo.png" rel="icon" type="image/png" href="Genz Student Academy logo.png">
+    <link rel="icon" type="image/png" href="Genz Student Academy logo.png">
     <link rel="stylesheet" href="style.css">
     <style>
         /* --- LOCAL FIXES TAALMEL KE LIYE --- */
@@ -52,7 +52,7 @@
 
     <header class="navbar">
         <a href="index.html" class="logo">
-    <img class="lazyload" data-src="Genz Student Academy logo.png" src="Genz Student Academy logo.png" alt="GenZ Academy Logo" class="nav-logo">
+    <img src="Genz Student Academy logo.png" alt="GenZ Academy Logo" class="nav-logo">
 </a>
         <div class="logo">
       Genz Student Academy
@@ -168,7 +168,6 @@
                     if (data.lastLectureId) changeLecture(data.lastLectureId);
                 } else { changeLecture(1); }
             } else {
-                // Agar user login nahi hai toh dhakka maar ke index.html pe bhej do
                 window.location.href = "index.html";
             }
         });
