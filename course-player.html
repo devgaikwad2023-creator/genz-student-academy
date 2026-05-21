@@ -97,8 +97,8 @@
             <ul class="lecture-list">
                 <li class="lecture-item active" onclick="changeLecture(1)">1. Introduction of Resume Mastery</li>
                 <li class="lecture-item" onclick="changeLecture(2)">2. Formatting Guidance & Keyword Mapping</li>
-                <li class="lecture-item" onclick="changeLecture(3)">3. Styling with CSS</li>
-                <li class="lecture-item" onclick="changeLecture(4)">4. JavaScript Logic</li>
+                <li class="lecture-item" onclick="changeLecture(3)">3. Perfect Resume Structure & Sections</li>
+                <li class="lecture-item" onclick="changeLecture(4)">4. ATS Optimization & Final Review</li>
             </ul>
         </aside>
 
@@ -139,7 +139,7 @@
         import { auth, db } from "./firebase.js"; 
         import { doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-        // FIXED LECTURES LIST WITH CORRECT SECURE LINK FORMATS
+        // FIXED LECTURES LIST WITH CORRECT SECURE LINK FORMATS FOR ALL 4 VIDEOS
         const lectures = [
             { 
                 id: 1, 
@@ -150,11 +150,21 @@
             { 
                 id: 2, 
                 title: "2. Formatting Guidance & Keywords Mapping", 
-                url: "https://drive.google.com/file/d/1KGCRFeMUz2_ZVv4jvvtkBwKfa0o02F1K/preview",
+                url: "https://drive.google.com/file/d/1KGCRFeMUz2_ZVv4jvvtkBwKfa0o02F1K/preview", 
                 desc: "Resume Formatting & Keywords to mark in JD & Resume." 
             },
-            { id: 3, title: "3. Styling with CSS", url: "https://www.youtube.com/embed/1Rs2ND1RYYI", desc: "CSS se apni website ko GenZ aesthetic look kaise dein." },
-            { id: 4, title: "4. JavaScript Logic", url: "https://www.youtube.com/embed/W6NZfCO5SIk", desc: "JavaScript ke basic functions aur logic ko samjhein." }
+            { 
+                id: 3, 
+                title: "3. Perfect Resume Structure & Sections", 
+                url: "https://drive.google.com/file/d/144Uz3rNkwK_jIVo_FUMYBbxqc-3koU09/preview", 
+                desc: "In this lecture, we will deeply dive into building an aesthetic and readable resume structure." 
+            },
+            { 
+                id: 4, 
+                title: "4. ATS Optimization & Final Review", 
+                url: "https://drive.google.com/file/d/1nNudxP0k2bPzCla6qEfIaMN6IqI3YpA8/preview", 
+                desc: "Passing the ATS scanner with strategic optimization rules and concluding the final layout review." 
+            }
         ];
 
         window.changeLecture = async function(id) {
