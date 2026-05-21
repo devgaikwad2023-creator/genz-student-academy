@@ -81,12 +81,10 @@
     import { auth, db } from "./firebase.js";
     import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    // 1. Progress aur User Data Load karna (Connected to userProgress)
     auth.onAuthStateChanged(async (user) => {
         if (user) {
             document.querySelector('.dashboard h1').innerText = `Welcome Back, ${user.displayName || "Student"} 👋`;
 
-            // Tumhara exact wahi collection name jo course player mein save karta hai
             const docRef = doc(db, "userProgress", user.uid);
             const docSnap = await getDoc(docRef);
 
@@ -99,17 +97,14 @@
                 isAssignmentSubmitted = data.assignmentSubmitted || false;
             }
 
-            // Calculations based on your exact formula
             let videoProgress = maxLectureVisited * 20; 
             let finalProgress = videoProgress + (isAssignmentSubmitted ? 20 : 0);
             if(finalProgress > 100) finalProgress = 100;
 
-            // UI Cards dynamic update engine
-            document.querySelectorAll('.dashboard-card span')[0].innerText = "1"; // Enrolled Course
-            document.querySelectorAll('.dashboard-card span')[1].innerText = maxLectureVisited; // Completed Lessons
-            document.querySelectorAll('.dashboard-card span')[2].innerText = `${finalProgress}%`; // Learning Progress Percent
+            document.querySelectorAll('.dashboard-card span')[0].innerText = "1"; 
+            document.querySelectorAll('.dashboard-card span')[1].innerText = maxLectureVisited; 
+            document.querySelectorAll('.dashboard-card span')[2].innerText = `${finalProgress}%`; 
             
-            // Progress bar mapping implementation
             const bar = document.querySelector('.course-card-mini .progress');
             if(bar) bar.style.width = `${finalProgress}%`;
 
@@ -117,42 +112,12 @@
             window.location.href = "login.html";
         }
     });
-
-    window.toggleChat = function() {
-        const chat = document.getElementById('ai-chat-container');
-        if (chat) {
-            chat.classList.toggle('chat-closed');
-            chat.classList.toggle('chat-open'); 
-        }
-    };
-
-    window.sendMessage = function() {
-        const input = document.getElementById('user-input');
-        const box = document.getElementById('chat-box');
-        if(!input || !box) return;
-
-        const text = input.value.trim().toLowerCase();
-        if (!text) return;
-
-        // User Message
-        box.innerHTML += `<p class="user-msg" style="background: #0ea5e9; padding: 8px; border-radius: 5px; margin: 5px 0; text-align: right;">${input.value}</p>`;
-        
-        // Bot Reply
-        setTimeout(() => {
-            const reply = responses[text] || responses["default"];
-            box.innerHTML += `<p class="bot-msg" style="background: #334155; padding: 8px; border-radius: 5px; margin: 5px 0;"><b>Bot:</b> ${reply}</p>`;
-            box.scrollTop = box.scrollHeight;
-        }, 400);
-
-        input.value = '';
-        box.scrollTop = box.scrollHeight;
-    };
   </script>
 
   <div id="ai-chat-container" class="chat-closed">
     <div class="chat-header" onclick="toggleChat()">
         <span>🤖 Genz AI Assistant</span>
-        <button id="close-chat">×</button>
+        <button id="close-chat" onclick="toggleChat(); event.stopPropagation();">×</button>
     </div>
     <div id="chat-box" class="chat-body">
         <p class="bot-msg">Hey! I am your Study Assistant. How can I help you today?</p>
@@ -166,10 +131,37 @@
   <div id="chat-icon" onclick="toggleChat()">
       <img src="https://cdn-icons-png.flaticon.com/512/4712/4712035.png" alt="AI Chat">
   </div>
+  
   <script type="module" src="script.js"></script>
   <script src="chat.js"></script>
 
   <script>
+    // Global toggle function jo ab HTML click ko poora milega
+    window.toggleChat = function() {
+        const chat = document.getElementById('ai-chat-container');
+        if (chat) {
+            chat.classList.toggle('chat-closed');
+            chat.classList.toggle('chat-open'); 
+        }
+    };
+
+    window.sendMessage = function() {
+        const input = document.getElementById('user-input');
+        const box = document.getElementById('chat-box');
+        if(!input || !box) return;
+
+        const text = input.value.trim();
+        if (!text) return;
+
+        // User Message
+        box.innerHTML += `<p class="user-msg" style="background: #0ea5e9; padding: 8px; border-radius: 5px; margin: 5px 0; text-align: right;">${text}</p>`;
+        
+        // Agar external chat.js load hai, toh automatic control wo sambhal lega.
+        input.value = '';
+        box.scrollTop = box.scrollHeight;
+    };
+
+    // Mobile Responsive Menu Toggle Logic
     const menuToggle = document.getElementById('mobile-menu');
     const navList = document.getElementById('nav-list');
 
