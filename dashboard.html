@@ -61,18 +61,10 @@
 
     </div>
 
-    <div class="purchased-courses">
+    <div class="purchased-courses" id="purchased-courses-section">
       <h2>My Courses</h2>
       <div id="course-list" class="course-grid">
-        <div class="course-card-mini">
-          <img src="https://via.placeholder.com/150" alt="Course Thumbnail">
-          <h3>Resume Mastery: The ATS - Friendly Formula</h3>
-          <div class="progress-bar">
-            <div class="progress" style="width: 0%;"></div>
-          </div>
-          <button class="continue-btn" onclick="window.location.href='course-player.html'">Continue Learning</button>
         </div>
-      </div>
     </div>
 
   </section>
@@ -85,28 +77,64 @@
         if (user) {
             document.querySelector('.dashboard h1').innerText = `Welcome Back, ${user.displayName || "Student"} 👋`;
 
-            const docRef = doc(db, "userProgress", user.uid);
-            const docSnap = await getDoc(docRef);
+            // STEP 1: Pehle check karo ki user ne sach mein fees bhari hai ya nahi (enrollments check)
+            const enrollmentRef = doc(db, "enrollments", user.uid);
+            const enrollmentSnap = await getDoc(enrollmentRef);
 
-            let maxLectureVisited = 1;
-            let isAssignmentSubmitted = false;
+            const courseSection = document.getElementById('purchased-courses-section');
+            const courseList = document.getElementById('course-list');
 
-            if (docSnap.exists()) {
-                const data = docSnap.data();
-                maxLectureVisited = data.maxLectureVisited || 1;
-                isAssignmentSubmitted = data.assignmentSubmitted || false;
+            if (enrollmentSnap.exists()) {
+                // USER IS PAID/ENROLLED! Ab iska dynamic progress nikalenge userProgress se
+                const progressRef = doc(db, "userProgress", user.uid);
+                const progressSnap = await getDoc(progressRef);
+
+                let maxLectureVisited = 0;
+                let isAssignmentSubmitted = false;
+
+                if (progressSnap.exists()) {
+                    const progressData = progressSnap.data();
+                    maxLectureVisited = progressData.maxLectureVisited || 0;
+                    isAssignmentSubmitted = progressData.assignmentSubmitted || false;
+                }
+
+                // Dynamic formula execution
+                let videoProgress = maxLectureVisited * 20; 
+                let finalProgress = videoProgress + (isAssignmentSubmitted ? 20 : 0);
+                if(finalProgress > 100) finalProgress = 100;
+
+                // Update Top Stats Cards for Paid User
+                document.querySelectorAll('.dashboard-card span')[0].innerText = "1"; 
+                document.querySelectorAll('.dashboard-card span')[1].innerText = maxLectureVisited; 
+                document.querySelectorAll('.dashboard-card span')[2].innerText = `${finalProgress}%`; 
+
+                // Injecting the Course Card safely into UI
+                courseSection.style.display = "block";
+                courseList.innerHTML = `
+                    <div class="course-card-mini">
+                      <img src="https://via.placeholder.com/150" alt="Course Thumbnail">
+                      <h3>Resume Mastery: The ATS - Friendly Formula</h3>
+                      <div class="progress-bar">
+                        <div class="progress" style="width: ${finalProgress}%;"></div>
+                      </div>
+                      <button class="continue-btn" onclick="window.location.href='course-player.html'">Continue Learning</button>
+                    </div>
+                `;
+
+            } else {
+                // USER HAS NOT PAID / UNENROLLED FREE USER!
+                // Reset all stat numbers to pure ZERO
+                document.querySelectorAll('.dashboard-card span')[0].innerText = "0"; 
+                document.querySelectorAll('.dashboard-card span')[1].innerText = "0"; 
+                document.querySelectorAll('.dashboard-card span')[2].innerText = "0%"; 
+
+                // Injecting restricted message & hiding main course card block
+                courseList.innerHTML = `
+                    <p style="color: #94a3b8; font-size: 1.1rem; grid-column: 1/-1; background: #1e293b; padding: 20px; border-radius: 8px; border: 1px dashed #475569;">
+                        ⚠️ You haven't enrolled in any courses yet. Please visit the <a href="courses.html" style="color: #0ea5e9; font-weight: bold; text-decoration: none;">Courses</a> section to purchase and start your learning journey!
+                    </p>
+                `;
             }
-
-            let videoProgress = maxLectureVisited * 20; 
-            let finalProgress = videoProgress + (isAssignmentSubmitted ? 20 : 0);
-            if(finalProgress > 100) finalProgress = 100;
-
-            document.querySelectorAll('.dashboard-card span')[0].innerText = "1"; 
-            document.querySelectorAll('.dashboard-card span')[1].innerText = maxLectureVisited; 
-            document.querySelectorAll('.dashboard-card span')[2].innerText = `${finalProgress}%`; 
-            
-            const bar = document.querySelector('.course-card-mini .progress');
-            if(bar) bar.style.width = `${finalProgress}%`;
 
         } else {
             window.location.href = "login.html";
