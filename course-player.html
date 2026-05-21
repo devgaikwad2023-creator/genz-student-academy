@@ -10,7 +10,6 @@
         /* --- LOCAL FIXES TAALMEL KE LIYE --- */
         body { margin: 0; padding: 0; }
         
-        
         /* Navbar ko sidebar ke upar rakhne ke liye */
         header {
             position: fixed;
@@ -140,7 +139,7 @@
         import { auth, db } from "./firebase.js"; 
         import { doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-        // LECTURES LIST UPDATED FOR JAVASCRIPT AUTOLOAD SYNC
+        // FIXED LECTURES LIST WITH CORRECT SECURE LINK FORMATS
         const lectures = [
             { 
                 id: 1, 
@@ -148,7 +147,12 @@
                 url: "https://drive.google.com/file/d/1fTT6QTgN31dS__QL6oo4aABjpPRF4u1M/preview", 
                 desc: "In this lecture we are going to learn about the Resume mastery, ATS, 10 Seconds Resume Filteration." 
             },
-            { id: 2, title: "2. Formatting Guidance & Keywords Mapping", url: "https://drive.google.com/file/d/1KGCRFeMUz2_ZVv4jvvtkBwKfa0o02F1K/view?usp=sharing", desc: "Resume Formatting & Keywords to mark in JD & Resume." },
+            { 
+                id: 2, 
+                title: "2. Formatting Guidance & Keywords Mapping", 
+                url: "https://drive.google.com/file/d/1KGCRFeMUz2_ZVv4jvvtkBwKfa0o02F1K/preview",
+                desc: "Resume Formatting & Keywords to mark in JD & Resume." 
+            },
             { id: 3, title: "3. Styling with CSS", url: "https://www.youtube.com/embed/1Rs2ND1RYYI", desc: "CSS se apni website ko GenZ aesthetic look kaise dein." },
             { id: 4, title: "4. JavaScript Logic", url: "https://www.youtube.com/embed/W6NZfCO5SIk", desc: "JavaScript ke basic functions aur logic ko samjhein." }
         ];
