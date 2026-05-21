@@ -210,7 +210,7 @@
             <div class="video-details">
                 <div style="display: flex; gap: 15px; margin-top: 30px; justify-content: center; flex-wrap: wrap;">
                     <button class="primary-btn download-btn">Download Notes</button>
-                    <button id="cert-btn" class="secondary-btn download-btn cert-locked" onclick="handleCertificateClick()" style="background: #3b82f6; border: none;">Download Certificate</button>
+                    <button id="cert-btn" class="secondary-btn download-btn cert-locked" onclick="handleCertificateClick()" style="background: #475569; border: none;">Download Certificate</button>
                 </div>
             </div>
         </main>
@@ -248,7 +248,7 @@
         import { doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
         // Global trackers
-        let currentProgressPercent = 0;
+        let maxLectureVisited = 1;
         let isAssignmentSubmitted = false;
 
         const lectures = [
@@ -294,12 +294,13 @@
             const activeItem = document.getElementById('item-l' + id);
             if(activeItem) activeItem.classList.add('active');
             
-            const progress = (id / lectures.length) * 100;
-            currentProgressPercent = Math.round(progress);
-            document.getElementById('progress-fill').style.width = progress + "%";
-            document.getElementById('progress-text').innerText = "Course Progress: " + currentProgressPercent + "%";
+            // Keep track of maximum visited lecture to calculate true video completion progress
+            if(id > maxLectureVisited) {
+                maxLectureVisited = id;
+            }
 
-            checkCertificateStatus();
+            // Recalculate and update progress safely
+            updateProgressUI();
 
             const user = auth.currentUser;
             if (user) {
@@ -308,12 +309,32 @@
                        lastLectureId: id,
                        lastTitle: lecture.title,
                        lastVideoId: lecture.url.split('/').pop(),
-                       completedPercent: currentProgressPercent,
+                       maxLectureVisited: maxLectureVisited,
                        timestamp: new Date()
                     }, { merge: true });
                 } catch (e) { console.error("Error saving:", e); }
             }
         };
+
+        // NEW MATHEMATICAL PROGRESS CONVERTER WITH WEIGHTAGE LOGIC
+        function updateProgressUI() {
+            // Each video watched contributes 20% max (4 videos = 80% maximum)
+            let videoProgress = maxLectureVisited * 20; 
+            
+            // Assignment adds the remaining 20% weightage
+            let finalProgress = videoProgress;
+            if(isAssignmentSubmitted) {
+                finalProgress += 20;
+            }
+
+            // Cap at 100% just in case
+            if(finalProgress > 100) finalProgress = 100;
+
+            document.getElementById('progress-fill').style.width = finalProgress + "%";
+            document.getElementById('progress-text').innerText = "Course Progress: " + finalProgress + "%";
+
+            checkCertificateStatus(finalProgress);
+        }
 
         window.showAssignment = function() {
             document.getElementById('video-content-wrapper').style.display = 'none';
@@ -350,7 +371,7 @@
 
                     isAssignmentSubmitted = true;
                     alert("Success! Your assignment has been submitted successfully.");
-                    checkCertificateStatus();
+                    updateProgressUI(); // Instantly jump progress and unlock button
                 } catch (e) {
                     console.error("Firebase submit error: ", e);
                     alert("Something went wrong while submitting. Try again!");
@@ -360,31 +381,33 @@
             }
         };
 
-        function checkCertificateStatus() {
+        function checkCertificateStatus(currentProgress) {
             const certBtn = document.getElementById('cert-btn');
-            if (currentProgressPercent === 100 && isAssignmentSubmitted) {
+            // Strict match: Must be 100% progress AND assignmentSubmitted must be true
+            if (currentProgress === 100 && isAssignmentSubmitted) {
                 certBtn.classList.remove('cert-locked');
-                certBtn.style.background = "#3b82f6";
+                certBtn.style.background = "#3b82f6"; // Light up standard dynamic blue
             } else {
                 certBtn.classList.add('cert-locked');
+                certBtn.style.background = "#475569"; // Retain locked color tone
             }
         }
 
         window.handleCertificateClick = function() {
-            if (currentProgressPercent === 100 && isAssignmentSubmitted) {
-                // Open Custom Name Modal
+            let videoProgress = maxLectureVisited * 20;
+            let finalProgress = videoProgress + (isAssignmentSubmitted ? 20 : 0);
+
+            if (finalProgress === 100 && isAssignmentSubmitted) {
                 document.getElementById('name-modal').style.display = 'flex';
             } else {
                 alert("Please complete all 4 lectures and submit your assignment first!");
             }
         };
 
-        // CLOSE MODAL HANDLER
         window.closeModal = function() {
             document.getElementById('name-modal').style.display = 'none';
         };
 
-        // GENERATE OFFICIAL PDF HANDLER USING jsPDF
         window.generatePDF = function() {
             const studentName = document.getElementById('cert-student-name').value.trim();
             if(!studentName) {
@@ -392,55 +415,47 @@
                 return;
             }
 
-            // Initialization of jsPDF (Landscape custom certificate size)
             const { jsPDF } = window.jspdf;
             const docCert = new jsPDF({
                 orientation: 'landscape',
                 unit: 'px',
-                format: [842, 595] // Elegant standard landscape dimensions
+                format: [842, 595]
             });
 
-            // 1. Dark Premium Background Layout
-            docCert.setFillColor(15, 23, 42); // Match academy background color #0f172a
+            docCert.setFillColor(15, 23, 42); 
             docCert.rect(0, 0, 842, 595, 'F');
 
-            // 2. Neon-cyan Geometric Borders
-            docCert.setDrawColor(56, 189, 248); // Match academy #38bdf8
+            docCert.setDrawColor(56, 189, 248); 
             docCert.setLineWidth(4);
             docCert.rect(20, 20, 802, 555);
             
-            docCert.setDrawColor(30, 41, 59); // Inner thin secondary layer #1e293b
+            docCert.setDrawColor(30, 41, 59); 
             docCert.setLineWidth(1);
             docCert.rect(25, 25, 792, 545);
 
-            // 3. Header Branding
             docCert.setTextColor(56, 189, 248);
             docCert.setFont('helvetica', 'bold');
             docCert.setFontSize(26);
             docCert.text("GENZ STUDENT ACADEMY", 421, 80, { align: 'center' });
 
-            // 4. Certificate Core Verbiage
             docCert.setTextColor(255, 255, 255);
             docCert.setFont('helvetica', 'normal');
             docCert.setFontSize(18);
             docCert.text("CERTIFICATE OF COMPLETION", 421, 140, { align: 'center' });
 
-            docCert.setTextColor(148, 163, 184); // Muted secondary shade #94a3b8
+            docCert.setTextColor(148, 163, 184); 
             docCert.setFontSize(14);
             docCert.text("This is proudly presented to", 421, 200, { align: 'center' });
 
-            // 5. Dynamic Student Name Injector
             docCert.setTextColor(255, 255, 255);
             docCert.setFont('helvetica', 'bold');
             docCert.setFontSize(36);
             docCert.text(studentName.toUpperCase(), 421, 260, { align: 'center' });
 
-            // Underline accent for name
             docCert.setDrawColor(56, 189, 248);
             docCert.setLineWidth(2);
             docCert.line(260, 280, 582, 280);
 
-            // 6. Course Specification Metadata
             docCert.setTextColor(148, 163, 184);
             docCert.setFont('helvetica', 'normal');
             docCert.setFontSize(14);
@@ -451,7 +466,6 @@
             docCert.setFontSize(18);
             docCert.text("RESUME MASTERY & ATS OPTIMIZATION COURSE", 421, 365, { align: 'center' });
 
-            // 7. Footer Stamp Data & Date Verification
             const today = new Date();
             const formattedDate = today.getDate() + '/' + (today.getMonth()+1) + '/' + today.getFullYear();
 
@@ -469,10 +483,7 @@
             docCert.setFont('italic');
             docCert.text("GenZ Student Academy Team", 700, 485, { align: 'center' });
 
-            // Save Trigger File Download
             docCert.save("GenZ_Academy_Certificate_" + studentName.replace(/\s+/g, '_') + ".pdf");
-            
-            // Pop-up clean up
             closeModal();
         };
 
@@ -485,7 +496,7 @@
                     const data = docSnap.data();
                     
                     isAssignmentSubmitted = data.assignmentSubmitted || false;
-                    if(data.completedPercent) currentProgressPercent = data.completedPercent;
+                    maxLectureVisited = data.maxLectureVisited || 1;
 
                     if (data.lastLectureId) {
                         changeLecture(data.lastLectureId);
