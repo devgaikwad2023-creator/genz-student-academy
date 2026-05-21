@@ -6,6 +6,9 @@
     <title>Course Player | GenZ Student Academy</title>
     <link rel="icon" type="image/png" href="Genz Student Academy logo.png">
     <link rel="stylesheet" href="style.css">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
     <style>
         /* --- LOCAL FIXES TAALMEL KE LIYE --- */
         body { margin: 0; padding: 0; }
@@ -89,6 +92,45 @@
             opacity: 0.6;
             cursor: not-allowed !important;
             background: #475569 !important; /* Slightly greyed out when locked */
+        }
+
+        /* --- POPUP MODAL STYLING FOR CERTIFICATE --- */
+        .cert-modal {
+            display: none; 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            background: rgba(15, 23, 42, 0.85); /* Dark background backdrop */
+            z-index: 3000; 
+            justify-content: center; 
+            align-items: center;
+        }
+        .cert-modal-content {
+            background: #1e293b; 
+            border: 1px solid #334155; 
+            padding: 30px; 
+            border-radius: 15px; 
+            width: 90%; 
+            max-width: 450px; 
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+        }
+        .cert-modal-input {
+            width: 100%; 
+            padding: 12px; 
+            margin: 20px 0; 
+            border-radius: 8px; 
+            border: 1px solid #334155; 
+            background: #0f172a; 
+            color: white; 
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        .cert-modal-input:focus {
+            outline: none;
+            border-color: #38bdf8;
         }
     </style>
 </head>
@@ -174,6 +216,18 @@
         </main>
     </div>
 
+    <div id="name-modal" class="cert-modal">
+        <div class="cert-modal-content">
+            <h2 style="color: #38bdf8; margin-top: 0;">Claim Your Certificate 🎓</h2>
+            <p style="color: #94a3b8; font-size: 14px;">Please enter your full name exactly as you want it to appear on your official Certificate of Completion.</p>
+            <input type="text" id="cert-student-name" class="cert-modal-input" placeholder="Enter your full name here...">
+            <div style="display: flex; gap: 10px; justify-content: center;">
+                <button class="primary-btn" onclick="generatePDF()" style="background: #0ea5e9; padding: 10px 20px;">Download PDF</button>
+                <button class="secondary-btn" onclick="closeModal()" style="background: #475569; border: none; padding: 10px 20px;">Cancel</button>
+            </div>
+        </div>
+    </div>
+
     <div id="chat-icon" onclick="window.toggleChat()">💬</div>
     <div id="chat-window" style="display: none; position: fixed; bottom: 85px; right: 20px; width: 350px; height: 450px; background: #1e293b; border-radius: 15px; flex-direction: column; box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 2000; overflow: hidden; border: 1px solid #334155;">
         <div onclick="window.toggleChat()" style="background: #0ea5e9; padding: 12px; display: flex; justify-content: space-between; align-items: center; cursor: pointer;">
@@ -193,7 +247,7 @@
         import { auth, db } from "./firebase.js"; 
         import { doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-        // Trailing Global states track karne ke liye
+        // Global trackers
         let currentProgressPercent = 0;
         let isAssignmentSubmitted = false;
 
@@ -225,7 +279,6 @@
         ];
 
         window.changeLecture = async function(id) {
-            // View wrappers ko toggle karenge video dikhane ke liye
             document.getElementById('video-content-wrapper').style.display = 'block';
             document.getElementById('assignment-content-wrapper').style.display = 'none';
 
@@ -246,7 +299,6 @@
             document.getElementById('progress-fill').style.width = progress + "%";
             document.getElementById('progress-text').innerText = "Course Progress: " + currentProgressPercent + "%";
 
-            // Live refresh button styles check
             checkCertificateStatus();
 
             const user = auth.currentUser;
@@ -263,7 +315,6 @@
             }
         };
 
-        // NEW FUNCTIONS FOR ASSIGNMENT HANDLERS
         window.showAssignment = function() {
             document.getElementById('video-content-wrapper').style.display = 'none';
             document.getElementById('assignment-content-wrapper').style.display = 'block';
@@ -292,7 +343,6 @@
             const user = auth.currentUser;
             if (user) {
                 try {
-                    // Firebase Firestore update secure assignment state
                     await setDoc(doc(db, "userProgress", user.uid), {
                         assignmentSubmitted: true,
                         assignmentTimestamp: new Date()
@@ -310,13 +360,11 @@
             }
         };
 
-        // CERTIFICATE BUTTON UNLOCK LOGIC CONTROLLER
         function checkCertificateStatus() {
             const certBtn = document.getElementById('cert-btn');
-            // Condition: 4th video loaded or completedPercent is 100% AND assignmentSubmitted is true
             if (currentProgressPercent === 100 && isAssignmentSubmitted) {
                 certBtn.classList.remove('cert-locked');
-                certBtn.style.background = "#3b82f6"; // Revert to pure original blue
+                certBtn.style.background = "#3b82f6";
             } else {
                 certBtn.classList.add('cert-locked');
             }
@@ -324,11 +372,108 @@
 
         window.handleCertificateClick = function() {
             if (currentProgressPercent === 100 && isAssignmentSubmitted) {
-                // STEP 3 MEIN HUM ISKA POP-UP AUR PDF GENERATION BANAENGE
-                alert("Awesome! Let's generate your certificate in the next step.");
+                // Open Custom Name Modal
+                document.getElementById('name-modal').style.display = 'flex';
             } else {
                 alert("Please complete all 4 lectures and submit your assignment first!");
             }
+        };
+
+        // CLOSE MODAL HANDLER
+        window.closeModal = function() {
+            document.getElementById('name-modal').style.display = 'none';
+        };
+
+        // GENERATE OFFICIAL PDF HANDLER USING jsPDF
+        window.generatePDF = function() {
+            const studentName = document.getElementById('cert-student-name').value.trim();
+            if(!studentName) {
+                alert("Please enter a valid name to print on your certificate.");
+                return;
+            }
+
+            // Initialization of jsPDF (Landscape custom certificate size)
+            const { jsPDF } = window.jspdf;
+            const docCert = new jsPDF({
+                orientation: 'landscape',
+                unit: 'px',
+                format: [842, 595] // Elegant standard landscape dimensions
+            });
+
+            // 1. Dark Premium Background Layout
+            docCert.setFillColor(15, 23, 42); // Match academy background color #0f172a
+            docCert.rect(0, 0, 842, 595, 'F');
+
+            // 2. Neon-cyan Geometric Borders
+            docCert.setDrawColor(56, 189, 248); // Match academy #38bdf8
+            docCert.setLineWidth(4);
+            docCert.rect(20, 20, 802, 555);
+            
+            docCert.setDrawColor(30, 41, 59); // Inner thin secondary layer #1e293b
+            docCert.setLineWidth(1);
+            docCert.rect(25, 25, 792, 545);
+
+            // 3. Header Branding
+            docCert.setTextColor(56, 189, 248);
+            docCert.setFont('helvetica', 'bold');
+            docCert.setFontSize(26);
+            docCert.text("GENZ STUDENT ACADEMY", 421, 80, { align: 'center' });
+
+            // 4. Certificate Core Verbiage
+            docCert.setTextColor(255, 255, 255);
+            docCert.setFont('helvetica', 'normal');
+            docCert.setFontSize(18);
+            docCert.text("CERTIFICATE OF COMPLETION", 421, 140, { align: 'center' });
+
+            docCert.setTextColor(148, 163, 184); // Muted secondary shade #94a3b8
+            docCert.setFontSize(14);
+            docCert.text("This is proudly presented to", 421, 200, { align: 'center' });
+
+            // 5. Dynamic Student Name Injector
+            docCert.setTextColor(255, 255, 255);
+            docCert.setFont('helvetica', 'bold');
+            docCert.setFontSize(36);
+            docCert.text(studentName.toUpperCase(), 421, 260, { align: 'center' });
+
+            // Underline accent for name
+            docCert.setDrawColor(56, 189, 248);
+            docCert.setLineWidth(2);
+            docCert.line(260, 280, 582, 280);
+
+            // 6. Course Specification Metadata
+            docCert.setTextColor(148, 163, 184);
+            docCert.setFont('helvetica', 'normal');
+            docCert.setFontSize(14);
+            docCert.text("for successfully mastering all modules, practical strategies, and optimization metrics in the", 421, 330, { align: 'center' });
+            
+            docCert.setTextColor(56, 189, 248);
+            docCert.setFont('helvetica', 'bold');
+            docCert.setFontSize(18);
+            docCert.text("RESUME MASTERY & ATS OPTIMIZATION COURSE", 421, 365, { align: 'center' });
+
+            // 7. Footer Stamp Data & Date Verification
+            const today = new Date();
+            const formattedDate = today.getDate() + '/' + (today.getMonth()+1) + '/' + today.getFullYear();
+
+            docCert.setTextColor(148, 163, 184);
+            docCert.setFont('helvetica', 'normal');
+            docCert.setFontSize(11);
+            docCert.text("Date of Issue: " + formattedDate, 80, 490);
+            docCert.text("Verification ID: GZ-" + Math.floor(100000 + Math.random() * 900000), 80, 510);
+
+            docCert.setDrawColor(148, 163, 184);
+            docCert.setLineWidth(1);
+            docCert.line(640, 495, 760, 495);
+
+            docCert.text("Authorized Signatory", 700, 510, { align: 'center' });
+            docCert.setFont('italic');
+            docCert.text("GenZ Student Academy Team", 700, 485, { align: 'center' });
+
+            // Save Trigger File Download
+            docCert.save("GenZ_Academy_Certificate_" + studentName.replace(/\s+/g, '_') + ".pdf");
+            
+            // Pop-up clean up
+            closeModal();
         };
 
         // GUARD DOG CODE: AUTH CHECK + REDIRECT IF NOT LOGGED IN
@@ -339,7 +484,6 @@
                 if (docSnap.exists()) {
                     const data = docSnap.data();
                     
-                    // DB status sync smoothly
                     isAssignmentSubmitted = data.assignmentSubmitted || false;
                     if(data.completedPercent) currentProgressPercent = data.completedPercent;
 
