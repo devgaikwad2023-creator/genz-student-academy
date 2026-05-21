@@ -61,6 +61,28 @@
             z-index: 10;        /* Video ke upar dikhne ke liye */
             cursor: default;    /* Normal cursor dikhega, pointer nahi */
         }
+
+        /* --- NEW ASSIGNMENT STYLING --- */
+        .assignment-box {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 800px;
+            margin: 20px auto;
+            text-align: left;
+        }
+        .file-input-wrapper {
+            margin: 25px 0;
+            padding: 20px;
+            border: 2px dashed #334155;
+            border-radius: 8px;
+            text-align: center;
+            background: #0f172a;
+        }
+        .file-input-wrapper:hover {
+            border-color: #38bdf8;
+        }
     </style>
 </head>
 <body id="player-body" style="background: #0f172a; color: white; font-family: 'Poppins', sans-serif;">
@@ -95,23 +117,48 @@
             </div>
             
             <ul class="lecture-list">
-                <li class="lecture-item active" onclick="changeLecture(1)">1. Introduction of Resume Mastery</li>
-                <li class="lecture-item" onclick="changeLecture(2)">2. Formatting Guidance & Keyword Mapping</li>
-                <li class="lecture-item" onclick="changeLecture(3)">3. Perfect Resume Structure & Sections</li>
-                <li class="lecture-item" onclick="changeLecture(4)">4. ATS Optimization & Final Review</li>
+                <li class="lecture-item active" id="item-l1" onclick="changeLecture(1)">1. Introduction of Resume Mastery</li>
+                <li class="lecture-item" id="item-l2" onclick="changeLecture(2)">2. Formatting Guidance & Keyword Mapping</li>
+                <li class="lecture-item" id="item-l3" onclick="changeLecture(3)">3. Perfect Resume Structure & Sections</li>
+                <li class="lecture-item" id="item-l4" onclick="changeLecture(4)">4. ATS Optimization & Final Review</li>
+                
+                <li class="lecture-item" id="item-assign" onclick="showAssignment()" style="margin-top: 15px; border-top: 1px solid #334155; padding-top: 15px; color: #38bdf8; font-weight: bold;">📝 Course Assignment</li>
             </ul>
         </aside>
 
         <main class="video-section-player">
-            <div class="video-box">
-                <iframe id="main-video" src="https://drive.google.com/file/d/1fTT6QTgN31dS__QL6oo4aABjpPRF4u1M/preview" frameborder="0" allow="autoplay" allowfullscreen></iframe>
-                <div class="video-overlay"></div>
+            <div id="video-content-wrapper">
+                <div class="video-box">
+                    <iframe id="main-video" src="https://drive.google.com/file/d/1fTT6QTgN31dS__QL6oo4aABjpPRF4u1M/preview" frameborder="0" allow="autoplay" allowfullscreen></iframe>
+                    <div class="video-overlay"></div>
+                </div>
+
+                <div class="video-details">
+                    <h1 id="video-title" style="font-size: 32px; margin-bottom: 10px; color: #38bdf8;">Lecture 1: Introduction to Resume Mastery</h1>
+                    <p id="video-desc" style="color: #94a3b8; line-height: 1.6; max-width: 800px; margin: 10px auto;">In this lecture we are going to learn about the Resume mastery, ATS, 10 Seconds Resume Filteration.</p>
+                </div>
+            </div>
+
+            <div id="assignment-content-wrapper" style="display: none;">
+                <div class="assignment-box">
+                    <h1 style="font-size: 32px; margin-bottom: 10px; color: #38bdf8;">Final Course Assignment</h1>
+                    <p style="color: #94a3b8; line-height: 1.6;">Aapne jo charo lectures mein seekha hai, uske hisab se apna ek ATS-friendly Resume banayein aur uski <b>PDF file</b> niche upload karke submit karein.</p>
+                    
+                    <div class="file-input-wrapper">
+                        <label for="assignment-file" style="cursor: pointer; display: block; color: #94a3b8;">
+                            <span style="font-size: 30px; display: block; margin-bottom: 5px;">📤</span>
+                            <span id="file-label">Click here to choose your Resume PDF file</span>
+                        </label>
+                        <input type="file" id="assignment-file" accept=".pdf" style="display: none;" onchange="updateFileName()">
+                    </div>
+                    
+                    <div style="text-align: center;">
+                        <button class="primary-btn" onclick="submitAssignment()" style="background: #0ea5e9; padding: 12px 30px; font-weight: bold; font-size: 16px;">Submit Assignment</button>
+                    </div>
+                </div>
             </div>
 
             <div class="video-details">
-                <h1 id="video-title" style="font-size: 32px; margin-bottom: 10px; color: #38bdf8;">Lecture 1: Introduction to Resume Mastery</h1>
-                <p id="video-desc" style="color: #94a3b8; line-height: 1.6; max-width: 800px; margin: 10px auto;">In this lecture we are going to learn about the Resume mastery, ATS, 10 Seconds Resume Filteration.</p>
-                
                 <div style="display: flex; gap: 15px; margin-top: 30px; justify-content: center; flex-wrap: wrap;">
                     <button class="primary-btn download-btn">Download Notes</button>
                     <button class="secondary-btn download-btn" style="background: #3b82f6; border: none;">Download Certificate</button>
@@ -139,7 +186,6 @@
         import { auth, db } from "./firebase.js"; 
         import { doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-        // FIXED LECTURES LIST WITH CORRECT SECURE LINK FORMATS FOR ALL 4 VIDEOS
         const lectures = [
             { 
                 id: 1, 
@@ -168,14 +214,22 @@
         ];
 
         window.changeLecture = async function(id) {
+            // View wrappers ko toggle karenge video dikhane ke liye
+            document.getElementById('video-content-wrapper').style.display = 'block';
+            document.getElementById('assignment-content-wrapper').style.display = 'none';
+
             const lecture = lectures.find(l => l.id === id);
             if (!lecture) return;
             document.getElementById('main-video').src = lecture.url;
             document.getElementById('video-title').innerText = lecture.title;
             document.getElementById('video-desc').innerText = lecture.desc;
+            
             const items = document.querySelectorAll('.lecture-item');
             items.forEach(item => item.classList.remove('active'));
-            if(items[id-1]) items[id - 1].classList.add('active');
+            
+            const activeItem = document.getElementById('item-l' + id);
+            if(activeItem) activeItem.classList.add('active');
+            
             const progress = (id / lectures.length) * 100;
             document.getElementById('progress-fill').style.width = progress + "%";
             document.getElementById('progress-text').innerText = "Course Progress: " + Math.round(progress) + "%";
@@ -192,6 +246,37 @@
                     }, { merge: true });
                 } catch (e) { console.error("Error saving:", e); }
             }
+        };
+
+        // NEW FUNCTIONS FOR ASSIGNMENT HANDLERS
+        window.showAssignment = function() {
+            // UI switch to Assignment Box
+            document.getElementById('video-content-wrapper').style.display = 'none';
+            document.getElementById('assignment-content-wrapper').style.display = 'block';
+            
+            const items = document.querySelectorAll('.lecture-item');
+            items.forEach(item => item.classList.remove('active'));
+            document.getElementById('item-assign').classList.add('active');
+        };
+
+        window.updateFileName = function() {
+            const fileInput = document.getElementById('assignment-file');
+            const fileLabel = document.getElementById('file-label');
+            if(fileInput.files.length > 0) {
+                fileLabel.innerText = "Selected File: " + fileInput.files[0].name;
+                fileLabel.style.color = "#38bdf8";
+            }
+        };
+
+        window.submitAssignment = async function() {
+            const fileInput = document.getElementById('assignment-file');
+            if(fileInput.files.length === 0) {
+                alert("Please select your resume PDF file first!");
+                return;
+            }
+            
+            alert("Success! Your assignment has been submitted successfully.");
+            // Agle step mein hum isko Firebase ke saath complete secure link karenge.
         };
 
         // GUARD DOG CODE: AUTH CHECK + REDIRECT IF NOT LOGGED IN
