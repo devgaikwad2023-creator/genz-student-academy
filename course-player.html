@@ -83,6 +83,13 @@
         .file-input-wrapper:hover {
             border-color: #38bdf8;
         }
+
+        /* Certificate Lock Styling */
+        .cert-locked {
+            opacity: 0.6;
+            cursor: not-allowed !important;
+            background: #475569 !important; /* Slightly greyed out when locked */
+        }
     </style>
 </head>
 <body id="player-body" style="background: #0f172a; color: white; font-family: 'Poppins', sans-serif;">
@@ -161,7 +168,7 @@
             <div class="video-details">
                 <div style="display: flex; gap: 15px; margin-top: 30px; justify-content: center; flex-wrap: wrap;">
                     <button class="primary-btn download-btn">Download Notes</button>
-                    <button class="secondary-btn download-btn" style="background: #3b82f6; border: none;">Download Certificate</button>
+                    <button id="cert-btn" class="secondary-btn download-btn cert-locked" onclick="handleCertificateClick()" style="background: #3b82f6; border: none;">Download Certificate</button>
                 </div>
             </div>
         </main>
@@ -185,6 +192,10 @@
     <script type="module">
         import { auth, db } from "./firebase.js"; 
         import { doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+        // Trailing Global states track karne ke liye
+        let currentProgressPercent = 0;
+        let isAssignmentSubmitted = false;
 
         const lectures = [
             { 
@@ -231,8 +242,12 @@
             if(activeItem) activeItem.classList.add('active');
             
             const progress = (id / lectures.length) * 100;
+            currentProgressPercent = Math.round(progress);
             document.getElementById('progress-fill').style.width = progress + "%";
-            document.getElementById('progress-text').innerText = "Course Progress: " + Math.round(progress) + "%";
+            document.getElementById('progress-text').innerText = "Course Progress: " + currentProgressPercent + "%";
+
+            // Live refresh button styles check
+            checkCertificateStatus();
 
             const user = auth.currentUser;
             if (user) {
@@ -241,7 +256,7 @@
                        lastLectureId: id,
                        lastTitle: lecture.title,
                        lastVideoId: lecture.url.split('/').pop(),
-                       completedPercent: Math.round(progress),
+                       completedPercent: currentProgressPercent,
                        timestamp: new Date()
                     }, { merge: true });
                 } catch (e) { console.error("Error saving:", e); }
@@ -250,7 +265,6 @@
 
         // NEW FUNCTIONS FOR ASSIGNMENT HANDLERS
         window.showAssignment = function() {
-            // UI switch to Assignment Box
             document.getElementById('video-content-wrapper').style.display = 'none';
             document.getElementById('assignment-content-wrapper').style.display = 'block';
             
@@ -275,8 +289,46 @@
                 return;
             }
             
-            alert("Success! Your assignment has been submitted successfully.");
-            // Agle step mein hum isko Firebase ke saath complete secure link karenge.
+            const user = auth.currentUser;
+            if (user) {
+                try {
+                    // Firebase Firestore update secure assignment state
+                    await setDoc(doc(db, "userProgress", user.uid), {
+                        assignmentSubmitted: true,
+                        assignmentTimestamp: new Date()
+                    }, { merge: true });
+
+                    isAssignmentSubmitted = true;
+                    alert("Success! Your assignment has been submitted successfully.");
+                    checkCertificateStatus();
+                } catch (e) {
+                    console.error("Firebase submit error: ", e);
+                    alert("Something went wrong while submitting. Try again!");
+                }
+            } else {
+                alert("User session not found. Please log in again.");
+            }
+        };
+
+        // CERTIFICATE BUTTON UNLOCK LOGIC CONTROLLER
+        function checkCertificateStatus() {
+            const certBtn = document.getElementById('cert-btn');
+            // Condition: 4th video loaded or completedPercent is 100% AND assignmentSubmitted is true
+            if (currentProgressPercent === 100 && isAssignmentSubmitted) {
+                certBtn.classList.remove('cert-locked');
+                certBtn.style.background = "#3b82f6"; // Revert to pure original blue
+            } else {
+                certBtn.classList.add('cert-locked');
+            }
+        }
+
+        window.handleCertificateClick = function() {
+            if (currentProgressPercent === 100 && isAssignmentSubmitted) {
+                // STEP 3 MEIN HUM ISKA POP-UP AUR PDF GENERATION BANAENGE
+                alert("Awesome! Let's generate your certificate in the next step.");
+            } else {
+                alert("Please complete all 4 lectures and submit your assignment first!");
+            }
         };
 
         // GUARD DOG CODE: AUTH CHECK + REDIRECT IF NOT LOGGED IN
@@ -286,8 +338,19 @@
                 const docSnap = await getDoc(docRef);
                 if (docSnap.exists()) {
                     const data = docSnap.data();
-                    if (data.lastLectureId) changeLecture(data.lastLectureId);
-                } else { changeLecture(1); }
+                    
+                    // DB status sync smoothly
+                    isAssignmentSubmitted = data.assignmentSubmitted || false;
+                    if(data.completedPercent) currentProgressPercent = data.completedPercent;
+
+                    if (data.lastLectureId) {
+                        changeLecture(data.lastLectureId);
+                    } else {
+                        changeLecture(1);
+                    }
+                } else { 
+                    changeLecture(1); 
+                }
             } else {
                 window.location.href = "index.html";
             }
