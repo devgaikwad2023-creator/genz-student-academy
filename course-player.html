@@ -19,22 +19,22 @@
         }
 
         /* Progress bar ko blue rang dene ke liye */
-.progress-bar {
-    width: 100%;
-    background: #334155; /* Khali bar ka rang */
-    height: 8px;
-    border-radius: 5px;
-    margin-top: 10px;
-    overflow: hidden;
-}
+        .progress-bar {
+            width: 100%;
+            background: #334155; /* Khali bar ka rang */
+            height: 8px;
+            border-radius: 5px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
 
-#progress-fill {
-    height: 100%;
-    background: #38bdf8; /* Yeh wahi blue rang hai jo aapko chahiye */
-    width: 0%; /* Isse JavaScript update karega */
-    transition: width 0.5s ease;
-    box-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
-}
+        #progress-fill {
+            height: 100%;
+            background: #38bdf8; /* Yeh wahi blue rang hai jo aapko chahiye */
+            width: 0%; /* Isse JavaScript update karega */
+            transition: width 0.5s ease;
+            box-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+        }
         
         /* Sidebar ko navbar ke niche se shuru karne ke liye */
         .lesson-sidebar {
@@ -47,33 +47,31 @@
             margin-top: 60px;
         }
 
-        /* --- YAHAN SE NAYA CODE JODNA HAI --- */
-.video-box {
-    position: relative; /* Isse parda video box ke bahar nahi bhagega */
-}
+        .video-box {
+            position: relative; /* Isse parda video box ke bahar nahi bhagega */
+        }
 
-.video-overlay {
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 75px;        /* Pop-out button ki width ke hisab se */
-    height: 75px;       /* Pop-out button ki height ke hisab se */
-    background: transparent; /* Ekdum kaanch jaisa invisible */
-    z-index: 10;        /* Video ke upar dikhne ke liye */
-    cursor: default;    /* Normal cursor dikhega, pointer nahi */
-}
-/* --- YAHAN TAK --- */
+        .video-overlay {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 75px;        /* Pop-out button ki width ke hisab se */
+            height: 75px;       /* Pop-out button ki height ke hisab se */
+            background: transparent; /* Ekdum kaanch jaisa invisible */
+            z-index: 10;        /* Video ke upar dikhne ke liye */
+            cursor: default;    /* Normal cursor dikhega, pointer nahi */
+        }
     </style>
 </head>
 <body id="player-body" style="background: #0f172a; color: white; font-family: 'Poppins', sans-serif;">
 
     <header class="navbar">
         <a href="index.html" class="logo">
-    <img src="Genz Student Academy logo.png" alt="GenZ Academy Logo" class="nav-logo">
-</a>
+            <img src="Genz Student Academy logo.png" alt="GenZ Academy Logo" class="nav-logo">
+        </a>
         <div class="logo">
-      Genz Student Academy
-    </div>
+            Genz Student Academy
+        </div>
         <div class="menu-toggle" id="mobile-menu">☰</div>
         <nav>
             <ul class="nav-links" id="nav-list">
@@ -141,9 +139,14 @@
         import { auth, db } from "./firebase.js"; 
         import { doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-        // LECTURES LIST WITH GOOGLE DRIVE SECURE LINKS
+        // LECTURES LIST UPDATED FOR JAVASCRIPT AUTOLOAD SYNC
         const lectures = [
-            { id: 1, title: "1. Introduction to Web Dev", url: "https://drive.google.com/file/d/1fTT6QTgN31dS__QL6oo4aABjpPRF4u1M/preview", desc: "Is lecture mein hum seekhenge ki aesthetic layouts kaise banate hain." },
+            { 
+                id: 1, 
+                title: "Lecture 1: Introduction to Resume Mastery", 
+                url: "https://drive.google.com/file/d/1fTT6QTgN31dS__QL6oo4aABjpPRF4u1M/preview", 
+                desc: "In this lecture we are going to learn about the Resume mastery, ATS, 10 Seconds Resume Filteration." 
+            },
             { id: 2, title: "2. HTML Basics", url: "https://www.youtube.com/embed/mJgZqzH2K60", desc: "HTML tags aur structure ko detail mein samjhein." },
             { id: 3, title: "3. Styling with CSS", url: "https://www.youtube.com/embed/1Rs2ND1RYYI", desc: "CSS se apni website ko GenZ aesthetic look kaise dein." },
             { id: 4, title: "4. JavaScript Logic", url: "https://www.youtube.com/embed/W6NZfCO5SIk", desc: "JavaScript ke basic functions aur logic ko samjhein." }
