@@ -20,11 +20,11 @@
             
             <div class="profile-stats">
                 <div class="stat-box">
-                    <h3>3</h3>
+                    <h3 id="total-courses-stat">0</h3>
                     <p>Courses</p>
                 </div>
                 <div class="stat-box">
-                    <h3>45%</h3>
+                    <h3 id="learning-progress-stat">0%</h3>
                     <p>Progress</p>
                 </div>
             </div>
@@ -37,49 +37,87 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        // IMPORTANT: Paste your Firebase Config here from your firebase.js file
+        // Firebase Config (Kept exactly identical to your project)
         const firebaseConfig = {
+            apiKey: "AIzaSyCeUJEVaKFNIgyroHAy_MFbx5Yv9POmUcQ",
+            authDomain: "genz-student-academy.firebaseapp.com",
+            projectId: "genz-student-academy",
+            storageBucket: "genz-student-academy.firebasestorage.app",
+            messagingSenderId: "358103651695",
+            appId: "1:358103651695:web:b087ba14d01a6ba751049a",
+            measurementId: "G-XJH4TKVQZW"
+        };
 
-  apiKey: "AIzaSyCeUJEVaKFNIgyroHAy_MFbx5Yv9POmUcQ",
-
-  authDomain: "genz-student-academy.firebaseapp.com",
-
-  projectId: "genz-student-academy",
-
-  storageBucket: "genz-student-academy.firebasestorage.app",
-
-  messagingSenderId: "358103651695",
-
-  appId: "1:358103651695:web:b087ba14d01a6ba751049a",
-
-  measurementId: "G-XJH4TKVQZW"
-
-};
-
-        // Initialize Firebase
+        // Initialize App & Services
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
+        const db = getFirestore(app);
 
         const nameTag = document.getElementById('user-display-name');
         const emailTag = document.getElementById('user-display-email');
         const userImg = document.getElementById('user-img');
         const logoutBtn = document.getElementById('logout-btn');
 
-        // Check user status
-        onAuthStateChanged(auth, (user) => {
+        const coursesStat = document.getElementById('total-courses-stat');
+        const progressStat = document.getElementById('learning-progress-stat');
+
+        // Check dynamic status across Firestore architecture
+        onAuthStateChanged(auth, async (user) => {
             if (user) {
+                // Set Profile Details safely
                 nameTag.innerText = user.displayName || "Genz Student";
                 emailTag.innerText = user.email;
                 if(user.photoURL) {
                     userImg.src = user.photoURL;
                 }
+
+                try {
+                    // STEP 1: Pehle check karo ki verification document exist karta hai ya nahi
+                    const enrollmentRef = doc(db, "enrollments", user.uid);
+                    const enrollmentSnap = await getDoc(enrollmentRef);
+
+                    if (enrollmentSnap.exists()) {
+                        // User valid paid member hai! progress snapshot check karo
+                        const progressRef = doc(db, "userProgress", user.uid);
+                        const progressSnap = await getDoc(progressRef);
+
+                        let maxLectureVisited = 0;
+                        let isAssignmentSubmitted = false;
+
+                        if (progressSnap.exists()) {
+                            const progressData = progressSnap.data();
+                            maxLectureVisited = progressData.maxLectureVisited || 0;
+                            isAssignmentSubmitted = progressData.assignmentSubmitted || false;
+                        }
+
+                        // Exact matching configuration formulation
+                        let videoProgress = maxLectureVisited * 20;
+                        let finalProgress = videoProgress + (isAssignmentSubmitted ? 20 : 0);
+                        if (finalProgress > 100) finalProgress = 100;
+
+                        // UI injection mapping
+                        coursesStat.innerText = "1";
+                        progressStat.innerText = `${finalProgress}%`;
+
+                    } else {
+                        // Unpaid user or freshly signed up account -> Secure block reset
+                        coursesStat.innerText = "0";
+                        progressStat.innerText = "0%";
+                    }
+                } catch (error) {
+                    console.error("Error reading profile metrics data:", error);
+                    coursesStat.innerText = "0";
+                    progressStat.innerText = "0%";
+                }
+
             } else {
                 window.location.href = "login.html";
             }
         });
 
-        // Logout
+        // Safe User Session Logout
         logoutBtn.addEventListener('click', () => {
             signOut(auth).then(() => {
                 window.location.href = "login.html";
@@ -88,31 +126,24 @@
     </script>
 
     <div id="ai-chat-container" class="chat-closed">
-    <div class="chat-header" onclick="toggleChat()">
-        <span>🤖 Genz AI Assistant</span>
-        <button id="close-chat">×</button>
+        <div class="chat-header" onclick="toggleChat()">
+            <span>🤖 Genz AI Assistant</span>
+            <button id="close-chat" onclick="toggleChat(); event.stopPropagation();">×</button>
+        </div>
+        <div id="chat-box" class="chat-body">
+            <p class="bot-msg">Hey! I am your Study Assistant. How can I help you today?</p>
+        </div>
+        <div class="chat-footer">
+            <input type="text" id="user-input" placeholder="Ask anything...">
+            <button onclick="sendMessage()"><i class="fa fa-paper-plane"></i></button>
+        </div>
     </div>
-    <div id="chat-box" class="chat-body">
-        <p class="bot-msg">Hey! I am your Study Assistant. How can I help you today?</p>
-    </div>
-    <div class="chat-footer">
-        <input type="text" id="user-input" placeholder="Ask anything...">
-        <button onclick="sendMessage()"><i class="fa fa-paper-plane"></i></button>
-    </div>
-</div>
 
-<div id="chat-icon" onclick="toggleChat()">
-    <img src="https://cdn-icons-png.flaticon.com/512/4712/4712035.png" alt="AI Chat">
-</div>
-
-<div id="ai-chat-container" class="chat-closed" style="display:none;">
-    <!-- (Chat box ka pura HTML jo index.html mein hai) -->
-</div>
-<div id="chat-icon" onclick="toggleChat()">
-    <img src="https://cdn-icons-png.flaticon.com/512/4712/4712035.png" alt="AI Chat">
-</div>
-    
-<script type="module" src="script.js"></script>
-<script src="chat.js"></script>    
+    <div id="chat-icon" onclick="toggleChat()">
+        <img src="https://cdn-icons-png.flaticon.com/512/4712/4712035.png" alt="AI Chat">
+    </div>
+        
+    <script type="module" src="script.js"></script>
+    <script src="chat.js"></script>    
 </body>
 </html>
