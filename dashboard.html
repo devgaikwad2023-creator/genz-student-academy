@@ -136,28 +136,6 @@
   <script src="chat.js"></script>
 
   <script>
-    window.toggleChat = function() {
-        const chat = document.getElementById('ai-chat-container');
-        if (chat) {
-            chat.classList.toggle('chat-closed');
-            chat.classList.toggle('chat-open'); 
-        }
-    };
-
-    window.sendMessage = function() {
-        const input = document.getElementById('user-input');
-        const box = document.getElementById('chat-box');
-        if(!input || !box) return;
-
-        const text = input.value.trim();
-        if (!text) return;
-
-        box.innerHTML += `<p class="user-msg" style="background: #0ea5e9; padding: 8px; border-radius: 5px; margin: 5px 0; text-align: right;">${text}</p>`;
-        
-        input.value = '';
-        box.scrollTop = box.scrollHeight;
-    };
-
     const menuToggle = document.getElementById('mobile-menu');
     const navList = document.getElementById('nav-list');
 
