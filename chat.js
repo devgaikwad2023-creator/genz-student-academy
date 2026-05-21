@@ -1,5 +1,5 @@
 // Global AI Chatbot Logic for Genz Student Academy
-const GROQ_API_KEY = "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";
+const GROQ_API_KEY = "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";
 
 window.toggleChat = function() {
     const chatContainer = document.getElementById('ai-chat-container');
