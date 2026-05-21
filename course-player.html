@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Course Player | GenZ Student Academy</title>
-    <link rel="icon" type="image/png" href="Genz Student Academy logo.png">
+    <link class="lazyload" data-src="Genz Student Academy logo.png" rel="icon" type="image/png" href="Genz Student Academy logo.png">
     <link rel="stylesheet" href="style.css">
     <style>
         /* --- LOCAL FIXES TAALMEL KE LIYE --- */
@@ -52,7 +52,7 @@
 
     <header class="navbar">
         <a href="index.html" class="logo">
-    <img src="Genz Student Academy logo.png" alt="GenZ Academy Logo" class="nav-logo">
+    <img class="lazyload" data-src="Genz Student Academy logo.png" src="Genz Student Academy logo.png" alt="GenZ Academy Logo" class="nav-logo">
 </a>
         <div class="logo">
       Genz Student Academy
@@ -80,7 +80,7 @@
             </div>
             
             <ul class="lecture-list">
-                <li class="lecture-item active" onclick="changeLecture(1)">1. Introduction of Resume Mastery</li>
+                <li class="lecture-item active" onclick="changeLecture(1)">1. Introduction to Web Dev</li>
                 <li class="lecture-item" onclick="changeLecture(2)">2. HTML Basics</li>
                 <li class="lecture-item" onclick="changeLecture(3)">3. Styling with CSS</li>
                 <li class="lecture-item" onclick="changeLecture(4)">4. JavaScript Logic</li>
@@ -89,12 +89,11 @@
 
         <main class="video-section-player">
             <div class="video-box">
-                <!-- YAHA PAR AAPKA NEW VIDEO CODE EMBED KIYA HAI -->
-                <iframe id="main-video" src="https://www.youtube.com/embed/KTv8njbtl10?modestbranding=1&rel=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                <iframe id="main-video" src="https://drive.google.com/file/d/1fTT6QTgN31dS__QL6oo4aABjpPRF4u1M/preview" frameborder="0" allow="autoplay" allowfullscreen></iframe>
             </div>
 
             <div class="video-details">
-                <h1 id="video-title" style="font-size: 32px; margin-bottom: 10px; color: #38bdf8;">Lecture 1: Introduction of Resume Mastery</h1>
+                <h1 id="video-title" style="font-size: 32px; margin-bottom: 10px; color: #38bdf8;">Lecture 1: Introduction to Web Dev</h1>
                 <p id="video-desc" style="color: #94a3b8; line-height: 1.6; max-width: 800px; margin: 10px auto;">Is lecture mein hum seekhenge ki aesthetic layouts kaise banate hain.</p>
                 
                 <div style="display: flex; gap: 15px; margin-top: 30px; justify-content: center; flex-wrap: wrap;">
@@ -124,9 +123,9 @@
         import { auth, db } from "./firebase.js"; 
         import { doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-        // YAHA PAR BHI LECTURE 1 KA URL UPDATE KAR DIYA HAI
+        // LECTURES LIST WITH GOOGLE DRIVE SECURE LINKS
         const lectures = [
-            { id: 1, title: "1. Introduction to Web Dev", url: "https://www.youtube.com/embed/KTv8njbtl10?modestbranding=1&rel=0", desc: "In this Module we learn about the filteration of Resume, ATS, and Course Blueprint." },
+            { id: 1, title: "1. Introduction to Web Dev", url: "https://drive.google.com/file/d/1fTT6QTgN31dS__QL6oo4aABjpPRF4u1M/preview", desc: "Is lecture mein hum seekhenge ki aesthetic layouts kaise banate hain." },
             { id: 2, title: "2. HTML Basics", url: "https://www.youtube.com/embed/mJgZqzH2K60", desc: "HTML tags aur structure ko detail mein samjhein." },
             { id: 3, title: "3. Styling with CSS", url: "https://www.youtube.com/embed/1Rs2ND1RYYI", desc: "CSS se apni website ko GenZ aesthetic look kaise dein." },
             { id: 4, title: "4. JavaScript Logic", url: "https://www.youtube.com/embed/W6NZfCO5SIk", desc: "JavaScript ke basic functions aur logic ko samjhein." }
@@ -159,6 +158,7 @@
             }
         };
 
+        // GUARD DOG CODE: AUTH CHECK + REDIRECT IF NOT LOGGED IN
         auth.onAuthStateChanged(async (user) => {
             if (user) {
                 const docRef = doc(db, "userProgress", user.uid); 
@@ -167,6 +167,9 @@
                     const data = docSnap.data();
                     if (data.lastLectureId) changeLecture(data.lastLectureId);
                 } else { changeLecture(1); }
+            } else {
+                // Agar user login nahi hai toh dhakka maar ke index.html pe bhej do
+                window.location.href = "index.html";
             }
         });
 
