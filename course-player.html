@@ -46,6 +46,23 @@
         .video-section-player {
             margin-top: 60px;
         }
+
+        /* --- YAHAN SE NAYA CODE JODNA HAI --- */
+.video-box {
+    position: relative; /* Isse parda video box ke bahar nahi bhagega */
+}
+
+.video-overlay {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 75px;        /* Pop-out button ki width ke hisab se */
+    height: 75px;       /* Pop-out button ki height ke hisab se */
+    background: transparent; /* Ekdum kaanch jaisa invisible */
+    z-index: 10;        /* Video ke upar dikhne ke liye */
+    cursor: default;    /* Normal cursor dikhega, pointer nahi */
+}
+/* --- YAHAN TAK --- */
     </style>
 </head>
 <body id="player-body" style="background: #0f172a; color: white; font-family: 'Poppins', sans-serif;">
