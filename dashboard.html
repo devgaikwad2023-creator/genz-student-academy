@@ -46,17 +46,17 @@
 
       <div class="dashboard-card">
         <h2>Enrolled Courses</h2>
-        <span>3</span>
+        <span>0</span>
       </div>
 
       <div class="dashboard-card">
         <h2>Completed Lessons</h2>
-        <span>18</span>
+        <span>0</span>
       </div>
 
       <div class="dashboard-card">
         <h2>Learning Progress</h2>
-        <span>45%</span>
+        <span>0%</span>
       </div>
 
     </div>
@@ -68,7 +68,7 @@
           <img src="https://via.placeholder.com/150" alt="Course Thumbnail">
           <h3>Resume Mastery: The ATS - Friendly Formula</h3>
           <div class="progress-bar">
-            <div class="progress" style="width: 45%;"></div>
+            <div class="progress" style="width: 0%;"></div>
           </div>
           <button class="continue-btn" onclick="window.location.href='course-player.html'">Continue Learning</button>
         </div>
@@ -81,29 +81,44 @@
     import { auth, db } from "./firebase.js";
     import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    // 1. Progress aur User Data Load karna
+    // 1. Progress aur User Data Load karna (Connected to userProgress)
     auth.onAuthStateChanged(async (user) => {
         if (user) {
             document.querySelector('.dashboard h1').innerText = `Welcome Back, ${user.displayName || "Student"} 👋`;
 
-            const docRef = doc(db, "enrollments", user.uid);
+            // Tumhara exact wahi collection name jo course player mein save karta hai
+            const docRef = doc(db, "userProgress", user.uid);
             const docSnap = await getDoc(docRef);
+
+            let maxLectureVisited = 1;
+            let isAssignmentSubmitted = false;
 
             if (docSnap.exists()) {
                 const data = docSnap.data();
-                const progress = data.completedPercent || 0;
-
-                // UI Cards update karna
-                document.querySelectorAll('.dashboard-card span')[2].innerText = `${progress}%`;
-                const bar = document.querySelector('.course-card-mini .progress');
-                if(bar) bar.style.width = `${progress}%`;
+                maxLectureVisited = data.maxLectureVisited || 1;
+                isAssignmentSubmitted = data.assignmentSubmitted || false;
             }
+
+            // Calculations based on your exact formula
+            let videoProgress = maxLectureVisited * 20; 
+            let finalProgress = videoProgress + (isAssignmentSubmitted ? 20 : 0);
+            if(finalProgress > 100) finalProgress = 100;
+
+            // UI Cards dynamic update engine
+            document.querySelectorAll('.dashboard-card span')[0].innerText = "1"; // Enrolled Course
+            document.querySelectorAll('.dashboard-card span')[1].innerText = maxLectureVisited; // Completed Lessons
+            document.querySelectorAll('.dashboard-card span')[2].innerText = `${finalProgress}%`; // Learning Progress Percent
+            
+            // Progress bar mapping implementation
+            const bar = document.querySelector('.course-card-mini .progress');
+            if(bar) bar.style.width = `${finalProgress}%`;
+
         } else {
             window.location.href = "login.html";
         }
     });
 
-    // 2. Chat Logic (Jo gayab ho gaya tha)
+    // 2. Chat Logic (Safe keeping without core structure breaks)
     const responses = {
         "hello": "Hello! Aaj hum kya seekhenge?",
         "hi": "Hi there! Main aapki kaise help kar sakta hoon?",
@@ -116,15 +131,18 @@
 
     window.toggleChat = function() {
         const chat = document.getElementById('ai-chat-container');
-        chat.classList.toggle('chat-closed');
-        chat.classList.toggle('chat-open'); // CSS mein display toggle check kar lena
+        if (chat) {
+            chat.classList.toggle('chat-closed');
+            chat.classList.toggle('chat-open'); 
+        }
     };
 
     window.sendMessage = function() {
         const input = document.getElementById('user-input');
         const box = document.getElementById('chat-box');
-        const text = input.value.trim().toLowerCase();
+        if(!input || !box) return;
 
+        const text = input.value.trim().toLowerCase();
         if (!text) return;
 
         // User Message
@@ -140,16 +158,17 @@
         input.value = '';
         box.scrollTop = box.scrollHeight;
     };
+  </script>
 
-    <div id="ai-chat-container" class="chat-closed" style="display:none;">
-    <!-- (Chat box ka pura HTML jo index.html mein hai) -->
-</div>
-<div id="chat-icon" onclick="toggleChat()">
+  <div id="ai-chat-container" class="chat-closed" style="display:none;">
+    </div>
+
+  <div id="chat-icon" onclick="toggleChat()">
     <img src="https://cdn-icons-png.flaticon.com/512/4712/4712035.png" alt="AI Chat">
-</div>
+  </div>
       
-<script type="module" src="script.js"></script>
-<script src="chat.js"></script>
+  <script type="module" src="script.js"></script>
+  <script src="chat.js"></script>
 
   <script>
     const menuToggle = document.getElementById('mobile-menu');
@@ -160,6 +179,6 @@
             navList.classList.toggle('active');
         });
     }
-</script>
+  </script>
 </body>
 </html>
