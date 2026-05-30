@@ -39,27 +39,25 @@
     <p>Start your learning journey with premium quality courses designed for students and future professionals.</p>
   </section>
 
-  <!-- YAHAN SE CHANGES SHURU HAIN -->
   <section class="all-courses" id="course-container">
     <p id="loading-text" style="color: #38bdf8; text-align: center; width: 100%; font-size: 1.2rem;">Courses load ho rahe hain... ⏳</p>
-    <!-- Google Sheet wale courses yahan apne aap aayenge -->
   </section>
-  <!-- CHANGES KHATAM -->
 
   <div id="payment-modal" class="modal" style="display: none;">
     <div class="modal-content">
       <span class="close" onclick="closeModal()" style="cursor: pointer; float: right; font-size: 28px;">&times;</span>
       <h2 style="color: #38bdf8;">Complete Enrollment 🚀</h2>
       <p>Scan the QR below or use UPI to get instant access.</p>
-      <div class="qr-placeholder">
-        <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=gaikwadmanik791@oksbi&pn=Genz%20Academy&cu=INR" alt="Payment QR" style="border: 5px solid white; border-radius: 10px;">
+      
+      <div class="qr-placeholder" style="display: flex; justify-content: center; margin: 20px 0;">
+        <div id="qrcode" style="background: white; padding: 15px; border: 5px solid white; border-radius: 10px; display: inline-block;"></div>
       </div>
-      <p class="price-tag" id="modal-price">Selected Course Access</p>
+      
+      <p class="price-tag" id="modal-price" style="font-weight: bold; font-size: 1.2rem; margin-bottom: 15px;">Selected Course Access</p>
       <button class="verify-btn" onclick="verifyPayment()">I have Paid - Access Course</button>
     </div>
   </div>
 
-  <!-- AI CHAT START -->
   <div id="ai-chat-container" class="chat-closed">
     <div class="chat-header" onclick="toggleChat()">
         <span>🤖 Genz AI Assistant</span>
@@ -77,7 +75,7 @@
   <div id="chat-icon" onclick="toggleChat()">
       <img src="https://cdn-icons-png.flaticon.com/512/4712/4712035.png" alt="AI Chat">
   </div>
-  <!-- AI CHAT END -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
   <script>
     // --- GOOGLE SHEET CONNECTION CODE ---
@@ -92,8 +90,8 @@
 
         if(data.length > 0) {
             loadingText.style.display = 'none';
-            // Puraane manual cards ko clear karke naye cards daalna
             data.forEach(course => {
+                // `course.title` aur `course.price` ko humne safely openModal ke parameters me inject kiya hai
                 const cardHTML = `
                 <div class="premium-course-card">
                     <div class="course-image">🎓</div>
@@ -105,9 +103,9 @@
                             <span>👨‍🎓 New Release</span>
                         </div>
                         <div class="price-row">
-                            <h3>${course.price}</h3>
+                            <h3>₹${course.price}</h3>
                             <a href="course-detail.html?id=${course.id}" class="details-btn">Course Detail</a>
-                            <button onclick="openModal()" class="enroll-btn" style="padding: 10px 20px; background: #38bdf8; color: black; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Enroll Now</button>
+                            <button onclick="openModal('${course.title}', '${course.price}')" class="enroll-btn" style="padding: 10px 20px; background: #38bdf8; color: black; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Enroll Now</button>
                         </div>
                     </div>
                 </div>`;
@@ -120,17 +118,47 @@
       }
     }
 
-    // Modal Functions
-    function openModal() {
+    // Modal Functions with Dynamic Lock Price Logic
+    function openModal(courseTitle, coursePrice) {
+      // 1. Modal dikhao
       document.getElementById('payment-modal').style.display = "block";
+      
+      // 2. Title aur price ui text par update karo
+      document.getElementById('modal-price').innerText = `${courseTitle} - ₹${coursePrice}`;
+      
+      // 3. Purana generate hua QR clear karo
+      document.getElementById('qrcode').innerHTML = "";
+      
+      // 4. UPI configurations
+      const upiId = "gaikwadmanik791@oksbi";
+      const merchantName = "Genz Academy";
+      
+      // 5. Clean numbers parsing taaki sirf digit price string pass ho (e.g. ₹499 se 499 bane)
+      const cleanPrice = coursePrice.replace(/[^0-9.]/g, '');
+      
+      // 6. Secure Locked String create karein
+      const upiUrl = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(merchantName)}&am=${cleanPrice}&tn=${encodeURIComponent(courseTitle)}&cu=INR`;
+      
+      // 7. Dynamic QR design generate karein inside your modal box
+      new QRCode(document.getElementById("qrcode"), {
+        text: upiUrl,
+        width: 200,
+        height: 200,
+        colorDark : "#000000",
+        colorLight : "#ffffff",
+        correctLevel : QRCode.CorrectLevel.H
+      });
     }
+
     function closeModal() {
       document.getElementById('payment-modal').style.display = "none";
     }
+    
     function verifyPayment() {
       alert("Verification in progress! Our team will grant access within 30 mins.");
       closeModal();
     }
+    
     window.onclick = function(event) {
       let modal = document.getElementById('payment-modal');
       if (event.target == modal) { modal.style.display = "none"; }
@@ -152,6 +180,6 @@
             navList.classList.toggle('active');
         });
     }
-</script>
+  </script>
 </body>
 </html>
