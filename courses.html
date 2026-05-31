@@ -44,19 +44,19 @@
   </section>
 
   <div id="payment-modal" class="modal" style="display: none;">
-    <div class="modal-content">
-      <span class="close" onclick="closeModal()" style="cursor: pointer; float: right; font-size: 28px;">&times;</span>
-      <h2 style="color: #38bdf8;">Complete Enrollment 🚀</h2>
-      <p>Scan the QR below or use UPI to get instant access.</p>
-      
-      <div class="qr-placeholder" style="display: flex; justify-content: center; margin: 20px 0;">
-        <div id="qrcode" style="background: white; padding: 15px; border: 5px solid white; border-radius: 10px; display: inline-block;"></div>
-      </div>
-      
-      <p class="price-tag" id="modal-price" style="font-weight: bold; font-size: 1.2rem; margin-bottom: 15px;">Selected Course Access</p>
-      <button class="verify-btn" onclick="verifyPayment()">I have Paid - Access Course</button>
+  <div class="modal-content">
+    <span class="close" onclick="closeModal()" style="cursor: pointer; float: right; font-size: 28px;">&times;</span>
+    <h2 style="color: #38bdf8;">Complete Enrollment 🚀</h2>
+    <p>Scan the QR below or use UPI to get instant access.</p>
+    
+    <div class="qr-placeholder" style="display: flex; justify-content: center; margin: 20px 0;">
+      <div id="qrcode" style="background: white; padding: 15px; border: 5px solid white; border-radius: 10px; display: inline-block;"></div>
     </div>
+    
+    <p class="price-tag" id="modal-price" style="font-weight: bold; font-size: 1.2rem; margin-bottom: 15px;">Selected Course Access</p>
+    <button class="verify-btn" onclick="verifyPayment()">I have Paid - Access Course</button>
   </div>
+</div>
 
   <div id="ai-chat-container" class="chat-closed">
     <div class="chat-header" onclick="toggleChat()">
