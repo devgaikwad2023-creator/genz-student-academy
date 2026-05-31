@@ -119,36 +119,37 @@
     }
 
     // Modal Functions with Dynamic Lock Price Logic
-    function openModal(courseTitle, coursePrice) {
-      // 1. Modal dikhao
-      document.getElementById('payment-modal').style.display = "block";
-      
-      // 2. Title aur price ui text par update karo
-      document.getElementById('modal-price').innerText = `${courseTitle} - ₹${coursePrice}`;
-      
-      // 3. Purana generate hua QR clear karo
-      document.getElementById('qrcode').innerHTML = "";
-      
-      // 4. UPI configurations
-      const upiId = "gaikwadmanik791@oksbi";
-      const merchantName = "Genz Academy";
-      
-      // 5. Clean numbers parsing taaki sirf digit price string pass ho (e.g. ₹499 se 499 bane)
-      const cleanPrice = coursePrice.replace(/[^0-9.]/g, '');
-      
-      // 6. Secure Locked String create karein
-      const upiUrl = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(merchantName)}&am=${cleanPrice}&tn=${encodeURIComponent(courseTitle)}&cu=INR`;
-      
-      // 7. Dynamic QR design generate karein inside your modal box
-      new QRCode(document.getElementById("qrcode"), {
-        text: upiUrl,
-        width: 200,
-        height: 200,
-        colorDark : "#000000",
-        colorLight : "#ffffff",
-        correctLevel : QRCode.CorrectLevel.H
-      });
-    }
+    // Naya Code (Ise wahan replace kar do)
+function openModal(courseTitle, coursePrice) {
+  // 1. Sabse pehle modal ko screen par dikhao
+  document.getElementById('payment-modal').style.display = "block";
+  
+  // 2. Jo course select hua hai, uska naam aur price modal par update karo
+  document.getElementById('modal-price').innerText = `${courseTitle} - ₹${coursePrice}`;
+  
+  // 3. Purana generate hua QR code clear karo taaki naya fresh QR bane
+  document.getElementById('qrcode').innerHTML = "";
+  
+  // 4. Aapki UPI Details aur Business Name
+  const upiId = "gaikwadmanik791@oksbi";
+  const merchantName = "Genz Academy";
+  
+  // 5. Price se text ya extra symbols (jaise ₹) saaf karke strictly number nikaalna
+  const cleanPrice = coursePrice.replace(/[^0-9.]/g, '');
+  
+  // 6. 100% Secure URL String jahan price lock hoti hai
+  const upiUrl = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(merchantName)}&am=${cleanPrice}&tn=${encodeURIComponent(courseTitle)}&cu=INR`;
+  
+  // 7. Dynamic QR Generator call
+  new QRCode(document.getElementById("qrcode"), {
+    text: upiUrl,
+    width: 200,
+    height: 200,
+    colorDark : "#000000",
+    colorLight : "#ffffff",
+    correctLevel : QRCode.CorrectLevel.H
+  });
+}
 
     function closeModal() {
       document.getElementById('payment-modal').style.display = "none";
