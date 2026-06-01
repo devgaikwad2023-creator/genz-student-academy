@@ -50,3 +50,62 @@ window.handleEnrollment = function(courseId) {
         }
     }
 }
+
+/* --- SECURE PAYMENT VERIFICATION SYSTEM --- */
+window.verifyPayment = function() {
+    const user = auth.currentUser;
+
+    if (!user) {
+        alert("Pehle Login/Signup kijiye enroll karne ke liye!");
+        window.location.href = "login.html";
+        return;
+    }
+
+    // Modal se course ka naam uthane ke liye
+    const courseNameElement = document.getElementById('modal-price');
+    const courseName = courseNameElement ? courseNameElement.innerText : "Unknown Course";
+
+    // Google Sheet ke liye data tayyar karna (Firebase Auth se real details)
+    const paymentData = {
+        fullName: user.displayName || "Genz Student",
+        email: user.email,
+        course: courseName
+    };
+
+    // Button ko double-click se bachane ke liye disable karna
+    const paidButton = document.querySelector('.verify-btn');
+    if (paidButton) {
+        paidButton.disabled = true;
+        paidButton.innerText = "Processing...";
+    }
+
+    // Aapka Google Apps Script Web App URL
+    const scriptUrl = "https://script.google.com/macros/s/AKfycbxR7y4zBy0r4hhqUb1KKlw-g0Vz275yR8fVT3-x6-3muU0mU0tLnVOceFiuNls-ruj9AQ/exec";
+
+    fetch(scriptUrl, {
+        method: "POST",
+        mode: "no-cors", // Google Apps Script ke liye strictly required
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(paymentData)
+    })
+    .then(() => {
+        // Data sheet mein jaane ke baad alert pop-up
+        alert("Verification in progress! Our team will grant access within 30 mins.");
+        
+        // Modal close karke bache ko dashboard par bhejna
+        if (typeof closeModal === "function") {
+            closeModal();
+        }
+        window.location.href = "dashboard.html";
+    })
+    .catch(error => {
+        console.error("Error submitting payment:", error);
+        alert("Something went wrong. Please try again or contact support.");
+        if (paidButton) {
+            paidButton.disabled = false;
+            paidButton.innerText = "I have Paid - Access Course";
+        }
+    });
+}
