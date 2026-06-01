@@ -4,7 +4,6 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/f
 console.log("TESTING NEW CODE - v2");
 console.log("Genz Student Academy Loaded Successfully");
 
-
 // --- NEW AUTH LOGIC ---
 onAuthStateChanged(auth, (user) => {
     const loginBtn = document.getElementById("login-btn");
@@ -37,8 +36,8 @@ if (darkModeToggle) {
     });
 }
 
-/* --- ENROLLMENT GUARD WITH TRANSPARENCY POPUP (LOCKED) --- */
-window.handleEnrollment = function(courseId) {
+/* --- ENROLLMENT GUARD WITH TRANSPARENCY POPUP (FIXED PARAMETERS) --- */
+window.handleEnrollment = function(courseTitle, coursePrice) {
     const user = auth.currentUser; 
 
     if (!user) {
@@ -47,13 +46,13 @@ window.handleEnrollment = function(courseId) {
         return;
     }
 
-    console.log("User logged in! Showing Transparency Disclosure first for:", courseId);
+    console.log("User logged in! Showing Transparency Disclosure first for:", courseTitle);
 
     // 1. Pehle se agar koi purana disclosure modal hai toh use remove karo
     const oldModal = document.getElementById('enroll-disclosure-modal');
     if (oldModal) oldModal.remove();
 
-    // 2. Naya Compact Disclosure Modal Create Karna (Dynamic HTML)
+    // 2. Naya Compact Disclosure Modal Create Karna
     const disclosureHtml = `
       <div id="enroll-disclosure-modal" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(15, 23, 42, 0.85); display: flex; justify-content: center; align-items: center; z-index: 999999; font-family: 'Poppins', sans-serif; backdrop-filter: blur(6px);">
         <div style="background: #1e293b; color: #ffffff; max-width: 460px; width: 90%; padding: 18px 22px; border-radius: 12px; border: 1px solid #334155; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5); text-align: left; box-sizing: border-box;">
@@ -81,16 +80,16 @@ window.handleEnrollment = function(courseId) {
       </div>
     `;
 
-    // 3. Modal ko page ke andar insert karna
+    // 3. Modal ko page ke naye container mein insert karna
     document.body.insertAdjacentHTML('beforeend', disclosureHtml);
 
-    // 4. Button par click karne par disclosure band hoga aur asli QR Code Modal khulega
+    // 4. Agree click par Title aur Price dono sahi se QR modal ko bhej diye jayenge
     document.getElementById('agree-enroll-btn').addEventListener('click', function() {
-        document.getElementById('enroll-disclosure-modal').remove(); // Disclosure card band
+        document.getElementById('enroll-disclosure-modal').remove(); 
         
-        // Ab asli QR code waala modal khulega
-        if (typeof openModal === "function") {
-            openModal(); 
+        // Dono data ko transfer kiya taaki undefined na aaye
+        if (typeof window.openModal === "function") {
+            window.openModal(courseTitle, coursePrice); 
         } else {
             console.error("openModal function not found!");
         }
@@ -107,42 +106,35 @@ window.verifyPayment = function() {
         return;
     }
 
-    // Modal se course ka naam uthane ke liye
     const courseNameElement = document.getElementById('modal-price');
     const courseName = courseNameElement ? courseNameElement.innerText : "Unknown Course";
 
-    // Google Sheet ke liye data tayyar karna (Firebase Auth se real details)
     const paymentData = {
         fullName: user.displayName || "Genz Student",
         email: user.email,
         course: courseName
     };
 
-    // Button ko double-click se bachane ke liye disable karna
     const paidButton = document.querySelector('.verify-btn');
     if (paidButton) {
         paidButton.disabled = true;
         paidButton.innerText = "Processing...";
     }
 
-    // Aapka Google Apps Script Web App URL
     const scriptUrl = "https://script.google.com/macros/s/AKfycbxR7y4zBy0r4hhqUb1KKlw-g0Vz275yR8fVT3-x6-3muU0mU0tLnVOceFiuNls-ruj9AQ/exec";
 
     fetch(scriptUrl, {
         method: "POST",
-        mode: "no-cors", // Google Apps Script ke liye strictly required
+        mode: "no-cors", 
         headers: {
             "Content-Type": "application/json"
         },
         body: JSON.stringify(paymentData)
     })
     .then(() => {
-        // Data sheet mein jaane ke baad alert pop-up
         alert("Verification in progress! Our team will grant access within 30 mins.");
-        
-        // Modal close karke bache ko dashboard par bhejna
-        if (typeof closeModal === "function") {
-            closeModal();
+        if (typeof window.closeModal === "function") {
+            window.closeModal();
         }
         window.location.href = "dashboard.html";
     })
