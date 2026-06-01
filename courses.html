@@ -43,21 +43,23 @@
     <p id="loading-text" style="color: #38bdf8; text-align: center; width: 100%; font-size: 1.2rem;">Courses load ho rahe hain... ⏳</p>
   </section>
 
-  <div id="payment-modal" class="modal" style="display: none;">
-  <div class="modal-content">
-    <span class="close" onclick="closeModal()" style="cursor: pointer; float: right; font-size: 28px;">&times;</span>
-    <h2 style="color: #38bdf8;">Complete Enrollment 🚀</h2>
-    <p>Scan the QR below or use UPI to get instant access.</p>
+  <!-- Is code se modal ka size chota aur compact ho jayega -->
+<div id="payment-modal" class="modal" style="display: none;">
+  <div class="modal-content" style="max-width: 400px; padding: 15px; margin: 5% auto; border-radius: 12px;">
+    <span class="close" onclick="closeModal()" style="cursor: pointer; float: right; font-size: 24px; line-height: 10px;">&times;</span>
+    <h2 style="color: #38bdf8; font-size: 1.5rem; margin-top: 5px; margin-bottom: 5px;">Complete Enrollment 🚀</h2>
+    <p style="font-size: 0.9rem; margin-bottom: 10px;">Scan the QR below or use UPI to get instant access.</p>
     
-    <div class="qr-placeholder" style="display: flex; justify-content: center; margin: 20px 0;">
-      <div id="qrcode" style="background: white; padding: 15px; border: 5px solid white; border-radius: 10px; display: inline-block;"></div>
+    <!-- QR Code Container: Iska padding aur margin kam kar diya hai -->
+    <div class="qr-placeholder" style="display: flex; justify-content: center; margin: 10px 0;">
+      <div id="qrcode" style="background: white; padding: 8px; border: 3px solid white; border-radius: 8px; display: inline-block;"></div>
     </div>
     
-    <p class="price-tag" id="modal-price" style="font-weight: bold; font-size: 1.2rem; margin-bottom: 15px;">Selected Course Access</p>
-    <button class="verify-btn" onclick="verifyPayment()">I have Paid - Access Course</button>
+    <p class="price-tag" id="modal-price" style="font-weight: bold; font-size: 1rem; margin-top: 5px; margin-bottom: 12px;">Selected Course Access</p>
+    <button class="verify-btn" onclick="verifyPayment()" style="padding: 10px 20px; font-size: 0.95rem; width: 100%; border-radius: 6px;">I have Paid - Access Course</button>
   </div>
 </div>
-
+  
   <div id="ai-chat-container" class="chat-closed">
     <div class="chat-header" onclick="toggleChat()">
         <span>🤖 Genz AI Assistant</span>
@@ -143,8 +145,8 @@ function openModal(courseTitle, coursePrice) {
   // 7. Dynamic QR Generator call
   new QRCode(document.getElementById("qrcode"), {
     text: upiUrl,
-    width: 200,
-    height: 200,
+    width: 160,
+    height: 160,
     colorDark : "#000000",
     colorLight : "#ffffff",
     correctLevel : QRCode.CorrectLevel.H
