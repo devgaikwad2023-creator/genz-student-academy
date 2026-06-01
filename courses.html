@@ -43,16 +43,16 @@
     <p id="loading-text" style="color: #38bdf8; text-align: center; width: 100%; font-size: 1.2rem;">Courses load ho rahe hain... ⏳</p>
   </section>
 
-  <!-- Is code se modal ka size chota aur compact ho jayega -->
-<div id="payment-modal" class="modal" style="display: none;">
+  <div id="payment-modal" class="modal" style="display: none;">
   <div class="modal-content" style="max-width: 400px; padding: 15px; margin: 5% auto; border-radius: 12px;">
     <span class="close" onclick="closeModal()" style="cursor: pointer; float: right; font-size: 24px; line-height: 10px;">&times;</span>
     <h2 style="color: #38bdf8; font-size: 1.5rem; margin-top: 5px; margin-bottom: 5px;">Complete Enrollment 🚀</h2>
     <p style="font-size: 0.9rem; margin-bottom: 10px;">Scan the QR below or use UPI to get instant access.</p>
     
-    <!-- QR Code Container: Iska padding aur margin kam kar diya hai -->
     <div class="qr-placeholder" style="display: flex; justify-content: center; margin: 10px 0;">
-      <div id="qrcode" style="background: white; padding: 8px; border: 3px solid white; border-radius: 8px; display: inline-block;"></div>
+      <div id="qrcode" style="background: white; padding: 8px; border: 3px solid white; border-radius: 8px; display: inline-block;">
+        <img id="static-qr-img" src="gpay-qr.jpeg" alt="₹49 Locked QR Code" style="width: 180px; height: auto; display: block; margin: 0 auto;">
+      </div>
     </div>
     
     <p class="price-tag" id="modal-price" style="font-weight: bold; font-size: 1rem; margin-top: 5px; margin-bottom: 12px;">Selected Course Access</p>
@@ -119,28 +119,16 @@
       }
     }
 
-    // Modal Functions with Dynamic Lock Price Logic
+    // Modal Functions - Modified to explicitly show your custom static ₹49 QR Image
     window.openModal = function(courseTitle, coursePrice) {
       document.getElementById('payment-modal').style.display = "block";
       document.getElementById('modal-price').innerText = `${courseTitle} - ₹${coursePrice}`;
-      document.getElementById('qrcode').innerHTML = "";
       
-      const upiId = "7738171916@okbizaxis";
-      const merchantName = "Genz Student Academy";
-      
-      const cleanPrice = coursePrice.replace(/[^0-9.]/g, '');
-      
-      // 🔥 JUGAAD REPLACED HERE: Added Standard Merchant Category Code (mc=6513) & Order ID reference to trigger app-level price freezing
-      const upiUrl = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(merchantName)}&mc=6513&tr=${Date.now()}&am=${cleanPrice}&cu=INR&tn=${encodeURIComponent(courseTitle)}`;
-      
-      new QRCode(document.getElementById("qrcode"), {
-        text: upiUrl,
-        width: 160,
-        height: 160,
-        colorDark : "#000000",
-        colorLight : "#ffffff",
-        correctLevel : QRCode.CorrectLevel.H
-      });
+      // Kept style consistent, image path points to your custom static QR
+      const qrImg = document.getElementById('static-qr-img');
+      if(qrImg) {
+        qrImg.src = "gpay-qr.jpeg";
+      }
     }
 
     window.closeModal = function() {
