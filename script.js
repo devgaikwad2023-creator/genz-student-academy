@@ -4,6 +4,7 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/f
 console.log("TESTING NEW CODE - v2");
 console.log("Genz Student Academy Loaded Successfully");
 
+
 // --- NEW AUTH LOGIC ---
 onAuthStateChanged(auth, (user) => {
     const loginBtn = document.getElementById("login-btn");
