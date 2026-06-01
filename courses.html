@@ -93,7 +93,6 @@
         if(data.length > 0) {
             loadingText.style.display = 'none';
             data.forEach(course => {
-                // MODIFIED HERE: `openModal` ki jagah ab global `handleEnrollment` function trigger hoga jo script.js me hai
                 const cardHTML = `
                 <div class="premium-course-card">
                     <div class="course-image">🎓</div>
@@ -121,28 +120,19 @@
     }
 
     // Modal Functions with Dynamic Lock Price Logic
-    // MODIFIED HERE: Attached to window context to make it accessible by script.js
     window.openModal = function(courseTitle, coursePrice) {
-      // 1. Sabse pehle modal ko screen par dikhao
       document.getElementById('payment-modal').style.display = "block";
-      
-      // 2. Jo course select hua hai, uska naam aur price modal par update karo
       document.getElementById('modal-price').innerText = `${courseTitle} - ₹${coursePrice}`;
-      
-      // 3. Purana generate hua QR code clear karo taaki naya fresh QR bane
       document.getElementById('qrcode').innerHTML = "";
       
-      // 4. NAYI BUSINESS UPI DETAILS AUR BUSINESS NAME REPLACED HERE 🛡️
       const upiId = "7738171916@okbizaxis";
       const merchantName = "Genz Student Academy";
       
-      // 5. Price se text ya extra symbols (jaise ₹) saaf karke strictly number nikaalna
       const cleanPrice = coursePrice.replace(/[^0-9.]/g, '');
       
-      // 6. 100% Secure URL String jahan price lock hoti hai
-      const upiUrl = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(merchantName)}&am=${cleanPrice}&tn=${encodeURIComponent(courseTitle)}&cu=INR`;
+      // 🔥 JUGAAD REPLACED HERE: Added Standard Merchant Category Code (mc=6513) & Order ID reference to trigger app-level price freezing
+      const upiUrl = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(merchantName)}&mc=6513&tr=${Date.now()}&am=${cleanPrice}&cu=INR&tn=${encodeURIComponent(courseTitle)}`;
       
-      // 7. Dynamic QR Generator call
       new QRCode(document.getElementById("qrcode"), {
         text: upiUrl,
         width: 160,
@@ -157,14 +147,11 @@
       document.getElementById('payment-modal').style.display = "none";
     }
     
-    // verifyPayment will now be handled securely by script.js to write data on sheet
-    
     window.onclick = function(event) {
       let modal = document.getElementById('payment-modal');
       if (event.target == modal) { modal.style.display = "none"; }
     }
 
-    // Load courses on start
     window.onload = loadCourses;
   </script>
 
