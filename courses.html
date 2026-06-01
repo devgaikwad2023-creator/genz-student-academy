@@ -93,7 +93,7 @@
         if(data.length > 0) {
             loadingText.style.display = 'none';
             data.forEach(course => {
-                // `course.title` aur `course.price` ko humne safely openModal ke parameters me inject kiya hai
+                // MODIFIED HERE: `openModal` ki jagah ab global `handleEnrollment` function trigger hoga jo script.js me hai
                 const cardHTML = `
                 <div class="premium-course-card">
                     <div class="course-image">🎓</div>
@@ -107,7 +107,7 @@
                         <div class="price-row">
                             <h3>₹${course.price}</h3>
                             <a href="course-detail.html?id=${course.id}" class="details-btn">Course Detail</a>
-                            <button onclick="openModal('${course.title}', '${course.price}')" class="enroll-btn" style="padding: 10px 20px; background: #38bdf8; color: black; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Enroll Now</button>
+                            <button onclick="handleEnrollment('${course.title}', '${course.price}')" class="enroll-btn" style="padding: 10px 20px; background: #38bdf8; color: black; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Enroll Now</button>
                         </div>
                     </div>
                 </div>`;
@@ -121,46 +121,43 @@
     }
 
     // Modal Functions with Dynamic Lock Price Logic
-    // Naya Code (Ise wahan replace kar do)
-function openModal(courseTitle, coursePrice) {
-  // 1. Sabse pehle modal ko screen par dikhao
-  document.getElementById('payment-modal').style.display = "block";
-  
-  // 2. Jo course select hua hai, uska naam aur price modal par update karo
-  document.getElementById('modal-price').innerText = `${courseTitle} - ₹${coursePrice}`;
-  
-  // 3. Purana generate hua QR code clear karo taaki naya fresh QR bane
-  document.getElementById('qrcode').innerHTML = "";
-  
-  // 4. Aapki UPI Details aur Business Name
-  const upiId = "gaikwadmanik791@oksbi";
-  const merchantName = "Genz Academy";
-  
-  // 5. Price se text ya extra symbols (jaise ₹) saaf karke strictly number nikaalna
-  const cleanPrice = coursePrice.replace(/[^0-9.]/g, '');
-  
-  // 6. 100% Secure URL String jahan price lock hoti hai
-  const upiUrl = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(merchantName)}&am=${cleanPrice}&tn=${encodeURIComponent(courseTitle)}&cu=INR`;
-  
-  // 7. Dynamic QR Generator call
-  new QRCode(document.getElementById("qrcode"), {
-    text: upiUrl,
-    width: 160,
-    height: 160,
-    colorDark : "#000000",
-    colorLight : "#ffffff",
-    correctLevel : QRCode.CorrectLevel.H
-  });
-}
+    // MODIFIED HERE: Attached to window context to make it accessible by script.js
+    window.openModal = function(courseTitle, coursePrice) {
+      // 1. Sabse pehle modal ko screen par dikhao
+      document.getElementById('payment-modal').style.display = "block";
+      
+      // 2. Jo course select hua hai, uska naam aur price modal par update karo
+      document.getElementById('modal-price').innerText = `${courseTitle} - ₹${coursePrice}`;
+      
+      // 3. Purana generate hua QR code clear karo taaki naya fresh QR bane
+      document.getElementById('qrcode').innerHTML = "";
+      
+      // 4. Aapki UPI Details aur Business Name
+      const upiId = "gaikwadmanik791@oksbi";
+      const merchantName = "Genz Academy";
+      
+      // 5. Price se text ya extra symbols (jaise ₹) saaf karke strictly number nikaalna
+      const cleanPrice = coursePrice.replace(/[^0-9.]/g, '');
+      
+      // 6. 100% Secure URL String jahan price lock hoti hai
+      const upiUrl = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(merchantName)}&am=${cleanPrice}&tn=${encodeURIComponent(courseTitle)}&cu=INR`;
+      
+      // 7. Dynamic QR Generator call
+      new QRCode(document.getElementById("qrcode"), {
+        text: upiUrl,
+        width: 160,
+        height: 160,
+        colorDark : "#000000",
+        colorLight : "#ffffff",
+        correctLevel : QRCode.CorrectLevel.H
+      });
+    }
 
-    function closeModal() {
+    window.closeModal = function() {
       document.getElementById('payment-modal').style.display = "none";
     }
     
-    function verifyPayment() {
-      alert("Verification in progress! Our team will grant access within 30 mins.");
-      closeModal();
-    }
+    // verifyPayment will now be handled securely by script.js to write data on sheet
     
     window.onclick = function(event) {
       let modal = document.getElementById('payment-modal');
