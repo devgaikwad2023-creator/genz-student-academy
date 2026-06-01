@@ -206,30 +206,38 @@
     }
 </script>
 
-  <div id="disclosure-modal" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(15, 23, 42, 0.85); display: flex; justify-content: center; align-items: center; z-index: 999999; font-family: 'Poppins', sans-serif; backdrop-filter: blur(8px);">
-    <div style="background: #1e293b; color: #ffffff; max-width: 500px; width: 90%; padding: 25px; border-radius: 16px; border: 1px solid #334155; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5); text-align: left; box-sizing: border-box;">
-      <h2 style="color: #38bdf8; font-size: 1.4rem; margin-top: 0; margin-bottom: 15px; display: flex; align-items: center; gap: 8px;">
+  <!-- --- TRANSPARENT EDUCATION DISCLOSURE POPUP (COMPACT VERSION) --- -->
+  <div id="disclosure-modal" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(15, 23, 42, 0.85); display: flex; justify-content: center; align-items: center; z-index: 999999; font-family: 'Poppins', sans-serif; backdrop-filter: blur(6px);">
+    <div style="background: #1e293b; color: #ffffff; max-width: 460px; width: 90%; padding: 18px 22px; border-radius: 12px; border: 1px solid #334155; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5); text-align: left; box-sizing: border-box;">
+      <h2 style="color: #38bdf8; font-size: 1.15rem; margin-top: 0; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
         Important Disclosure: Our Commitment to Knowledge 🎓
       </h2>
-      <p style="font-size: 0.95rem; color: #cbd5e1; margin-bottom: 15px; line-height: 1.5;">
-        Welcome to GenZ Student Academy! We believe in 100% transparency and honesty with our learners. Please review this important notice before exploring our platform:
+      <p style="font-size: 0.82rem; color: #cbd5e1; margin-bottom: 10px; line-height: 1.4;">
+        Welcome to GenZ Student Academy! We believe in 100% transparency and honesty with our learners. Please review this notice:
       </p>
       
-      <ul style="padding-left: 20px; color: #cbd5e1; font-size: 0.9rem; margin-bottom: 20px; line-height: 1.6;">
-        <li style="margin-bottom: 10px;"><strong style="color: #f8fafc;">Skill & Knowledge Focused:</strong> Our entire system is designed strictly to offer practical, high-quality skill development and career-oriented knowledge.</li>
-        <li style="margin-bottom: 10px;"><strong style="color: #f8fafc;">Certification Transparency:</strong> The certificate issued upon course completion is an institutional token of recognition from GenZ Student Academy. Our courses and certificates are currently independent and not accredited by or affiliated with any government ministry, university, or statutory board.</li>
-        <li style="margin-bottom: 10px;"><strong style="color: #f8fafc;">Why We Charge Fees:</strong> The minimal fees incurred are solely used to reward our hardworking educators, cover technological platform maintenance, and support content operations to bring you the best possible education.</li>
+      <ul style="padding-left: 15px; color: #cbd5e1; font-size: 0.78rem; margin-bottom: 12px; line-height: 1.4;">
+        <li style="margin-bottom: 6px;"><strong style="color: #f8fafc;">Skill & Knowledge Focused:</strong> Our system is designed strictly to offer practical skill development and career-oriented knowledge.</li>
+        <li style="margin-bottom: 6px;"><strong style="color: #f8fafc;">Certification Transparency:</strong> The certificate is an institutional token of recognition from us. Our courses are independent and not accredited by any government ministry or university.</li>
+        <li style="margin-bottom: 6px;"><strong style="color: #f8fafc;">Why We Charge Fees:</strong> The nominal fees are solely used to reward our educators, cover platform maintenance, and support content operations.</li>
       </ul>
 
-      <p style="font-size: 0.9rem; font-style: italic; color: #94a3b8; text-align: center; border-top: 1px solid #334155; padding-top: 15px; margin-bottom: 20px;">
-        "Humara maqsad aapko industry-ready skills sikhana hai, taaki aap bina kisi rukawat ke apne career mein grow kar sakein!"
+      <p style="font-size: 0.78rem; font-style: italic; color: #94a3b8; text-align: center; border-top: 1px solid #334155; padding-top: 10px; margin-bottom: 15px;">
+        "Humara maqsad aapko industry-ready skills sikhana hai!"
       </p>
 
-      <button onclick="acceptDisclosure()" style="width: 100%; background: #38bdf8; color: #0f172a; border: none; padding: 12px; font-size: 1rem; font-weight: 600; border-radius: 8px; cursor: pointer; transition: background 0.2s ease; font-family: 'Poppins', sans-serif;">
+      <button onclick="acceptDisclosure()" style="width: 100%; background: #38bdf8; color: #0f172a; border: none; padding: 10px; font-size: 0.9rem; font-weight: 600; border-radius: 6px; cursor: pointer; transition: background 0.2s ease; font-family: 'Poppins', sans-serif;">
         I Understand & Agree
       </button>
     </div>
   </div>
+
+  <script>
+    function acceptDisclosure() {
+      document.getElementById('disclosure-modal').style.display = 'none';
+    }
+  </script>
+  <!-- --- END OF TRANSPARENT EDUCATION DISCLOSURE POPUP --- -->
 
   <script>
     function acceptDisclosure() {
