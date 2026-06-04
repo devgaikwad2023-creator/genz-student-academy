@@ -16,7 +16,7 @@
 
   <nav class="navbar">
     <a href="index.html" class="logo">
-      <img src="Genz Student Academy logo.png" alt="GenZ Academy Logo" class="nav-logo">
+    <img src="Genz Student Academy logo.png" alt="GenZ Academy Logo" class="nav-logo">
     </a>
     <div class="logo">Genz Student Academy</div>
     <div class="menu-toggle" id="mobile-menu">☰</div>
@@ -36,7 +36,7 @@
   <section class="courses-hero">
     <span class="tag">🚀 Explore Our Courses</span>
     <h1>Learn High Demand Skills</h1>
-    <p>Start your learning journey with premium quality courses.</p>
+    <p>Start your learning journey with premium quality courses designed for students and future professionals.</p>
   </section>
 
   <section class="all-courses" id="course-container">
@@ -44,77 +44,68 @@
   </section>
 
   <div id="payment-modal" class="modal" style="display: none;">
-    <div class="modal-content" style="max-width: 400px; padding: 20px; margin: 5% auto; border-radius: 12px; text-align: center;">
-      <span class="close" onclick="closeModal()" style="cursor: pointer; float: right; font-size: 24px; line-height: 10px;">&times;</span>
-      <h2 style="color: #38bdf8; font-size: 1.5rem; margin-bottom: 10px;">Scan & Enroll 🚀</h2>
-      <p style="font-size: 0.9rem; margin-bottom: 15px; color: #cbd5e1;">Scan the QR code below using any UPI App to complete your payment.</p>
-      
-      <div class="qr-placeholder" style="display: flex; justify-content: center; margin: 15px 0;">
-        <div style="background: white; padding: 10px; border-radius: 12px; display: inline-block; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">
-          <img src="gpay-qr.jpeg" id="modal-qr-img" alt="Payment QR Code" style="width: 200px; height: auto; display: block;" onerror="this.src='gpay-qr.jpeg-Copy.jpeg'">
-        </div>
+  <div class="modal-content" style="max-width: 400px; padding: 15px; margin: 5% auto; border-radius: 12px;">
+    <span class="close" onclick="closeModal()" style="cursor: pointer; float: right; font-size: 24px; line-height: 10px;">&times;</span>
+    <h2 style="color: #38bdf8; font-size: 1.5rem; margin-top: 5px; margin-bottom: 5px;">Complete Enrollment 🚀</h2>
+    <p style="font-size: 0.9rem; margin-bottom: 10px;">Scan the QR below or use UPI to get instant access.</p>
+    
+    <div class="qr-placeholder" style="display: flex; justify-content: center; margin: 10px 0;">
+      <div id="qrcode" style="background: white; padding: 10px; border: 1px solid #e2e8f0; border-radius: 12px; display: inline-block; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+        <img id="static-qr-img" src="gpay-qr.jpeg" alt="₹49 Locked QR Code" style="width: 180px; height: auto; display: block; margin: 0 auto;">
       </div>
-      
-      <p id="modal-price" style="font-weight: bold; font-size: 1.1rem; color: #38bdf8; margin-top: 10px;">Amount: ₹49</p>
-      <p style="font-size: 0.8rem; color: #94a3b8; margin-top: 5px;">⚠️ Payment verification ke baad aapka course automatic activate ho jayega.</p>
+    </div>
+    
+    <p class="price-tag" id="modal-price" style="font-weight: bold; font-size: 1rem; margin-top: 5px; margin-bottom: 12px;">Selected Course Access</p>
+    <button class="verify-btn" onclick="verifyPayment()" style="padding: 10px 20px; font-size: 0.95rem; width: 100%; border-radius: 6px;">I have Paid - Access Course</button>
+  </div>
+</div>
+  
+  <div id="ai-chat-container" class="chat-closed">
+    <div class="chat-header" onclick="toggleChat()">
+        <span>🤖 Genz AI Assistant</span>
+        <button id="close-chat">×</button>
+    </div>
+    <div id="chat-box" class="chat-body">
+        <p class="bot-msg">Hey! I am your Study Assistant. How can I help you today?</p>
+    </div>
+    <div class="chat-footer">
+        <input type="text" id="user-input" placeholder="Ask anything...">
+        <button onclick="sendMessage()"><i class="fa fa-paper-plane"></i></button>
     </div>
   </div>
 
-  <script type="module">
-    import { auth } from "./firebase.js";
-    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  <div id="chat-icon" onclick="toggleChat()">
+      <img src="https://cdn-icons-png.flaticon.com/512/4712/4712035.png" alt="AI Chat">
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
+  <script>
     const sheetURL = 'https://script.google.com/macros/s/AKfycby1ig86VufzknKK7xlI9MZWOHEkatrrrEEqHs0APvmYsdgz9gE_XttKHdpIo7e_PcOXRQ/exec'; 
 
-    async function loadCourses(userEmail) {
+    async function loadCourses() {
       try {
         const response = await fetch(sheetURL, { redirect: 'follow'});
-        const dbData = await response.json();
+        const data = await response.json();
         const container = document.getElementById('course-container');
         const loadingText = document.getElementById('loading-text');
 
-        if(dbData.length > 0) {
+        if(data.length > 0) {
             loadingText.style.display = 'none';
-            container.innerHTML = ''; 
-            
-            const loggedInEmail = userEmail || localStorage.getItem('userEmail') || "";
-            console.log("Checking verification for email:", loggedInEmail);
-
-            dbData.forEach(course => {
-                let actionButtonHTML = '';
-                
-                // Real-time broad crosscheck logic (Headers safe check)
-                let isCoursePaid = false;
-                if (loggedInEmail) {
-                    const userRecord = dbData.find(row => {
-                        const rowEmail = (row.emailId || row["EMAIL ID"] || row.email || "").toLowerCase().trim();
-                        const rowStatus = (row.paymentStatus || row["PAYMENT STATUS"] || row.status || "").toLowerCase().trim();
-                        return rowEmail === loggedInEmail.toLowerCase().trim() && rowStatus === 'paid';
-                    });
-                    if (userRecord) { isCoursePaid = true; }
-                }
-
-                if (isCoursePaid) {
-                    actionButtonHTML = `<a href="course-player.html" class="continue-btn" style="padding: 10px 20px; background: #22c55e; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; text-decoration: none; display: inline-block; text-align:center; width: auto;">Continue Learning</a>`;
-                } else {
-                    actionButtonHTML = `<button onclick="handleEnrollment('${course.title || 'Resume Mastery: The ATS - Friendly Formula'}', '${course.price || '49'}')" class="enroll-btn" style="padding: 10px 20px; background: #38bdf8; color: black; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Enroll Now</button>`;
-                }
-
-                // Hardcoded card layout logic as required
+            data.forEach(course => {
                 const cardHTML = `
                 <div class="premium-course-card">
                     <div class="course-image">🎓</div>
                     <div class="course-info">
-                        <h2>${course.title || 'Resume Mastery: The ATS - Friendly Formula'}</h2>
-                        <p>${course.description || 'Master the mechanics of ATS filters, keyword mapping, and structural optimization to build a shortlist-ready resume.'}</p>
+                        <h2>${course.title}</h2>
+                        <p>${course.description}</p>
                         <div class="course-meta">
                             <span>⭐ 5.0</span>
                             <span>👨‍🎓 New Release</span>
                         </div>
                         <div class="price-row">
-                            <h3>₹${course.price || '49'}</h3>
-                            <a href="course-detail.html?id=${course.id || '1'}" class="details-btn">Course Detail</a>
-                            ${actionButtonHTML}
+                            <h3>₹${course.price}</h3>
+                            <a href="course-detail.html?id=${course.id}" class="details-btn">Course Detail</a>
+                            <button onclick="handleEnrollment('${course.title}', '${course.price}')" class="enroll-btn" style="padding: 10px 20px; background: #38bdf8; color: black; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Enroll Now</button>
                         </div>
                     </div>
                 </div>`;
@@ -123,24 +114,38 @@
         }
       } catch (error) {
         console.error("Error loading courses:", error);
-        document.getElementById('loading-text').innerHTML = "Courses load nahi ho paye.";
+        document.getElementById('loading-text').innerHTML = "Courses load nahi ho paye. Please check internet connection.";
       }
     }
 
-    // Dynamic state listener syncing directly to bypass storage delays
-    onAuthStateChanged(auth, (user) => {
-        if (user) {
-            localStorage.setItem("userEmail", user.email);
-            loadCourses(user.email);
-        } else {
-            localStorage.removeItem("userEmail");
-            loadCourses("");
-        }
-    });
+    // Modal Functions with Double Payment Preventer Hook
+    window.openModal = function(courseTitle, coursePrice) {
+      // Clean structure for matching key strings
+      const targetCourseKey = "purchased_" + String(courseTitle).toLowerCase().trim().replace(/[^a-z0-9]/g, "");
+      
+      if(localStorage.getItem(targetCourseKey) === "true") {
+         alert("You have already purchased this course! Please check your dashboard.");
+         return;
+      }
 
-    window.openPaymentModal = function(courseTitle, coursePrice) {
       document.getElementById('payment-modal').style.display = "block";
       document.getElementById('modal-price').innerText = `${courseTitle} - ₹${coursePrice}`;
+      
+      const qrImg = document.getElementById('static-qr-img');
+      if(qrImg) {
+        qrImg.src = "gpay-qr.jpeg - Copy.jpeg";
+      }
+    }
+
+    // Marks course as bought upon verification click to lock out repeat sessions
+    window.verifyPayment = function() {
+      const currentPriceTag = document.getElementById('modal-price').innerText;
+      const parsedTitle = currentPriceTag.split(" - ")[0] || "resume mastery: the ATS - friendly formula";
+      const targetCourseKey = "purchased_" + String(parsedTitle).toLowerCase().trim().replace(/[^a-z0-9]/g, "");
+      
+      localStorage.setItem(targetCourseKey, "true");
+      alert("Verification in progress! Our team will grant access within 30 mins."); 
+      closeModal();
     }
 
     window.closeModal = function() {
@@ -151,8 +156,23 @@
       let modal = document.getElementById('payment-modal');
       if (event.target == modal) { modal.style.display = "none"; }
     }
+
+    window.onload = loadCourses;
   </script>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script type="module" src="script.js"></script>
+  <script src="chat.js"></script>
+  
+  <script>
+    const menuToggle = document.getElementById('mobile-menu');
+    const navList = document.getElementById('nav-list');
+
+    if(menuToggle) {
+        menuToggle.addEventListener('click', () => {
+            navList.classList.toggle('active');
+        });
+    }
+  </script>
 </body>
 </html>
