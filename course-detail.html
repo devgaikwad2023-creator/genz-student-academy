@@ -88,7 +88,9 @@
           <li>Certificate of Completion</li>
         </ul>
       </div>
-      <button onclick="handleEnrollment('resume mastery: the ATS - friendly formula')" class="enroll-btn" style="padding: 10px 20px; background: #38bdf8; color: black; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Enroll Now</button>
+      <div id="enrollment-action-wrapper">
+         <button onclick="handleEnrollment('resume mastery: the ATS - friendly formula')" class="enroll-btn" style="padding: 10px 20px; background: #38bdf8; color: black; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Enroll Now</button>
+      </div>
     </div>
   </section>
 
@@ -111,14 +113,20 @@
   </div>
 
   <script>
-    // Handles enrollment clicks across elements, safely verifying local tracking states first
-    window.handleEnrollment = function(courseTitle) {
-      const targetCourseKey = "purchased_" + String(courseTitle).toLowerCase().trim().replace(/[^a-z0-9]/g, "");
-      
+    const courseTitle = "resume mastery: the ATS - friendly formula";
+    const targetCourseKey = "purchased_" + String(courseTitle).toLowerCase().trim().replace(/[^a-z0-9]/g, "");
+
+    // Function to continuously check user tracking configurations on runtime
+    function checkCourseState() {
       if(localStorage.getItem(targetCourseKey) === "true") {
-         alert("You have already purchased this course! Please check your dashboard.");
-         return;
+         const wrapper = document.getElementById('enrollment-action-wrapper');
+         if(wrapper) {
+            wrapper.innerHTML = `<a href="course-player.html" class="continue-btn" style="padding: 10px 20px; background: #22c55e; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; text-decoration: none; display: inline-block;">Continue Learning</a>`;
+         }
       }
+    }
+
+    window.handleEnrollment = function(title) {
       openModal();
     }
 
@@ -131,19 +139,19 @@
     }
     
     function verifyPayment() { 
-      // Cross-page validation sync trigger
-      const courseTitle = "resume mastery: the ATS - friendly formula";
-      const targetCourseKey = "purchased_" + String(courseTitle).toLowerCase().trim().replace(/[^a-z0-9]/g, "");
-      
       localStorage.setItem(targetCourseKey, "true");
       alert("Verification in progress! Our team will grant access within 30 mins."); 
       closeModal(); 
+      checkCourseState(); // Trigger instant visual switch
     }
     
     window.onclick = function(event) {
       let modal = document.getElementById('payment-modal');
       if (event.target == modal) { modal.style.display = "none"; }
     }
+
+    // Call state mapping engine safely when the page renders
+    document.addEventListener("DOMContentLoaded", checkCourseState);
   </script>
 
   <div id="ai-chat-container" class="chat-closed">
