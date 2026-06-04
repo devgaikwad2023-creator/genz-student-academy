@@ -12,9 +12,12 @@ onAuthStateChanged(auth, (user) => {
     if (user) {
         if (loginBtn) loginBtn.style.display = "none";
         if (dashboardBtn) dashboardBtn.style.display = "inline-block";
+        // Dynamic dynamic check ke liye logged-in user ki email save kari
+        localStorage.setItem("userEmail", user.email);
     } else {
         if (loginBtn) loginBtn.style.display = "inline-block";
         if (dashboardBtn) dashboardBtn.style.display = "none";
+        localStorage.removeItem("userEmail");
     }
 });
 
@@ -88,10 +91,12 @@ window.handleEnrollment = function(courseTitle, coursePrice) {
         document.getElementById('enroll-disclosure-modal').remove(); 
         
         // Dono data ko transfer kiya taaki undefined na aaye
-        if (typeof window.openModal === "function") {
-            window.openModal(courseTitle, coursePrice); 
+        if (typeof window.openPaymentModal === "function") {
+            window.openPaymentModal(courseTitle, coursePrice); 
+        } else if (typeof window.openModal === "function") {
+            window.openModal(courseTitle, coursePrice);
         } else {
-            console.error("openModal function not found!");
+            console.error("Open modal reference function missing!");
         }
     });
 }
