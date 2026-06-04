@@ -7,53 +7,14 @@
   <title>Course Details | Genz Student Academy</title>
   <link rel="icon" type="image/png" href="Genz Student Academy logo.png">
   <link rel="stylesheet" href="style.css">
-  <style>
-    .video-section {
-      padding: 60px 20px;
-      text-align: center;
-      background: #0f172a;
-    }
-
-    .video-section h2 {
-      margin-bottom: 30px;
-      font-size: 2rem;
-      color: white;
-    }
-
-    .video-card-container {
-      max-width: 400px;
-      margin: 0 auto;
-      background: #1e293b;
-      padding: 20px;
-      border-radius: 20px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-      border: 1px solid #334155;
-    }
-
-    .video-container {
-      position: relative;
-      padding-bottom: 56.25%;
-      height: 0;
-      overflow: hidden;
-      border-radius: 12px;
-    }
-
-    .video-container iframe {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-    }
-  </style>
 </head>
 
 <body>
 
   <nav class="navbar">
     <a href="index.html" class="logo">
-    <img src="Genz Student Academy logo.png" alt="GenZ Academy Logo" class="nav-logo">
-</a>
+      <img src="Genz Student Academy logo.png" alt="GenZ Academy Logo" class="nav-logo">
+    </a>
     <div class="logo">Genz Student Academy</div>
     <div class="menu-toggle" id="mobile-menu">☰</div>
     <ul class="nav-links" id="nav-list">
@@ -62,12 +23,11 @@
       <li><a href="about.html">About</a></li>
       <li><a href="contact.html">Contact</a></li>
     </ul>
-
-<div class="nav-right">
-    <button id="dark-mode-toggle" class="dark-btn">🌙</button>
-    <a href="login.html" id="login-btn" class="nav-btn">Login</a>
-    <a href="dashboard.html" id="dashboard-btn" class="nav-btn" style="display: none;">Dashboard</a>
-</div>
+    <div class="nav-right">
+      <button id="dark-mode-toggle" class="dark-btn">🌙</button>
+      <a href="login.html" id="login-btn" class="nav-btn">Login</a>
+      <a href="dashboard.html" id="dashboard-btn" class="nav-btn" style="display: none;">Dashboard</a>
+    </div>
   </nav>
 
   <section class="course-detail">
@@ -76,72 +36,74 @@
     </div>
     <div class="course-detail-right">
       <span class="tag">🚀 Bestseller Course</span>
-      <h1>Resume Mastery: The ATS - Friendly Formula</h1>
-      <p>Master the mechanics of ATS filters, keyword mapping, and structural optimization to build a shortlist-ready resume that gets noticed in under 10 seconds.</p>
+      <h1 id="detail-course-title">Resume Mastery: The ATS - Friendly Formula</h1>
+      <p>Master the mechanics of ATS filters, keyword mapping, and structural optimization to build a shortlist-ready resume.</p>
       <div class="course-info-box">
         <h3>Course Includes:</h3>
         <ul>
           <li>Video Lessons</li>
           <li>Assignment</li>
-          <li>Mobile Friendly Access</li>
           <li>Certificate of Completion</li>
         </ul>
       </div>
       <div id="enrollment-action-wrapper">
-         <button onclick="handleEnrollment('resume mastery: the ATS - friendly formula')" class="enroll-btn" style="padding: 10px 20px; background: #38bdf8; color: black; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Enroll Now</button>
-      </div>
+         </div>
     </div>
   </section>
 
-
   <div id="payment-modal" class="modal" style="display: none;">
-    <div class="modal-content" style="max-width: 400px; padding: 15px; margin: 5% auto; border-radius: 12px;">
+    <div class="modal-content" style="max-width: 400px; padding: 20px; margin: 5% auto; border-radius: 12px; text-align: center;">
       <span class="close" onclick="closeModal()" style="cursor: pointer; float: right; font-size: 24px; line-height: 10px;">&times;</span>
-      <h2 style="color: #38bdf8; font-size: 1.5rem; margin-top: 5px; margin-bottom: 5px;">Complete Enrollment 🚀</h2>
-      <p style="font-size: 0.9rem; margin-bottom: 10px;">Scan the QR below or use UPI to get instant access.</p>
+      <h2 style="color: #38bdf8; font-size: 1.5rem; margin-bottom: 10px;">Scan & Enroll 🚀</h2>
+      <p style="font-size: 0.9rem; margin-bottom: 15px; color: #cbd5e1;">Scan the QR code below to complete your payment.</p>
       
-      <div class="qr-placeholder" style="display: flex; justify-content: center; margin: 10px 0;">
-        <div id="qrcode" style="background: white; padding: 10px; border: 1px solid #e2e8f0; border-radius: 12px; display: inline-block; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
-          <img id="static-qr-img" src="gpay-qr.jpeg - Copy.jpeg" alt="₹49 Locked QR Code" style="width: 180px; height: auto; display: block; margin: 0 auto;">
+      <div class="qr-placeholder" style="display: flex; justify-content: center; margin: 15px 0;">
+        <div style="background: white; padding: 10px; border-radius: 12px; display: inline-block;">
+          <img src="gpay-qr.jpeg - Copy.jpeg" alt="Payment QR Code" style="width: 200px; height: auto; display: block;">
         </div>
       </div>
-      
-      <p class="price-tag" id="modal-price" style="font-weight: bold; font-size: 1rem; margin-top: 5px; margin-bottom: 12px;">Resume Mastery: The ATS - Friendly Formula - ₹49</p>
-      <button class="verify-btn" onclick="verifyPayment()" style="padding: 10px 20px; font-size: 0.95rem; width: 100%; border-radius: 6px;">I have Paid - Access Course</button>
+      <p style="font-weight: bold; font-size: 1.1rem; color: #38bdf8;">Amount: ₹49</p>
     </div>
   </div>
 
   <script>
-    const courseTitle = "resume mastery: the ATS - friendly formula";
-    const targetCourseKey = "verified_purchase_" + String(courseTitle).toLowerCase().trim().replace(/[^a-z0-9]/g, "");
+    const sheetURL = 'https://script.google.com/macros/s/AKfycby1ig86VufzknKK7xlI9MZWOHEkatrrrEEqHs0APvmYsdgz9gE_XttKHdpIo7e_PcOXRQ/exec'; 
 
-    function checkCourseState() {
-      // Direct verification conditional lookup token check
-      if(localStorage.getItem(targetCourseKey) === "true") {
-         const wrapper = document.getElementById('enrollment-action-wrapper');
-         if(wrapper) {
-            wrapper.innerHTML = `<a href="course-player.html" class="continue-btn" style="padding: 10px 20px; background: #22c55e; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; text-decoration: none; display: inline-block;">Continue Learning</a>`;
-         }
+    async function checkCourseState() {
+      const wrapper = document.getElementById('enrollment-action-wrapper');
+      if(!wrapper) return;
+
+      try {
+        const response = await fetch(sheetURL, { redirect: 'follow'});
+        const dbData = await response.json();
+        const loggedInEmail = localStorage.getItem('userEmail') || "";
+
+        let isCoursePaid = false;
+        if (loggedInEmail && dbData.length > 0) {
+            const userRecord = dbData.find(row => 
+                row.emailId && row.emailId.toLowerCase().trim() === loggedInEmail.toLowerCase().trim() &&
+                row.paymentStatus && row.paymentStatus.toLowerCase().trim() === 'paid'
+            );
+            if (userRecord) { isCoursePaid = true; }
+        }
+
+        if (isCoursePaid) {
+           wrapper.innerHTML = `<a href="course-player.html" class="continue-btn" style="padding: 10px 20px; background: #22c55e; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; text-decoration: none; display: inline-block;">Continue Learning</a>`;
+        } else {
+           wrapper.innerHTML = `<button onclick="openModal()" class="enroll-btn" style="padding: 10px 20px; background: #38bdf8; color: black; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Enroll Now</button>`;
+        }
+      } catch (error) {
+        console.error("Database check failed, defaulting to enroll button:", error);
+        wrapper.innerHTML = `<button onclick="openModal()" class="enroll-btn" style="padding: 10px 20px; background: #38bdf8; color: black; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Enroll Now</button>`;
       }
     }
 
-    window.handleEnrollment = function(title) {
-      openModal();
-    }
-
-    function openModal() { 
+    window.openModal = function() { 
       document.getElementById('payment-modal').style.display = "block"; 
     }
     
-    function closeModal() { 
+    window.closeModal = function() { 
       document.getElementById('payment-modal').style.display = "none"; 
-    }
-    
-    function verifyPayment() { 
-      localStorage.setItem(targetCourseKey, "true");
-      alert("Verification in progress! Our team will grant access within 30 mins."); 
-      closeModal(); 
-      checkCourseState();
     }
     
     window.onclick = function(event) {
@@ -152,37 +114,7 @@
     document.addEventListener("DOMContentLoaded", checkCourseState);
   </script>
 
-  <div id="ai-chat-container" class="chat-closed">
-    <div class="chat-header" onclick="toggleChat()">
-      <span>🤖 Genz AI Assistant</span>
-      <button id="close-chat">×</button>
-    </div>
-    <div id="chat-box" class="chat-body">
-      <p class="bot-msg">Hey! I am your Study Assistant. How can I help you today?</p>
-    </div>
-    <div class="chat-footer">
-      <input type="text" id="user-input" placeholder="Ask anything...">
-      <button onclick="sendMessage()"><i class="fa fa-paper-plane"></i></button>
-    </div>
-  </div>
-
-  <div id="chat-icon" onclick="toggleChat()">
-    <img src="https://cdn-icons-png.flaticon.com/512/4712/4712035.png" alt="AI Chat">
-  </div>
-
   <script type="module" src="script.js"></script>
-  <script src="chat.js"></script>
-
-  <script>
-    const menuToggle = document.getElementById('mobile-menu');
-    const navList = document.getElementById('nav-list');
-
-    if(menuToggle) {
-        menuToggle.addEventListener('click', () => {
-            navList.classList.toggle('active');
-        });
-    }
-</script>
 </body>
 
 </html>
