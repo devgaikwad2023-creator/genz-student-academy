@@ -92,6 +92,18 @@
         if(data.length > 0) {
             loadingText.style.display = 'none';
             data.forEach(course => {
+                // Generate safe unique dynamic key for check
+                const targetCourseKey = "purchased_" + String(course.title).toLowerCase().trim().replace(/[^a-z0-9]/g, "");
+                const isPurchased = localStorage.getItem(targetCourseKey) === "true";
+
+                // Setup variable action button according to current user payment state
+                let actionButtonHTML = '';
+                if (isPurchased) {
+                    actionButtonHTML = `<a href="course-player.html" class="continue-btn" style="padding: 10px 20px; background: #22c55e; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; text-decoration: none; display: inline-block;">Continue Learning</a>`;
+                } else {
+                    actionButtonHTML = `<button onclick="handleEnrollment('${course.title}', '${course.price}')" class="enroll-btn" style="padding: 10px 20px; background: #38bdf8; color: black; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Enroll Now</button>`;
+                }
+
                 const cardHTML = `
                 <div class="premium-course-card">
                     <div class="course-image">🎓</div>
@@ -105,7 +117,7 @@
                         <div class="price-row">
                             <h3>₹${course.price}</h3>
                             <a href="course-detail.html?id=${course.id}" class="details-btn">Course Detail</a>
-                            <button onclick="handleEnrollment('${course.title}', '${course.price}')" class="enroll-btn" style="padding: 10px 20px; background: #38bdf8; color: black; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Enroll Now</button>
+                            ${actionButtonHTML}
                         </div>
                     </div>
                 </div>`;
@@ -118,34 +130,25 @@
       }
     }
 
-    // Modal Functions with Double Payment Preventer Hook
-    window.openModal = function(courseTitle, coursePrice) {
-      // Clean structure for matching key strings
-      const targetCourseKey = "purchased_" + String(courseTitle).toLowerCase().trim().replace(/[^a-z0-9]/g, "");
-      
-      if(localStorage.getItem(targetCourseKey) === "true") {
-         alert("You have already purchased this course! Please check your dashboard.");
-         return;
-      }
-
+    // Modal Opening Flow
+    window.handleEnrollment = function(courseTitle, coursePrice) {
       document.getElementById('payment-modal').style.display = "block";
       document.getElementById('modal-price').innerText = `${courseTitle} - ₹${coursePrice}`;
-      
-      const qrImg = document.getElementById('static-qr-img');
-      if(qrImg) {
-        qrImg.src = "gpay-qr.jpeg - Copy.jpeg";
-      }
     }
 
-    // Marks course as bought upon verification click to lock out repeat sessions
+    // Dynamic State Switch upon Payment Click
     window.verifyPayment = function() {
       const currentPriceTag = document.getElementById('modal-price').innerText;
       const parsedTitle = currentPriceTag.split(" - ")[0] || "resume mastery: the ATS - friendly formula";
       const targetCourseKey = "purchased_" + String(parsedTitle).toLowerCase().trim().replace(/[^a-z0-9]/g, "");
       
+      // Update local tracking state dynamically
       localStorage.setItem(targetCourseKey, "true");
       alert("Verification in progress! Our team will grant access within 30 mins."); 
       closeModal();
+      
+      // Instantly refresh current buttons layout to transition state gracefully
+      window.location.reload();
     }
 
     window.closeModal = function() {
