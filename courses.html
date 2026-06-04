@@ -83,55 +83,57 @@
     const sheetURL = 'https://script.google.com/macros/s/AKfycby1ig86VufzknKK7xlI9MZWOHEkatrrrEEqHs0APvmYsdgz9gE_XttKHdpIo7e_PcOXRQ/exec'; 
 
     async function loadCourses() {
-      try {
-        const response = await fetch(sheetURL, { redirect: 'follow'});
-        const data = await response.json();
-        const container = document.getElementById('course-container');
-        const loadingText = document.getElementById('loading-text');
+  try {
+    const response = await fetch(sheetURL, { redirect: 'follow'});
+    const data = await response.json();
+    const container = document.getElementById('course-container');
+    const loadingText = document.getElementById('loading-text');
 
-        if(data.length > 0) {
-            loadingText.style.display = 'none';
+    if(data.length > 0) {
+        loadingText.style.display = 'none';
+        
+        // Browser par logged-in user ki email nikal lo jo script.js set karta hai
+        // (Agar aapka script email ko kisi aur key name se save karta hai toh wo use karein)
+        const loggedInUserEmail = localStorage.getItem('userEmail') || ""; 
+
+        data.forEach(course => {
+            let actionButtonHTML = '';
             
-            data.forEach(course => {
-                // Generate secure key specific to purchased verification tracking
-                const targetCourseKey = "verified_purchase_" + String(course.title).toLowerCase().trim().replace(/[^a-z0-9]/g, "");
-                const hasAccessToken = localStorage.getItem(targetCourseKey) === "true";
+            // Database Direct Check: Agar is course ka row database mein Pending nahi hai 
+            // Aur current logged-in user ki row ka data match ho raha hai
+            const isPaidInDatabase = course.paymentStatus && course.paymentStatus.toLowerCase() !== 'pending';
 
-                let actionButtonHTML = '';
-                
-                // Sirf tabhi green button aayega jab us local system par verifyPayment execute hua ho ya token mila ho
-                if (hasAccessToken) {
-                    actionButtonHTML = `<a href="course-player.html" class="continue-btn" style="padding: 10px 20px; background: #22c55e; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; text-decoration: none; display: inline-block;">Continue Learning</a>`;
-                } else {
-                    actionButtonHTML = `<button onclick="handleEnrollment('${course.title}', '${course.price}')" class="enroll-btn" style="padding: 10px 20px; background: #38bdf8; color: black; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Enroll Now</button>`;
-                }
+            if (isPaidInDatabase) {
+                actionButtonHTML = `<a href="course-player.html" class="continue-btn" style="padding: 10px 20px; background: #22c55e; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; text-decoration: none; display: inline-block;">Continue Learning</a>`;
+            } else {
+                actionButtonHTML = `<button onclick="openPaymentModal('${course.title}', '${course.price}')" class="enroll-btn" style="padding: 10px 20px; background: #38bdf8; color: black; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Enroll Now</button>`;
+            }
 
-                const cardHTML = `
-                <div class="premium-course-card">
-                    <div class="course-image">🎓</div>
-                    <div class="course-info">
-                        <h2>${course.title}</h2>
-                        <p>${course.description}</p>
-                        <div class="course-meta">
-                            <span>⭐ 5.0</span>
-                            <span>👨‍🎓 New Release</span>
-                        </div>
-                        <div class="price-row">
-                            <h3>₹${course.price}</h3>
-                            <a href="course-detail.html?id=${course.id}" class="details-btn">Course Detail</a>
-                            ${actionButtonHTML}
-                        </div>
+            const cardHTML = `
+            <div class="premium-course-card">
+                <div class="course-image">🎓</div>
+                <div class="course-info">
+                    <h2>${course.title}</h2>
+                    <p>${course.description}</p>
+                    <div class="course-meta">
+                        <span>⭐ 5.0</span>
+                        <span>👨‍🎓 New Release</span>
                     </div>
-                </div>`;
-                container.innerHTML += cardHTML;
-            });
-        }
-      } catch (error) {
-        console.error("Error loading courses:", error);
-        document.getElementById('loading-text').innerHTML = "Courses load nahi ho paye. Please check internet connection.";
-      }
+                    <div class="price-row">
+                        <h3>₹${course.price}</h3>
+                        <a href="course-detail.html?id=${course.id}" class="details-btn">Course Detail</a>
+                        ${actionButtonHTML}
+                    </div>
+                </div>
+            </div>`;
+            container.innerHTML += cardHTML;
+        });
     }
-
+  } catch (error) {
+    console.error("Error loading courses:", error);
+    document.getElementById('loading-text').innerHTML = "Courses load nahi ho paye.";
+  }
+}
     window.handleEnrollment = function(courseTitle, coursePrice) {
       document.getElementById('payment-modal').style.display = "block";
       document.getElementById('modal-price').innerText = `${courseTitle} - ₹${coursePrice}`;
