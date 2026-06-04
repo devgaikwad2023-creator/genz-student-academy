@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Course Details | Genz Student Academy</title>
-  <link class="icon" type="image/png" href="Genz Student Academy logo.png">
+  <link rel="icon" type="image/png" href="Genz Student Academy logo.png">
   <link rel="stylesheet" href="style.css">
   <style>
     .video-section {
@@ -112,11 +112,12 @@
   </div>
 
   <script>
+    const courseTitle = "resume mastery: the ATS - friendly formula";
+    const targetCourseKey = "verified_purchase_" + String(courseTitle).toLowerCase().trim().replace(/[^a-z0-9]/g, "");
+
     function checkCourseState() {
-      const dashboardBtn = document.getElementById('dashboard-btn');
-      
-      // Agar login script ne Dashboard button ko block list se hataya hai, toh direct swap!
-      if(dashboardBtn && dashboardBtn.style.display !== 'none') {
+      // Direct verification conditional lookup token check
+      if(localStorage.getItem(targetCourseKey) === "true") {
          const wrapper = document.getElementById('enrollment-action-wrapper');
          if(wrapper) {
             wrapper.innerHTML = `<a href="course-player.html" class="continue-btn" style="padding: 10px 20px; background: #22c55e; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; text-decoration: none; display: inline-block;">Continue Learning</a>`;
@@ -137,6 +138,7 @@
     }
     
     function verifyPayment() { 
+      localStorage.setItem(targetCourseKey, "true");
       alert("Verification in progress! Our team will grant access within 30 mins."); 
       closeModal(); 
       checkCourseState();
@@ -147,10 +149,7 @@
       if (event.target == modal) { modal.style.display = "none"; }
     }
 
-    // Give 200ms default latency time to ensure script.js auth tokens execution completes
-    window.addEventListener('load', () => {
-      setTimeout(checkCourseState, 200);
-    });
+    document.addEventListener("DOMContentLoaded", checkCourseState);
   </script>
 
   <div id="ai-chat-container" class="chat-closed">
