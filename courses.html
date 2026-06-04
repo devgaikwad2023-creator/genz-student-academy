@@ -72,16 +72,14 @@
 
         if(dbData.length > 0) {
             loadingText.style.display = 'none';
-            container.innerHTML = ''; // Container clear kiya
+            container.innerHTML = ''; 
             
-            // Logged-in user ki email nikal rahe hain
             const loggedInEmail = localStorage.getItem('userEmail') || "";
 
             dbData.forEach(course => {
                 let actionButtonHTML = '';
                 
-                // Pure Database Column Matching Checker
-                // Check kar rahe hain kya is course ke liye user ne "Paid" status rakha hai
+                // Pure Realtime Database Validation Check
                 let isCoursePaid = false;
                 if (loggedInEmail) {
                     const userRecord = dbData.find(row => 
@@ -94,7 +92,7 @@
                 if (isCoursePaid) {
                     actionButtonHTML = `<a href="course-player.html" class="continue-btn" style="padding: 10px 20px; background: #22c55e; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; text-decoration: none; display: inline-block;">Continue Learning</a>`;
                 } else {
-                    actionButtonHTML = `<button onclick="openPaymentModal('${course.title}', '${course.price}')" class="enroll-btn" style="padding: 10px 20px; background: #38bdf8; color: black; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Enroll Now</button>`;
+                    actionButtonHTML = `<button onclick="handleEnrollment('${course.title}', '${course.price}')" class="enroll-btn" style="padding: 10px 20px; background: #38bdf8; color: black; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Enroll Now</button>`;
                 }
 
                 const cardHTML = `
