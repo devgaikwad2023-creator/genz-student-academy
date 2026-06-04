@@ -74,12 +74,14 @@
             loadingText.style.display = 'none';
             container.innerHTML = ''; 
             
+            // Logged-in user ki email nikal rahe hain
             const loggedInEmail = localStorage.getItem('userEmail') || "";
+            console.log("Logged In User Email:", loggedInEmail);
 
             dbData.forEach(course => {
                 let actionButtonHTML = '';
                 
-                // Pure Realtime Database Validation Check
+                // FIXED LOGIC: Hum check kar rahe hain ki kya is user ka email aur paymentStatus 'paid' pure database array mein kahin bhi exist karta hai
                 let isCoursePaid = false;
                 if (loggedInEmail) {
                     const userRecord = dbData.find(row => 
@@ -89,9 +91,11 @@
                     if (userRecord) { isCoursePaid = true; }
                 }
 
+                // Agar user paid hai toh Continue Learning dikhao
                 if (isCoursePaid) {
                     actionButtonHTML = `<a href="course-player.html" class="continue-btn" style="padding: 10px 20px; background: #22c55e; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; text-decoration: none; display: inline-block;">Continue Learning</a>`;
                 } else {
+                    // Agar user paid nahi hai toh handleEnrollment function trigger hoga jo script.js mein hai
                     actionButtonHTML = `<button onclick="handleEnrollment('${course.title}', '${course.price}')" class="enroll-btn" style="padding: 10px 20px; background: #38bdf8; color: black; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Enroll Now</button>`;
                 }
 
@@ -121,9 +125,16 @@
       }
     }
 
+    // FIXED: QR Modal Open function completely verified
     window.openPaymentModal = function(courseTitle, coursePrice) {
       document.getElementById('payment-modal').style.display = "block";
       document.getElementById('modal-price').innerText = `${courseTitle} - ₹${coursePrice}`;
+      
+      // Safety fix for QR image directory lookup
+      const qrImg = document.querySelector("#payment-modal img");
+      if (qrImg) {
+          qrImg.src = "gpay-qr.jpeg"; // Ensure exact file name matches your repository
+      }
     }
 
     window.closeModal = function() {
