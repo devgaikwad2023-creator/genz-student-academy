@@ -80,7 +80,6 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
   <script>
-    // --- GOOGLE SHEET CONNECTION CODE ---
     const sheetURL = 'https://script.google.com/macros/s/AKfycby1ig86VufzknKK7xlI9MZWOHEkatrrrEEqHs0APvmYsdgz9gE_XttKHdpIo7e_PcOXRQ/exec'; 
 
     async function loadCourses() {
@@ -119,16 +118,34 @@
       }
     }
 
-    // Modal Functions - Modified to explicitly show your custom static ₹49 QR Image
+    // Modal Functions with Double Payment Preventer Hook
     window.openModal = function(courseTitle, coursePrice) {
+      // Clean structure for matching key strings
+      const targetCourseKey = "purchased_" + String(courseTitle).toLowerCase().trim().replace(/[^a-z0-9]/g, "");
+      
+      if(localStorage.getItem(targetCourseKey) === "true") {
+         alert("You have already purchased this course! Please check your dashboard.");
+         return;
+      }
+
       document.getElementById('payment-modal').style.display = "block";
       document.getElementById('modal-price').innerText = `${courseTitle} - ₹${coursePrice}`;
       
-      // Kept style consistent, image path points to your custom static QR
       const qrImg = document.getElementById('static-qr-img');
       if(qrImg) {
         qrImg.src = "gpay-qr.jpeg - Copy.jpeg";
       }
+    }
+
+    // Marks course as bought upon verification click to lock out repeat sessions
+    window.verifyPayment = function() {
+      const currentPriceTag = document.getElementById('modal-price').innerText;
+      const parsedTitle = currentPriceTag.split(" - ")[0] || "resume mastery: the ATS - friendly formula";
+      const targetCourseKey = "purchased_" + String(parsedTitle).toLowerCase().trim().replace(/[^a-z0-9]/g, "");
+      
+      localStorage.setItem(targetCourseKey, "true");
+      alert("Verification in progress! Our team will grant access within 30 mins."); 
+      closeModal();
     }
 
     window.closeModal = function() {
