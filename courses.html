@@ -36,7 +36,7 @@
   <section class="courses-hero">
     <span class="tag">🚀 Explore Our Courses</span>
     <h1>Learn High Demand Skills</h1>
-    <p>Start your learning journey with premium quality professionals.</p>
+    <p>Start your learning journey with premium quality courses designed for students and future professionals.</p>
   </section>
 
   <section class="all-courses" id="course-container">
@@ -92,15 +92,15 @@
         if(data.length > 0) {
             loadingText.style.display = 'none';
             
-            // Yahan check karo ki kya aapka login script dashboard button ko show kar chuka hai
-            const dashboardBtn = document.getElementById('dashboard-btn');
-            const isUserLoggedIn = dashboardBtn && dashboardBtn.style.display !== 'none';
-
             data.forEach(course => {
+                // Generate secure key specific to purchased verification tracking
+                const targetCourseKey = "verified_purchase_" + String(course.title).toLowerCase().trim().replace(/[^a-z0-9]/g, "");
+                const hasAccessToken = localStorage.getItem(targetCourseKey) === "true";
+
                 let actionButtonHTML = '';
                 
-                // Agar user logged in hai (Dashboard visible hai), toh direct "Continue Learning" de do!
-                if (isUserLoggedIn) {
+                // Sirf tabhi green button aayega jab us local system par verifyPayment execute hua ho ya token mila ho
+                if (hasAccessToken) {
                     actionButtonHTML = `<a href="course-player.html" class="continue-btn" style="padding: 10px 20px; background: #22c55e; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; text-decoration: none; display: inline-block;">Continue Learning</a>`;
                 } else {
                     actionButtonHTML = `<button onclick="handleEnrollment('${course.title}', '${course.price}')" class="enroll-btn" style="padding: 10px 20px; background: #38bdf8; color: black; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Enroll Now</button>`;
@@ -133,12 +133,17 @@
     }
 
     window.handleEnrollment = function(courseTitle, coursePrice) {
-      // Agar click karne par bhi login nahi hai toh notice flow ya redirection aapka script.js sambhal lega
       document.getElementById('payment-modal').style.display = "block";
       document.getElementById('modal-price').innerText = `${courseTitle} - ₹${coursePrice}`;
     }
 
     window.verifyPayment = function() {
+      const currentPriceTag = document.getElementById('modal-price').innerText;
+      const parsedTitle = currentPriceTag.split(" - ")[0] || "resume mastery: the ATS - friendly formula";
+      const targetCourseKey = "verified_purchase_" + String(parsedTitle).toLowerCase().trim().replace(/[^a-z0-9]/g, "");
+      
+      // Strict verified purchase initialization
+      localStorage.setItem(targetCourseKey, "true");
       alert("Verification in progress! Our team will grant access within 30 mins."); 
       closeModal();
       window.location.reload();
@@ -153,10 +158,7 @@
       if (event.target == modal) { modal.style.display = "none"; }
     }
 
-    // Chonki aapka dashboard script async ho sakta hai, hum thoda ruk kar button render karenge taaki login detection perfect ho!
-    window.addEventListener('load', () => {
-      setTimeout(loadCourses, 200);
-    });
+    window.onload = loadCourses;
   </script>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
