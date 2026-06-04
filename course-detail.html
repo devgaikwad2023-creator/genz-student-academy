@@ -62,7 +62,7 @@
           <img src="gpay-qr.jpeg - Copy.jpeg" alt="Payment QR Code" style="width: 200px; height: auto; display: block;">
         </div>
       </div>
-      <p style="font-weight: bold; font-size: 1.1rem; color: #38bdf8;">Amount: ₹49</p>
+      <p style="font-weight: bold; font-size: 1.1rem; color: #38bdf8;" id="modal-price">Resume Mastery: The ATS - Friendly Formula - ₹49</p>
     </div>
   </div>
 
@@ -90,16 +90,19 @@
         if (isCoursePaid) {
            wrapper.innerHTML = `<a href="course-player.html" class="continue-btn" style="padding: 10px 20px; background: #22c55e; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; text-decoration: none; display: inline-block;">Continue Learning</a>`;
         } else {
-           wrapper.innerHTML = `<button onclick="openModal()" class="enroll-btn" style="padding: 10px 20px; background: #38bdf8; color: black; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Enroll Now</button>`;
+           wrapper.innerHTML = `<button onclick="handleEnrollment('Resume Mastery: The ATS - Friendly Formula', '49')" class="enroll-btn" style="padding: 10px 20px; background: #38bdf8; color: black; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Enroll Now</button>`;
         }
       } catch (error) {
         console.error("Database check failed, defaulting to enroll button:", error);
-        wrapper.innerHTML = `<button onclick="openModal()" class="enroll-btn" style="padding: 10px 20px; background: #38bdf8; color: black; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Enroll Now</button>`;
+        wrapper.innerHTML = `<button onclick="handleEnrollment('Resume Mastery: The ATS - Friendly Formula', '49')" class="enroll-btn" style="padding: 10px 20px; background: #38bdf8; color: black; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Enroll Now</button>`;
       }
     }
 
-    window.openModal = function() { 
+    window.openModal = function(courseTitle, coursePrice) { 
       document.getElementById('payment-modal').style.display = "block"; 
+      if(courseTitle && coursePrice) {
+         document.getElementById('modal-price').innerText = `${courseTitle} - ₹${coursePrice}`;
+      }
     }
     
     window.closeModal = function() { 
@@ -116,5 +119,4 @@
 
   <script type="module" src="script.js"></script>
 </body>
-
 </html>
