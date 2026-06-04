@@ -51,7 +51,6 @@
 
 <body>
 
-  <!-- NAVBAR (No Changes) -->
   <nav class="navbar">
     <a href="index.html" class="logo">
     <img src="Genz Student Academy logo.png" alt="GenZ Academy Logo" class="nav-logo">
@@ -65,20 +64,13 @@
       <li><a href="contact.html">Contact</a></li>
     </ul>
 
- <!-- RIGHT SIDE BUTTONS -->
 <div class="nav-right">
-    <!-- DARK MODE BUTTON -->
     <button id="dark-mode-toggle" class="dark-btn">🌙</button>
-
-    <!-- LOGIN BUTTON -->
     <a href="login.html" id="login-btn" class="nav-btn">Login</a>
-
-    <!-- DASHBOARD BUTTON (Hidden by default) -->
     <a href="dashboard.html" id="dashboard-btn" class="nav-btn" style="display: none;">Dashboard</a>
 </div>
   </nav>
 
-  <!-- COURSE DETAIL (No Changes) -->
   <section class="course-detail">
     <div class="course-detail-left">
       <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085" alt="Course Image" class="course-detail-image">
@@ -101,25 +93,53 @@
   </section>
 
 
-  <!-- PAYMENT MODAL (No Changes) -->
   <div id="payment-modal" class="modal" style="display: none;">
-    <div class="modal-content">
-      <span class="close" onclick="closeModal()">&times;</span>
-      <h2 style="color: #38bdf8;">Complete Enrollment 🚀</h2>
-      <p>Scan the QR below or use UPI to get instant access.</p>
-      <div class="qr-placeholder">
-        <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=gaikwadmanik791@oksbi&pn=Genz%20Academy&cu=INR" alt="Payment QR" style="border: 5px solid white; border-radius: 10px;">
+    <div class="modal-content" style="max-width: 400px; padding: 15px; margin: 5% auto; border-radius: 12px;">
+      <span class="close" onclick="closeModal()" style="cursor: pointer; float: right; font-size: 24px; line-height: 10px;">&times;</span>
+      <h2 style="color: #38bdf8; font-size: 1.5rem; margin-top: 5px; margin-bottom: 5px;">Complete Enrollment 🚀</h2>
+      <p style="font-size: 0.9rem; margin-bottom: 10px;">Scan the QR below or use UPI to get instant access.</p>
+      
+      <div class="qr-placeholder" style="display: flex; justify-content: center; margin: 10px 0;">
+        <div id="qrcode" style="background: white; padding: 10px; border: 1px solid #e2e8f0; border-radius: 12px; display: inline-block; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+          <img id="static-qr-img" src="gpay-qr.jpeg - Copy.jpeg" alt="₹49 Locked QR Code" style="width: 180px; height: auto; display: block; margin: 0 auto;">
+        </div>
       </div>
-      <p class="price-tag">Price: ₹49</p>
-      <button class="verify-btn" onclick="verifyPayment()">I have Paid - Access Course</button>
+      
+      <p class="price-tag" id="modal-price" style="font-weight: bold; font-size: 1rem; margin-top: 5px; margin-bottom: 12px;">Resume Mastery: The ATS - Friendly Formula - ₹49</p>
+      <button class="verify-btn" onclick="verifyPayment()" style="padding: 10px 20px; font-size: 0.95rem; width: 100%; border-radius: 6px;">I have Paid - Access Course</button>
     </div>
   </div>
 
-  <!-- ALL SCRIPTS (No Changes) -->
   <script>
-    function openModal() { document.getElementById('payment-modal').style.display = "block"; }
-    function closeModal() { document.getElementById('payment-modal').style.display = "none"; }
-    function verifyPayment() { alert("Verification in progress! Our team will grant access within 30 mins."); closeModal(); }
+    // Handles enrollment clicks across elements, safely verifying local tracking states first
+    window.handleEnrollment = function(courseTitle) {
+      const targetCourseKey = "purchased_" + String(courseTitle).toLowerCase().trim().replace(/[^a-z0-9]/g, "");
+      
+      if(localStorage.getItem(targetCourseKey) === "true") {
+         alert("You have already purchased this course! Please check your dashboard.");
+         return;
+      }
+      openModal();
+    }
+
+    function openModal() { 
+      document.getElementById('payment-modal').style.display = "block"; 
+    }
+    
+    function closeModal() { 
+      document.getElementById('payment-modal').style.display = "none"; 
+    }
+    
+    function verifyPayment() { 
+      // Cross-page validation sync trigger
+      const courseTitle = "resume mastery: the ATS - friendly formula";
+      const targetCourseKey = "purchased_" + String(courseTitle).toLowerCase().trim().replace(/[^a-z0-9]/g, "");
+      
+      localStorage.setItem(targetCourseKey, "true");
+      alert("Verification in progress! Our team will grant access within 30 mins."); 
+      closeModal(); 
+    }
+    
     window.onclick = function(event) {
       let modal = document.getElementById('payment-modal');
       if (event.target == modal) { modal.style.display = "none"; }
