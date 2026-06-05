@@ -121,8 +121,8 @@
                         // Bacha paid hai aur yeh vahi Resume Mastery course hai -> Show Continue Learning
                         buttonHTML = `<button onclick="window.location.href='course-player.html'" class="enroll-btn hover-spark" style="padding: 10px 20px; background: #38bdf8; color: black; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: all 0.3s ease;">Continue Learning</button>`;
                     } else {
-                        // Dusra koi bhi course ho (jaise Finance Interview), ya user logged out ho -> Show Strict Enroll Now Button
-                        buttonHTML = `<button onclick="openModal('${course.title}', '${course.price}')" class="enroll-btn" style="padding: 10px 20px; background: #38bdf8; color: black; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Enroll Now</button>`;
+                        // Dusra koi bhi course ho -> Show Strict Enroll Now Button with your Disclosure Pop-up Hook
+                        buttonHTML = `<button onclick="alert('Important Disclosure: Our Commitment to Knowledge.......'); openModal('${course.title}', '${course.price}')" class="enroll-btn" style="padding: 10px 20px; background: #38bdf8; color: black; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Enroll Now</button>`;
                     }
 
                     const cardHTML = `
