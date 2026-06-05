@@ -79,7 +79,11 @@
   </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
-  <script>
+  <!-- Dynamic Firebase Connection & Smart Button Injection -->
+  <script type="module">
+    import { auth, db } from "./firebase.js";
+    import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
     const sheetURL = 'https://script.google.com/macros/s/AKfycby1ig86VufzknKK7xlI9MZWOHEkatrrrEEqHs0APvmYsdgz9gE_XttKHdpIo7e_PcOXRQ/exec'; 
 
     async function loadCourses() {
@@ -91,25 +95,52 @@
 
         if(data.length > 0) {
             loadingText.style.display = 'none';
-            data.forEach(course => {
-                const cardHTML = `
-                <div class="premium-course-card">
-                    <div class="course-image">🎓</div>
-                    <div class="course-info">
-                        <h2>${course.title}</h2>
-                        <p>${course.description}</p>
-                        <div class="course-meta">
-                            <span>⭐ 5.0</span>
-                            <span>👨‍🎓 New Release</span>
+
+            // Firebase check state
+            auth.onAuthStateChanged(async (user) => {
+                let isEnrolled = false;
+
+                if (user) {
+                    // Check enrollment in Firestore using user UID exactly like dashboard
+                    const enrollmentRef = doc(db, "enrollments", user.uid);
+                    const enrollmentSnap = await getDoc(enrollmentRef);
+                    if (enrollmentSnap.exists()) {
+                        isEnrolled = true;
+                    }
+                }
+
+                container.innerHTML = ''; // Container clear taaki double render na ho
+
+                data.forEach(course => {
+                    let buttonHTML = '';
+
+                    if (isEnrolled) {
+                        // User Paid hai: Continue Learning Green Button dikhao
+                        buttonHTML = `<button onclick="window.location.href='course-player.html'" class="enroll-btn" style="padding: 10px 20px; background: #22c55e; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Continue Learning</button>`;
+                    } else {
+                        // User Unpaid hai ya login nahi hai: Purana Enroll Now button open modal ke sath
+                        buttonHTML = `<button onclick="openModal('${course.title}', '${course.price}')" class="enroll-btn" style="padding: 10px 20px; background: #38bdf8; color: black; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Enroll Now</button>`;
+                    }
+
+                    const cardHTML = `
+                    <div class="premium-course-card">
+                        <div class="course-image">🎓</div>
+                        <div class="course-info">
+                            <h2>${course.title}</h2>
+                            <p>${course.description}</p>
+                            <div class="course-meta">
+                                <span>⭐ 5.0</span>
+                                <span>👨‍🎓 New Release</span>
+                            </div>
+                            <div class="price-row">
+                                <h3>₹${course.price}</h3>
+                                <a href="course-detail.html?id=${course.id}" class="details-btn">Course Detail</a>
+                                ${buttonHTML}
+                            </div>
                         </div>
-                        <div class="price-row">
-                            <h3>₹${course.price}</h3>
-                            <a href="course-detail.html?id=${course.id}" class="details-btn">Course Detail</a>
-                            <button onclick="handleEnrollment('${course.title}', '${course.price}')" class="enroll-btn" style="padding: 10px 20px; background: #38bdf8; color: black; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Enroll Now</button>
-                        </div>
-                    </div>
-                </div>`;
-                container.innerHTML += cardHTML;
+                    </div>`;
+                    container.innerHTML += cardHTML;
+                });
             });
         }
       } catch (error) {
@@ -118,9 +149,8 @@
       }
     }
 
-    // Modal Functions with Double Payment Preventer Hook
+    // Modal Functions kept safe as requested
     window.openModal = function(courseTitle, coursePrice) {
-      // Clean structure for matching key strings
       const targetCourseKey = "purchased_" + String(courseTitle).toLowerCase().trim().replace(/[^a-z0-9]/g, "");
       
       if(localStorage.getItem(targetCourseKey) === "true") {
@@ -137,7 +167,6 @@
       }
     }
 
-    // Marks course as bought upon verification click to lock out repeat sessions
     window.verifyPayment = function() {
       const currentPriceTag = document.getElementById('modal-price').innerText;
       const parsedTitle = currentPriceTag.split(" - ")[0] || "resume mastery: the ATS - friendly formula";
@@ -157,7 +186,8 @@
       if (event.target == modal) { modal.style.display = "none"; }
     }
 
-    window.onload = loadCourses;
+    // Run trigger on startup
+    loadCourses();
   </script>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
