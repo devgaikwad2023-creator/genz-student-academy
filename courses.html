@@ -115,8 +115,8 @@
                     let buttonHTML = '';
 
                     if (isEnrolled) {
-                        // User Paid hai: Continue Learning Green Button dikhao
-                        buttonHTML = `<button onclick="window.location.href='course-player.html'" class="enroll-btn" style="padding: 10px 20px; background: #22c55e; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Continue Learning</button>`;
+                        // User Paid hai: Continue Learning Sky Blue Button (Hover Spark Effect ke sath)
+                        buttonHTML = `<button onclick="window.location.href='course-player.html'" class="enroll-btn hover-spark" style="padding: 10px 20px; background: #38bdf8; color: black; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: all 0.3s ease;">Continue Learning</button>`;
                     } else {
                         // User Unpaid hai ya login nahi hai: Purana Enroll Now button open modal ke sath
                         buttonHTML = `<button onclick="openModal('${course.title}', '${course.price}')" class="enroll-btn" style="padding: 10px 20px; background: #38bdf8; color: black; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Enroll Now</button>`;
