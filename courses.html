@@ -98,7 +98,7 @@
 
   <nav class="navbar">
     <a href="index.html" class="logo">
-    <img src="Genz Student Academy logo.png" alt="GenZ Academy Logo" class="nav-logo">
+      <img src="Genz Student Academy logo.png" alt="GenZ Academy Logo" class="nav-logo">
     </a>
     <div class="logo">Genz Student Academy</div>
     <div class="menu-toggle" id="mobile-menu">☰</div>
@@ -251,6 +251,13 @@
 
     // Interactive sequences setup hooks
     window.triggerEnrollmentSequence = function(title, price) {
+      // 🔥 LOOPHOLE FIX: Check if student is logged in via Firebase
+      if (!auth.currentUser) {
+         alert("⚠️ Access Denied: Please login first to enroll in this course!");
+         window.location.href = "login.html";
+         return; // Code aage nahi chalega, modal blocked!
+      }
+
       activeCourseTitle = title;
       activeCoursePrice = price;
       
