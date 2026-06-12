@@ -464,7 +464,7 @@
             docCert.setTextColor(56, 189, 248);
             docCert.setFont('helvetica', 'bold');
             docCert.setFontSize(18);
-            docCert.text("RESUME MASTERY & ATS OPTIMIZATION COURSE", 421, 365, { align: 'center' });
+            docCert.text("RESUME MASTERY & ATS FRIENDLY FORMULA", 421, 365, { align: 'center' });
 
             const today = new Date();
             const formattedDate = today.getDate() + '/' + (today.getMonth()+1) + '/' + today.getFullYear();
@@ -483,7 +483,7 @@
             docCert.setFont('italic');
             docCert.text("GenZ Student Academy Team", 700, 485, { align: 'center' });
 
-            docCert.save("GenZ_Academy_Certificate_" + studentName.replace(/\s+/g, '_') + ".pdf");
+            docCert.save("GenZ_Student_Academy_Certificate_" + studentName.replace(/\s+/g, '_') + ".pdf");
             closeModal();
         };
 
