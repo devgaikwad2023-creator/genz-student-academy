@@ -466,6 +466,14 @@
             docCert.setFontSize(18);
             docCert.text("RESUME MASTERY & ATS FRIENDLY FORMULA", 421, 365, { align: 'center' });
 
+            // --- LEGAL RECOGNITION BLOCK INSIDE PDF PLAYER ---
+            docCert.setTextColor(148, 163, 184);
+            docCert.setFont('helvetica', 'normal');
+            docCert.setFontSize(10);
+            docCert.text("GenZ Student Academy is registered under the Ministry of Micro, Small & Medium Enterprises (MSME), Govt. of India", 421, 410, { align: 'center' });
+            docCert.text("Official MSME Registration No: UDYAM-MH-33-0770442 | Recognized under Startup India Hub (BHASKAR ID: IN-0626-9479GX)", 421, 422, { align: 'center' });
+            docCert.text("Officially Certified & Committed Partner of MyGov Innovate India Pledge Campaign", 421, 434, { align: 'center' });
+
             const today = new Date();
             const formattedDate = today.getDate() + '/' + (today.getMonth()+1) + '/' + today.getFullYear();
 
@@ -538,7 +546,6 @@
             } catch (error) { console.error(error); }
             box.scrollTop = box.scrollHeight;
         };
-    
     </script>
 
     <script>
