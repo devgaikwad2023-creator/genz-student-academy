@@ -10,19 +10,19 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
     <style>
-        /* --- LOCAL FIXES TAALMEL KE LIYE --- */
+        /* --- LAYOUT COMPATIBILITY FIXES --- */
         body { margin: 0; padding: 0; }
         
         header {
             position: fixed;
             top: 0;
             width: 100%;
-            z-index: 1001;
+            z-index: 1001; 
         }
 
         .progress-bar {
             width: 100%;
-            background: #334155;
+            background: #334155; 
             height: 8px;
             border-radius: 5px;
             margin-top: 10px;
@@ -31,8 +31,8 @@
 
         #progress-fill {
             height: 100%;
-            background: #38bdf8;
-            width: 0%;
+            background: #38bdf8; 
+            width: 0%; 
             transition: width 0.5s ease;
             box-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
         }
@@ -47,18 +47,18 @@
         }
 
         .video-box {
-            position: relative;
+            position: relative; 
         }
 
         .video-overlay {
             position: absolute;
             top: 0;
             right: 0;
-            width: 75px;
-            height: 75px;
-            background: transparent;
-            z-index: 10;
-            cursor: default;
+            width: 75px;        
+            height: 75px;       
+            background: transparent; 
+            z-index: 10;        
+            cursor: default;    
         }
 
         .assignment-box {
@@ -85,9 +85,10 @@
         .cert-locked {
             opacity: 0.6;
             cursor: not-allowed !important;
-            background: #475569 !important;
+            background: #475569 !important; 
         }
 
+        /* --- POPUP MODAL STYLING FOR CERTIFICATE --- */
         .cert-modal {
             display: none; 
             position: fixed; 
@@ -95,7 +96,7 @@
             left: 0; 
             width: 100%; 
             height: 100%; 
-            background: rgba(15, 23, 42, 0.85);
+            background: rgba(15, 23, 42, 0.85); 
             z-index: 3000; 
             justify-content: center; 
             align-items: center;
@@ -215,8 +216,8 @@
             <p style="color: #94a3b8; font-size: 14px;">Please enter your full name exactly as you want it to appear on your official Certificate of Completion.</p>
             <input type="text" id="cert-student-name" class="cert-modal-input" placeholder="Enter your full name here...">
             <div style="display: flex; gap: 10px; justify-content: center;">
-                <button class="primary-btn" onclick="generatePDF()" style="background: #0ea5e9; padding: 10px 20px;">Download PDF</button>
-                <button class="secondary-btn" onclick="closeModal()" style="background: #475569; border: none; padding: 10px 20px;">Cancel</button>
+                <button id="modal-download-btn" class="primary-btn" onclick="window.generatePDF()" style="background: #0ea5e9; padding: 10px 20px; cursor: pointer; color: white; border: none; border-radius: 5px; font-weight: bold;">Download PDF</button>
+                <button class="secondary-btn" onclick="closeModal()" style="background: #475569; border: none; padding: 10px 20px; cursor: pointer; color: white; border-radius: 5px;">Cancel</button>
             </div>
         </div>
     </div>
@@ -308,12 +309,12 @@
 
         function updateProgressUI() {
             let videoProgress = maxLectureVisited * 20; 
+            if(maxLectureVisited >= 4) videoProgress = 80; 
+
             let finalProgress = videoProgress;
             if(isAssignmentSubmitted) {
-                finalProgress += 20;
+                finalProgress = 100;
             }
-
-            if(finalProgress > 100) finalProgress = 100;
 
             document.getElementById('progress-fill').style.width = finalProgress + "%";
             document.getElementById('progress-text').innerText = "Course Progress: " + finalProgress + "%";
@@ -351,12 +352,13 @@
                 try {
                     await setDoc(doc(db, "userProgress", user.uid), {
                         assignmentSubmitted: true,
-                        assignmentTimestamp: new Date()
+                        assignmentTimestamp: new Date(),
+                        maxLectureVisited: 4 
                     }, { merge: true });
 
                     isAssignmentSubmitted = true;
                     alert("Success! Your assignment has been submitted successfully.");
-                    updateProgressUI();
+                    updateProgressUI(); 
                 } catch (e) {
                     console.error("Firebase submit error: ", e);
                     alert("Something went wrong while submitting. Try again!");
@@ -368,20 +370,17 @@
 
         function checkCertificateStatus(currentProgress) {
             const certBtn = document.getElementById('cert-btn');
-            if (currentProgress === 100 && isAssignmentSubmitted) {
+            if (currentProgress === 100) {
                 certBtn.classList.remove('cert-locked');
-                certBtn.style.background = "#3b82f6";
+                certBtn.style.background = "#3b82f6"; 
             } else {
                 certBtn.classList.add('cert-locked');
-                certBtn.style.background = "#475569";
+                certBtn.style.background = "#475569"; 
             }
         }
 
         window.handleCertificateClick = function() {
-            let videoProgress = maxLectureVisited * 20;
-            let finalProgress = videoProgress + (isAssignmentSubmitted ? 20 : 0);
-
-            if (finalProgress === 100 && isAssignmentSubmitted) {
+            if (isAssignmentSubmitted && maxLectureVisited >= 4) {
                 document.getElementById('name-modal').style.display = 'flex';
             } else {
                 alert("Please complete all 4 lectures and submit your assignment first!");
@@ -392,12 +391,17 @@
             document.getElementById('name-modal').style.display = 'none';
         };
 
+        // EXPOSED DYNAMIC GENERATOR SAFELY AT WINDOW CONTEXT LEVEL WITH SIGNATURE CORRECTION
         window.generatePDF = function() {
             const studentName = document.getElementById('cert-student-name').value.trim();
             if(!studentName) {
                 alert("Please enter a valid name to print on your certificate.");
                 return;
             }
+
+            const downloadBtn = document.getElementById('modal-download-btn');
+            downloadBtn.innerText = "Processing...";
+            downloadBtn.disabled = true;
 
             const { jsPDF } = window.jspdf;
             const docCert = new jsPDF({
@@ -406,11 +410,11 @@
                 format: [842, 595]
             });
 
-            // 1. Solid Premium Dark Background
+            // Dark Blue Frame Canvas Canvas
             docCert.setFillColor(15, 23, 42); 
             docCert.rect(0, 0, 842, 595, 'F');
 
-            // Borders
+            // Borders Setup
             docCert.setDrawColor(56, 189, 248); 
             docCert.setLineWidth(4);
             docCert.rect(20, 20, 802, 555);
@@ -419,115 +423,93 @@
             docCert.setLineWidth(1);
             docCert.rect(25, 25, 792, 545);
 
-            // 2. STEP 1 & 2: UPGRADED BRAND TITLE & LOGO PLACEHOLDER SPACE
-            // (Logo configuration dynamically rendered in absolute canvas coordinates)
-            docCert.setFillColor(56, 189, 248);
-            docCert.circle(421, 55, 18, 'F'); // Clean aesthetic round shape vector representing branding anchor
-            docCert.setTextColor(255, 255, 255);
-            docCert.setFont('helvetica', 'bold');
-            docCert.setFontSize(14);
-            docCert.text("GZ", 421, 59, { align: 'center' });
-
-            // Spark Neon Glow Styled Text
+            // Brand Typography Area
             docCert.setTextColor(56, 189, 248);
             docCert.setFont('helvetica', 'bold');
-            docCert.setFontSize(30); 
-            docCert.text("GENZ STUDENT ACADEMY", 421, 100, { align: 'center' });
+            docCert.setFontSize(26);
+            docCert.text("GENZ STUDENT ACADEMY", 421, 80, { align: 'center' });
 
-            // Subtitle
             docCert.setTextColor(255, 255, 255);
             docCert.setFont('helvetica', 'normal');
-            docCert.setFontSize(16);
+            docCert.setFontSize(18);
             docCert.text("CERTIFICATE OF COMPLETION", 421, 140, { align: 'center' });
 
-            // Presentation Statement
             docCert.setTextColor(148, 163, 184); 
-            docCert.setFontSize(13);
-            docCert.text("This is proudly presented to", 421, 195, { align: 'center' });
+            docCert.setFontSize(14);
+            docCert.text("This is proudly presented to", 421, 200, { align: 'center' });
 
-            // Student Name Text Area
             docCert.setTextColor(255, 255, 255);
             docCert.setFont('helvetica', 'bold');
-            docCert.setFontSize(38);
-            docCert.text(studentName.toUpperCase(), 421, 245, { align: 'center' });
+            docCert.setFontSize(36);
+            docCert.text(studentName.toUpperCase(), 421, 260, { align: 'center' });
 
             docCert.setDrawColor(56, 189, 248);
             docCert.setLineWidth(2);
-            docCert.line(240, 260, 602, 260);
+            docCert.line(260, 280, 582, 280);
 
-            // Course Details Text Area
             docCert.setTextColor(148, 163, 184);
             docCert.setFont('helvetica', 'normal');
-            docCert.setFontSize(13);
-            docCert.text("for successfully mastering all modules, practical strategies, and optimization metrics in the", 421, 305, { align: 'center' });
+            docCert.setFontSize(14);
+            docCert.text("for successfully mastering all modules, practical strategies, and optimization metrics in the", 421, 330, { align: 'center' });
             
             docCert.setTextColor(56, 189, 248);
             docCert.setFont('helvetica', 'bold');
-            docCert.setFontSize(20);
-            docCert.text("RESUME MASTERY & ATS FRIENDLY FORMULA", 421, 335, { align: 'center' });
+            docCert.setFontSize(18);
+            docCert.text("RESUME MASTERY & ATS FRIENDLY FORMULA", 421, 365, { align: 'center' });
 
-            // 3. STEP 3: HIGHLY STYLED LEGAL RECOGNITION BLOCK WITH DISTINCT BLUE FIELDS
+            // Legal Verification Strings Block Footer
             docCert.setTextColor(148, 163, 184);
             docCert.setFont('helvetica', 'normal');
             docCert.setFontSize(10);
-            docCert.text("GenZ Student Academy is registered under the Ministry of Micro, Small & Medium Enterprises (MSME), Govt. of India", 421, 385, { align: 'center' });
-            
-            // Dynamic highlights using distinct color adjustments inline
-            docCert.text("Official MSME Registration No: ", 240, 400);
-            docCert.setTextColor(56, 189, 248); // Blue highlighting
-            docCert.text("UDYAM-MH-33-0770442", 375, 400);
-            
-            docCert.setTextColor(148, 163, 184);
-            docCert.text(" | Recognized under Startup India Hub BHASKAR ID: ", 478, 400);
-            docCert.setTextColor(56, 189, 248); // Blue highlighting
-            docCert.text("IN-0626-9479GX", 695, 400);
+            docCert.text("Genz Student Academy is registered under the Ministry of Micro, Small & Medium Enterprises (MSME), Govt. of India", 421, 540, { align: 'center' });
+            docCert.text("Official MSME Registration No: UDYAM-MH-33-0770442 | Recognized under Startup India Hub (BHASKAR ID: IN-0626-9479GX)", 421, 552, { align: 'center' });
+            docCert.text("Officially Certified & Committed Partner of MyGov Innovate India Pledge Campaign", 421, 564, { align: 'center' });
 
-            docCert.setTextColor(148, 163, 184);
-            docCert.setFont('helvetica', 'oblique');
-            docCert.text("Officially Certified & Committed Partner of MyGov Innovate India Pledge Campaign", 421, 415, { align: 'center' });
-
-            // 4. STEP 5: AUTOMATED UNIQUE ID GENERATION (GZ + YEAR + UNIQUE STUDENT RANDOMIZER)
-            const currentYear = new Date().getFullYear();
-            const rawRandom = Math.floor(100000 + Math.random() * 900000);
-            const dynamicCertID = `GZ-${currentYear}-${rawRandom}`;
-            
             const today = new Date();
             const formattedDate = today.getDate() + '/' + (today.getMonth()+1) + '/' + today.getFullYear();
 
-            // Meta Details Left Align
             docCert.setTextColor(148, 163, 184);
             docCert.setFont('helvetica', 'normal');
             docCert.setFontSize(11);
-            docCert.text("Date of Issue: " + formattedDate, 60, 485);
-            docCert.text("Verification ID: " + dynamicCertID, 60, 505);
+            docCert.text("Date of Issue: " + formattedDate, 80, 480);
+            docCert.text("Verification ID: GZ-" + Math.floor(100000 + Math.random() * 900000), 80, 498);
 
-            // 5. STEP 5: QR CODE ARCHITECTURE INTEGRATION (Scans to Verify Certificate ID parameters)
-            const qrValue = encodeURIComponent(`https://genzstudentacademy.com/verify?id=${dynamicCertID}`);
-            const qrApiUrl = `https://chart.googleapis.com/chart?chs=150x150&cht=qr&chl=${qrValue}&choe=UTF-8`;
-            
-            // Render QR Code safe image block dynamically inside client memory array
-            docCert.addImage(qrApiUrl, 'PNG', 386, 445, 70, 70);
-
-            // 6. STEP 4: AUTHORIZED SIGNATORY MANAGEMENT AREA
+            // Sign Blocks Meta Positions
             docCert.setDrawColor(148, 163, 184);
             docCert.setLineWidth(1);
-            docCert.line(640, 490, 780, 490);
+            docCert.line(640, 485, 760, 485);
 
-            docCert.setTextColor(255, 255, 255);
-            docCert.setFont('helvetica', 'bold');
-            docCert.setFontSize(12);
-            docCert.text("Dev Manik Gaikwad", 710, 482, { align: 'center' }); // Your Name Added
-
-            docCert.setTextColor(148, 163, 184);
-            docCert.setFont('helvetica', 'normal');
-            docCert.setFontSize(10);
-            docCert.text("Founder & CEO", 710, 502, { align: 'center' });
+            docCert.text("Founder & CEO", 700, 505, { align: 'center' });
             docCert.setFontSize(9);
-            docCert.text("Authorized Signatory", 710, 514, { align: 'center' });
+            docCert.text("Authorized Signatory", 700, 517, { align: 'center' });
 
-            // Auto Action Trigger
-            docCert.save("GenZ_Academy_Certificate_" + studentName.replace(/\s+/g, '_') + ".pdf");
-            closeModal();
+            // --- SIGNATURE IMAGE RENDERING CORRECTION ---
+            // Yahan hum pehle image object create karke load ensure karte hain
+            const sigImg = new Image();
+            sigImg.src = 'my-signature.png'; 
+            
+            sigImg.onload = function() {
+                // Image safetly canvas coordinate map system pe build ho jayegi (Width: 90px, Height: 40px approx)
+                docCert.addImage(sigImg, 'PNG', 655, 442, 90, 40);
+                
+                // Final save trigger image append hone ke baad
+                docCert.save("GenZ_Student_Academy_Certificate_" + studentName.replace(/\s+/g, '_') + ".pdf");
+                downloadBtn.innerText = "Download PDF";
+                downloadBtn.disabled = false;
+                window.closeModal();
+            };
+
+            sigImg.onerror = function() {
+                // Agar backup logic fail hua (image folder me na mili), toh system fallback text render kar dega taaki flow na ruke
+                docCert.setFont('italic');
+                docCert.setFontSize(12);
+                docCert.text("GenZ Academy Team", 700, 475, { align: 'center' });
+                
+                docCert.save("GenZ_Student_Academy_Certificate_" + studentName.replace(/\s+/g, '_') + ".pdf");
+                downloadBtn.innerText = "Download PDF";
+                downloadBtn.disabled = false;
+                window.closeModal();
+            };
         };
 
         auth.onAuthStateChanged(async (user) => {
