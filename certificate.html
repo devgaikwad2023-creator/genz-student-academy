@@ -44,7 +44,8 @@
 
             <div style="margin-top: 40px; border-top: 1px dashed #cbd5e1; padding-top: 15px; font-size: 11px; color: #64748b; font-family: sans-serif; letter-spacing: 0.3px;">
                 Genz Student Academy is registered as an educational support and training provider under the <br>
-                <strong>Ministry of Micro, Small & Medium Enterprises (MSME), Government of India</strong> | Reg No: <span style="color: #0284c7; font-weight: bold;">UDYAM-MH-33-0770442</span>
+                <strong>Ministry of Micro, Small & Medium Enterprises (MSME), Government of India</strong> | Reg No: <span style="color: #0284c7; font-weight: bold;">UDYAM-MH-33-0770442</span> <br>
+                <span style="font-size: 10px; color: #475569;">Recognized Ecosystem Partner under Startup India Hub | BHASKAR ID: IN-0626-9479GX</span>
             </div>
 
         </div>
@@ -60,13 +61,11 @@
     </div>
 
     <script>
-        // Update name on certificate while typing
         function updateName() {
             let inputVal = document.getElementById('name-input').value;
             document.getElementById('cert-name').innerText = inputVal || "YOUR NAME";
         }
 
-        // Professional Download function
         function downloadCert() {
             const element = document.getElementById('certificate-area');
             const btn = document.getElementById('download-btn');
@@ -82,7 +81,6 @@
                 jsPDF: { unit: 'in', format: 'letter', orientation: 'landscape' }
             };
 
-            // New logic to ensure library is ready
             html2pdf().set(opt).from(element).save().then(() => {
                 btn.innerText = "📥 Download as PDF";
                 btn.disabled = false;
