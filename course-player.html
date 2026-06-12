@@ -391,7 +391,7 @@
             document.getElementById('name-modal').style.display = 'none';
         };
 
-        // EXPOSED DYNAMIC GENERATOR SAFELY AT WINDOW CONTEXT LEVEL WITH SIGNATURE CORRECTION
+        // --- NEW HIGHLY CUSTOMIZED PREMIUM HIGH-RES GENERATOR ---
         window.generatePDF = function() {
             const studentName = document.getElementById('cert-student-name').value.trim();
             if(!studentName) {
@@ -400,7 +400,7 @@
             }
 
             const downloadBtn = document.getElementById('modal-download-btn');
-            downloadBtn.innerText = "Processing...";
+            downloadBtn.innerText = "Generating Premium PDF...";
             downloadBtn.disabled = true;
 
             const { jsPDF } = window.jspdf;
@@ -410,106 +410,131 @@
                 format: [842, 595]
             });
 
-            // Dark Blue Frame Canvas Canvas
-            docCert.setFillColor(15, 23, 42); 
+            // Deep Premium Dark Canvas
+            docCert.setFillColor(11, 19, 32); 
             docCert.rect(0, 0, 842, 595, 'F');
 
-            // Borders Setup
+            // Royal Cyan Neon Outer Framework Border
             docCert.setDrawColor(56, 189, 248); 
             docCert.setLineWidth(4);
             docCert.rect(20, 20, 802, 555);
             
-            docCert.setDrawColor(30, 41, 59); 
-            docCert.setLineWidth(1);
-            docCert.rect(25, 25, 792, 545);
+            // Sub-Framework Dark Boundary Line
+            docCert.setDrawColor(23, 37, 59); 
+            docCert.setLineWidth(1.5);
+            docCert.rect(26, 26, 790, 543);
 
-            // Brand Typography Area
-            docCert.setTextColor(56, 189, 248);
-            docCert.setFont('helvetica', 'bold');
-            docCert.setFontSize(26);
-            docCert.text("GENZ STUDENT ACADEMY", 421, 80, { align: 'center' });
+            // Function to load all images asynchronously and safely render together
+            const loadImages = () => {
+                const logoImg = new Image();
+                logoImg.src = 'Genz Student Academy logo.png';
 
-            docCert.setTextColor(255, 255, 255);
-            docCert.setFont('helvetica', 'normal');
-            docCert.setFontSize(18);
-            docCert.text("CERTIFICATE OF COMPLETION", 421, 140, { align: 'center' });
+                const sigImg = new Image();
+                sigImg.src = 'my-signature.png';
 
-            docCert.setTextColor(148, 163, 184); 
-            docCert.setFontSize(14);
-            docCert.text("This is proudly presented to", 421, 200, { align: 'center' });
+                let loadedCount = 0;
+                const totalImages = 2;
 
-            docCert.setTextColor(255, 255, 255);
-            docCert.setFont('helvetica', 'bold');
-            docCert.setFontSize(36);
-            docCert.text(studentName.toUpperCase(), 421, 260, { align: 'center' });
+                const imageLoaded = () => {
+                    loadedCount++;
+                    if (loadedCount === totalImages) {
+                        renderFinalPDF(logoImg, sigImg);
+                    }
+                };
 
-            docCert.setDrawColor(56, 189, 248);
-            docCert.setLineWidth(2);
-            docCert.line(260, 280, 582, 280);
-
-            docCert.setTextColor(148, 163, 184);
-            docCert.setFont('helvetica', 'normal');
-            docCert.setFontSize(14);
-            docCert.text("for successfully mastering all modules, practical strategies, and optimization metrics in the", 421, 330, { align: 'center' });
-            
-            docCert.setTextColor(56, 189, 248);
-            docCert.setFont('helvetica', 'bold');
-            docCert.setFontSize(18);
-            docCert.text("RESUME MASTERY & ATS FRIENDLY FORMULA", 421, 365, { align: 'center' });
-
-            // Legal Verification Strings Block Footer
-            docCert.setTextColor(148, 163, 184);
-            docCert.setFont('helvetica', 'normal');
-            docCert.setFontSize(10);
-            docCert.text("Genz Student Academy is registered under the Ministry of Micro, Small & Medium Enterprises (MSME), Govt. of India", 421, 540, { align: 'center' });
-            docCert.text("Official MSME Registration No: UDYAM-MH-33-0770442 | Recognized under Startup India Hub (BHASKAR ID: IN-0626-9479GX)", 421, 552, { align: 'center' });
-            docCert.text("Officially Certified & Committed Partner of MyGov Innovate India Pledge Campaign", 421, 564, { align: 'center' });
-
-            const today = new Date();
-            const formattedDate = today.getDate() + '/' + (today.getMonth()+1) + '/' + today.getFullYear();
-
-            docCert.setTextColor(148, 163, 184);
-            docCert.setFont('helvetica', 'normal');
-            docCert.setFontSize(11);
-            docCert.text("Date of Issue: " + formattedDate, 80, 480);
-            docCert.text("Verification ID: GZ-" + Math.floor(100000 + Math.random() * 900000), 80, 498);
-
-            // Sign Blocks Meta Positions
-            docCert.setDrawColor(148, 163, 184);
-            docCert.setLineWidth(1);
-            docCert.line(640, 485, 760, 485);
-
-            docCert.text("Founder & CEO", 700, 505, { align: 'center' });
-            docCert.setFontSize(9);
-            docCert.text("Authorized Signatory", 700, 517, { align: 'center' });
-
-            // --- SIGNATURE IMAGE RENDERING CORRECTION ---
-            // Yahan hum pehle image object create karke load ensure karte hain
-            const sigImg = new Image();
-            sigImg.src = 'my-signature.png'; 
-            
-            sigImg.onload = function() {
-                // Image safetly canvas coordinate map system pe build ho jayegi (Width: 90px, Height: 40px approx)
-                docCert.addImage(sigImg, 'PNG', 655, 442, 90, 40);
-                
-                // Final save trigger image append hone ke baad
-                docCert.save("GenZ_Student_Academy_Certificate_" + studentName.replace(/\s+/g, '_') + ".pdf");
-                downloadBtn.innerText = "Download PDF";
-                downloadBtn.disabled = false;
-                window.closeModal();
+                logoImg.onload = imageLoaded;
+                logoImg.onerror = imageLoaded; // Fallback if missing
+                sigImg.onload = imageLoaded;
+                sigImg.onerror = imageLoaded;   // Fallback if missing
             };
 
-            sigImg.onerror = function() {
-                // Agar backup logic fail hua (image folder me na mili), toh system fallback text render kar dega taaki flow na ruke
-                docCert.setFont('italic');
+            const renderFinalPDF = (logoImg, sigImg) => {
+                // 1. Draw Academy Logo at Top Center (Sized correctly at 55x55)
+                if (logoImg.complete && logoImg.naturalWidth !== 0) {
+                    docCert.addImage(logoImg, 'PNG', 393, 38, 55, 55);
+                }
+
+                // 2. Main Title Typography Area
+                docCert.setTextColor(56, 189, 248);
+                docCert.setFont('helvetica', 'bold');
+                docCert.setFontSize(32); // Increased for high-end look
+                docCert.text("GENZ STUDENT ACADEMY", 421, 122, { align: 'center' });
+
+                docCert.setTextColor(255, 255, 255);
+                docCert.setFont('helvetica', 'normal');
+                docCert.setFontSize(16);
+                docCert.text("CERTIFICATE OF COMPLETION", 421, 150, { align: 'center' });
+
+                docCert.setTextColor(148, 163, 184); 
                 docCert.setFontSize(12);
-                docCert.text("GenZ Academy Team", 700, 475, { align: 'center' });
+                docCert.text("This is proudly presented to", 421, 202, { align: 'center' });
+
+                // 3. Student Name (Super Bold & Huge)
+                docCert.setTextColor(255, 255, 255);
+                docCert.setFont('helvetica', 'bold');
+                docCert.setFontSize(38);
+                docCert.text(studentName.toUpperCase(), 421, 252, { align: 'center' });
+
+                // Accent Line under name
+                docCert.setDrawColor(56, 189, 248);
+                docCert.setLineWidth(2);
+                docCert.line(260, 268, 582, 268);
+
+                // Course details Text
+                docCert.setTextColor(148, 163, 184);
+                docCert.setFont('helvetica', 'normal');
+                docCert.setFontSize(12);
+                docCert.text("for successfully mastering all modules, practical strategies, and optimization metrics in the", 421, 312, { align: 'center' });
                 
-                docCert.save("GenZ_Student_Academy_Certificate_" + studentName.replace(/\s+/g, '_') + ".pdf");
+                docCert.setTextColor(56, 189, 248);
+                docCert.setFont('helvetica', 'bold');
+                docCert.setFontSize(18);
+                docCert.text("RESUME MASTERY & ATS FRIENDLY FORMULA", 421, 345, { align: 'center' });
+
+                // 4. Legal Footer Block
+                docCert.setTextColor(100, 116, 139);
+                docCert.setFont('helvetica', 'normal');
+                docCert.setFontSize(9);
+                docCert.text("GenZ Student Academy is registered under the Ministry of Micro, Small & Medium Enterprises (MSME), Government of India", 421, 518, { align: 'center' });
+                docCert.text("Official MSME Registration No: UDYAM-MH-33-0770442 | Recognized under Startup India Hub (BHASKAR ID: IN-0626-9479GX)", 421, 530, { align: 'center' });
+                docCert.text("Officially Certified & Committed Partner of MyGov Innovate India Pledge Campaign", 421, 542, { align: 'center' });
+
+                // 5. Left Side Metadata (Issue Date & ID)
+                const today = new Date();
+                const formattedDate = today.getDate() + '/' + (today.getMonth()+1) + '/' + today.getFullYear();
+
+                docCert.setTextColor(148, 163, 184);
+                docCert.setFontSize(11);
+                docCert.text("Date of Issue: " + formattedDate, 80, 440);
+                docCert.text("Verification ID: GZ-" + Math.floor(100000 + Math.random() * 900000), 80, 458);
+
+                // 6. Right Side Signature Rendering Area
+                if (sigImg.complete && sigImg.naturalWidth !== 0) {
+                    // Transparent Real Sign Rendering
+                    docCert.addImage(sigImg, 'PNG', 655, 395, 90, 42);
+                }
+
+                // Sign Line & Descriptions
+                docCert.setDrawColor(148, 163, 184);
+                docCert.setLineWidth(1);
+                docCert.line(640, 442, 760, 442);
+
+                docCert.setTextColor(148, 163, 184);
+                docCert.setFontSize(10);
+                docCert.text("Authorized Signatory", 700, 456, { align: 'center' });
+                docCert.setFontSize(9);
+                docCert.setFont('helvetica', 'normal');
+                docCert.text("Founder & CEO, GenZ Student Academy", 700, 468, { align: 'center' });
+
+                // Final Action: Save PDF Document
+                docCert.save("GenZ_Academy_Certificate_" + studentName.replace(/\s+/g, '_') + ".pdf");
                 downloadBtn.innerText = "Download PDF";
                 downloadBtn.disabled = false;
                 window.closeModal();
             };
+
+            // Trigger Image Loading
+            loadImages();
         };
 
         auth.onAuthStateChanged(async (user) => {
