@@ -472,16 +472,32 @@
             docCert.setTextColor(148, 163, 184);
             docCert.setFont('helvetica', 'normal');
             docCert.setFontSize(11);
-            docCert.text("Date of Issue: " + formattedDate, 80, 490);
-            docCert.text("Verification ID: GZ-" + Math.floor(100000 + Math.random() * 900000), 80, 510);
+            docCert.text("Date of Issue: " + formattedDate, 80, 480);
+            docCert.text("Verification ID: GZ-" + Math.floor(100000 + Math.random() * 900000), 80, 498);
 
             docCert.setDrawColor(148, 163, 184);
             docCert.setLineWidth(1);
-            docCert.line(640, 495, 760, 495);
+            docCert.line(640, 485, 760, 485);
 
-            docCert.text("Authorized Signatory", 700, 510, { align: 'center' });
+            docCert.text("Authorized Signatory", 700, 498, { align: 'center' });
             docCert.setFont('italic');
-            docCert.text("GenZ Student Academy Team", 700, 485, { align: 'center' });
+            docCert.text("GenZ Student Academy Team", 700, 475, { align: 'center' });
+
+            // --- OFFICIAL MSME CERTIFICATION STRIP IN JSTEPS (Bina Baaki Design Chhede) ---
+            docCert.setDrawColor(56, 189, 248);
+            docCert.setLineWidth(0.5);
+            docCert.setLineDashPattern([4, 2], 0); // Dashed line effect
+            docCert.line(40, 525, 802, 525);
+            docCert.setLineDashPattern([], 0); // Reset lines to solid
+
+            docCert.setTextColor(148, 163, 184);
+            docCert.setFont('helvetica', 'normal');
+            docCert.setFontSize(9);
+            docCert.text("Genz Student Academy is registered as an educational support and training provider under the Ministry of Micro, Small & Medium Enterprises (MSME), Govt. of India", 421, 540, { align: 'center' });
+            
+            docCert.setTextColor(56, 189, 248);
+            docCert.setFont('helvetica', 'bold');
+            docCert.text("Official MSME Registration No: UDYAM-MH-33-0770442", 421, 552, { align: 'center' });
 
             docCert.save("GenZ_Academy_Certificate_" + studentName.replace(/\s+/g, '_') + ".pdf");
             closeModal();
@@ -538,7 +554,6 @@
             } catch (error) { console.error(error); }
             box.scrollTop = box.scrollHeight;
         };
-    
     </script>
 
     <script>
